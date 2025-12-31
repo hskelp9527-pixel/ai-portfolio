@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>任泓雨 | 个人门户</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- 自定义样式放在 Tailwind 之后确保优先级 -->
+    <style>
+        :root {
+            --apple-font: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
+        }
+        html, body {
+            font-family: var(--apple-font);
+            scroll-behavior: smooth;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            overflow-x: hidden;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #f8fafc 0%, #e0f2fe 30%, #f3e8ff 70%, #faf5ff 100%) !important;
+        }
+        body.dark-theme {
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 30%, #172554 60%, #0c4a6e 100%) !important;
+        }
+        #root {
+            min-height: 100vh;
+        }
+        /* 全局平滑过渡配置 */
+        * {
+            transition-property: border-color, color, fill, stroke, opacity, box-shadow, backdrop-filter, transform, background;
+            transition-duration: 300ms;
+            transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .glass {
+            backdrop-filter: blur(30px) saturate(180%);
+            -webkit-backdrop-filter: blur(30px) saturate(180%);
+        }
+        .hero-text {
+            letter-spacing: -0.06em;
+        }
+        @media print {
+            .no-print { display: none !important; }
+        }
+    </style>
+</head>
+<body class="transition-colors duration-300">
+    <div id="root"></div>
+<script type="module" src="/index.tsx?v=2"></script>
+</body>
+</html>

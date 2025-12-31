@@ -1,0 +1,150 @@
+import { Experience, ProjectImage, ProjectVideo, Skill, MediaManagerConfig } from './types';
+
+// 媒体管理配置
+export const MEDIA_CONFIG: MediaManagerConfig = {
+  imagePath: '/images/gallery',
+  videoPath: '/videos/gallery',
+  thumbnailPath: '/images/gallery/thumbnails',
+  supportedImageFormats: ['.jpg', '.jpeg', '.png', '.webp', '.avif'],
+  supportedVideoFormats: ['.mp4', '.webm', '.mov'],
+  lazyLoadThreshold: 200,
+  maxImageSize: 5 * 1024 * 1024,
+  maxVideoSize: 50 * 1024 * 1024,
+};
+
+export const PERSONAL_INFO = {
+  name: '任泓雨',
+  avatar: '/images/avatar/admin.jpg', 
+  phone: '19068046220',
+  email: 'rhydewy@163.com',
+  summary: '拥有 3–4 年信息化项目协调 with 交付经验，曾参与管理总项目规模约 10 亿元的信息化平台，直接负责数千万级子项目的进度、文档与缺陷闭环，保障项目合规运行、确保项目按照里程碑交付。',
+  aiDescription: '为提升效率，我在工作中广泛使用 AI 工具：ChatGPT/Gemini/豆包/千问/Grok等AI应用软件生成会议纪要与文档内容提升工作效率；业余时间使用Midjourney 、Nano Bnana、即梦、豆包、千问等AI应用图像创作、hailuo、Runway、Pika 、Veo3.1、Vidu、千问等工具的视频制作，以及搭建AI资讯日报跟踪收集 Bot、个人知识库（AI类）。熟练掌握 Coze，Claude Code使用，产出智能体应用，目前也正在探索Spec Codding AI编程，可以做提质有效的Web端应用。积极关注AI前沿发展，热情探索AI相关应用，对AI行业发展具有热情。',
+  education: [
+    { school: '深圳大学', major: '计算机科学与技术 | 本科 (在读)', period: '2024.01 – 2027.07 (预计)' },
+    { school: '湖南交通职业技术学院', major: '物联网应用技术 | 大专', period: '2018.09 – 2021.07' }
+  ]
+};
+
+export const EXPERIENCES: Experience[] = [
+  {
+    id: 'w1',
+    company: '深圳市艾泰克工程咨询有限公司',
+    role: '信息化项目交付专员',
+    period: '2023.09 – 2025.09',
+    description: '1．协助协同同事与多方干系人完成交付，规避系统性风险；\n2．参与项目技术性方案编制，明确用户需求，提供解决思路；\n3．协助参与项目质量交付验收会议，提供项目答疑解惑；',
+    tags: ['G端交付', '风险规避', '技术方案', '验收答疑']
+  },
+  {
+    id: 'w2',
+    company: '湖南大福信息技术有限公司',
+    role: '项目交付助理',
+    period: '2021.09 – 2023.08',
+    description: '1．需求分析与沟通： 负责用户需求调研，协助编写技术方案PPT。\n2．现场交付保障： 参与项目质量验收会议，协助解决现场技术突发问题。\n3．参与跨组织协同交付，明确多方职责边界与对接流程。\n4．构建文档全周期管控流程，实现交付材料完整归档与标准化修正。',
+    tags: ['需求调研', '跨组织协同', '文档管控', '交付保障']
+  }
+];
+
+export const MAIN_PROJECTS = [
+  {
+    id: 'mp1',
+    title: '深圳市交通某信息化集成项目',
+    role: '信息化项目交付专员',
+    period: '2024.06 – 2025.09',
+    scale: '参与管理数千万级子项目（总项目规模约 10 亿元）。全项目规模约 30 个子项目，我负责其中约 7–8 个核心子项，涉及多家施工队及服务商，累计管控规模约 800–1200 人天。',
+    description: '核心交付职责：\n• 跨组织协调：直接对接 10 人以上核心干系人，涉及甲方多部门与第三方监管单位，建立稳定对接机制。\n• 会议管控：每周组织 3–4 场对接会，产出会议纪要并重点跟踪，累计参与 50+ 场会议。\n• 文档审计：年度审核 200–300+ 份文件材料，指导乙方完成多轮文档标准化输出。\n• 交付保障：保障关键里程碑按计划完成交付，实现子项目高质量验收。',
+    tags: ['千万级子项', '30个子项', '干系人管理', '文档审计']
+  }
+];
+
+export const PERSONAL_PROJECTS = [
+  {
+    id: 'pp1',
+    title: '基于 Coze 的智能客服 Agent',
+    description: '项目描述：针对传统客服回复效率低的问题，利用 Coze 平台搭建的自动化助手。\n核心动作：收集整理行业文档，清洗数据后导入飞书知识库；配置工作流（Workflow），让Bot能自动识别用户意图并调用知识库准确回答。',
+    tags: ['Coze', '知识库', 'Workflow', '智能客服']
+  },
+  {
+    id: 'pp2',
+    title: '个人数字化简历网站',
+    description: '利用 Spec Coding AI 编写代码，独立完成个人简历网站的开发与部署。网站集成个人作品集（AI生成的视频/图像）及智能对话入口，展现了快速学习技术并落地的能力。',
+    tags: ['Spec Coding', 'AI编程', 'React', 'Vercel', '个人网站']
+  }
+];
+
+export const SKILLS: Skill[] = [
+  { category: 'AI 工具栈 (办公与提效)', items: ['ChatGPT', 'Gemini', '豆包', '千问', 'Grok', 'Coze', 'Claude Code', 'AI资讯日报Bot'] },
+  { category: 'AI 工具栈 (创作与编程)', items: ['Midjourney', 'Nano Banana', '即梦', 'Runway', 'Pika', 'Veo 3.1', 'Vidu', 'Spec Coding AI'] },
+  { category: '专业交付技能', items: ['信息化项目管理', 'G端交付验收', '需求调研', '技术方案PPT', '全周期文档管控', '跨组织协同'] }
+];
+
+export const IMAGES: ProjectImage[] = [
+  // AIGC 风景与人文系列
+  { id: 'i1', filename: '乡村牧歌.png', url: '/images/gallery/compressed/乡村牧歌.png', thumbnail: '/images/gallery/thumbnails/乡村牧歌.png', title: '乡村牧歌', description: 'AI 生成的田园风光作品，展现宁静的乡村生活。', category: 'AIGC风景', tags: ['乡村', '田园', '风景'], dimensions: { width: 1920, height: 1080 }, createdAt: '2024-12-31' },
+  { id: 'i2', filename: '乡间故事.png', url: '/images/gallery/compressed/乡间故事.png', thumbnail: '/images/gallery/thumbnails/乡间故事.png', title: '乡间故事', description: 'AI 生成的乡间生活场景，充满温馨与回忆。', category: 'AIGC风景', tags: ['乡间', '故事', '生活'], dimensions: { width: 1920, height: 1080 }, createdAt: '2024-12-31' },
+  { id: 'i3', filename: '井底光明.png', url: '/images/gallery/compressed/井底光明.png', thumbnail: '/images/gallery/thumbnails/井底光明.png', title: '井底光明', description: 'AI 生成的创意视觉作品，光影交织的艺术表达。', category: 'AIGC创意', tags: ['光影', '创意', '艺术'], dimensions: { width: 1920, height: 1080 }, createdAt: '2024-12-31' },
+  { id: 'i4', filename: '老人与孩子.png', url: '/images/gallery/compressed/老人与孩子.png', thumbnail: '/images/gallery/thumbnails/老人与孩子.png', title: '老人与孩子', description: 'AI 生成的温馨人文作品，展现代际之间的温情。', category: 'AIGC人文', tags: ['人文', '温情', '家庭'], dimensions: { width: 1920, height: 1080 }, createdAt: '2024-12-31' },
+  { id: 'i5', filename: '知更鸟.png', url: '/images/gallery/compressed/知更鸟.png', thumbnail: '/images/gallery/thumbnails/知更鸟.png', title: '知更鸟', description: 'AI 生成的自然生态作品，捕捉鸟类的灵动之美。', category: 'AIGC自然', tags: ['鸟类', '自然', '生态'], dimensions: { width: 1920, height: 1080 }, createdAt: '2024-12-31' },
+  // 历史重现系列
+  { id: 'i6', filename: '明朝北京俯瞰图.png', url: '/images/gallery/compressed/明朝北京俯瞰图.png', thumbnail: '/images/gallery/thumbnails/明朝北京俯瞰图.png', title: '明朝北京俯瞰图', description: 'AI 重现的明朝时期北京城市风貌。', category: '历史重现', tags: ['明朝', '北京', '历史'], dimensions: { width: 1920, height: 1080 }, createdAt: '2024-12-31' },
+  { id: 'i7', filename: '清明上河图风格明朝北京俯瞰图.png', url: '/images/gallery/compressed/清明上河图风格明朝北京俯瞰图.png', thumbnail: '/images/gallery/thumbnails/清明上河图风格明朝北京俯瞰图.png', title: '清明上河图风格明朝北京俯瞰图', description: '融合清明上河图经典画风的明朝北京城市景观。', category: '传统艺术', tags: ['清明上河图', '明朝'], dimensions: { width: 1920, height: 1080 }, createdAt: '2024-12-31' },
+  { id: 'i8', filename: '岳阳楼黄鹤楼结构解说图.png', url: '/images/gallery/compressed/岳阳楼黄鹤楼结构解说图.png', thumbnail: '/images/gallery/thumbnails/岳阳楼黄鹤楼结构解说图.png', title: '岳阳楼黄鹤楼结构解说图', description: '详细展示中国古典建筑结构的技术解说图。', category: '建筑设计', tags: ['古典建筑', '岳阳楼', '黄鹤楼'], dimensions: { width: 1920, height: 1080 }, createdAt: '2024-12-31' },
+  // 美食摄影系列
+  { id: 'i9', filename: '东坡肉1.png', url: '/images/gallery/compressed/东坡肉1.png', thumbnail: '/images/gallery/thumbnails/东坡肉1.png', title: '东坡肉美食摄影', description: 'AI 生成的精美东坡肉美食摄影作品。', category: '美食摄影', tags: ['东坡肉', '美食'], dimensions: { width: 1920, height: 1080 }, createdAt: '2024-12-31' },
+  { id: 'i10', filename: '红烧鱼.png', url: '/images/gallery/compressed/红烧鱼.png', thumbnail: '/images/gallery/thumbnails/红烧鱼.png', title: '红烧鱼美食摄影', description: '精美的红烧鱼美食摄影。', category: '美食摄影', tags: ['红烧鱼', '中式烹饪'], dimensions: { width: 1920, height: 1080 }, createdAt: '2024-12-31' },
+  { id: 'i11', filename: '鲜蒸鱼.png', url: '/images/gallery/compressed/鲜蒸鱼.png', thumbnail: '/images/gallery/thumbnails/鲜蒸鱼.png', title: '鲜蒸鱼美食摄影', description: '清淡鲜美的蒸鱼料理。', category: '美食摄影', tags: ['蒸鱼', '健康饮食'], dimensions: { width: 1920, height: 1080 }, createdAt: '2024-12-31' },
+  // 其他创意作品
+  { id: 'i12', filename: '拼豆成图.png', url: '/images/gallery/compressed/拼豆成图.png', thumbnail: '/images/gallery/thumbnails/拼豆成图.png', title: '拼豆艺术创作', description: '独特的拼豆艺术作品。', category: '创意艺术', tags: ['拼豆', '像素艺术'], dimensions: { width: 1920, height: 1080 }, createdAt: '2024-12-31' },
+  { id: 'i13', filename: '商品图.jpeg', url: '/images/gallery/compressed/商品图.jpeg', thumbnail: '/images/gallery/thumbnails/商品图.jpeg', title: '商品展示图', description: '精美的商品展示摄影。', category: '商业摄影', tags: ['商品', '产品摄影'], dimensions: { width: 1920, height: 1080 }, createdAt: '2024-12-31' },
+  // 可乐品牌设计系列 (按顺序 0-8)
+  { id: 'i14', filename: '生活场景0.png', url: '/images/gallery/compressed/生活场景0.png', thumbnail: '/images/gallery/thumbnails/生活场景0.png', title: '可乐生活场景', description: '可乐品牌生活场景摄影，展现产品融入日常的美好瞬间。', category: '可乐品牌', tags: ['可乐', '生活场景', '品牌'], dimensions: { width: 1920, height: 1080 }, createdAt: '2024-12-31' },
+  { id: 'i15', filename: '特写1.png', url: '/images/gallery/compressed/特写1.png', thumbnail: '/images/gallery/thumbnails/特写1.png', title: '可乐特写 I', description: '可乐产品特写摄影，展现产品细节之美。', category: '可乐品牌', tags: ['可乐', '特写', '产品'], dimensions: { width: 1920, height: 1080 }, createdAt: '2024-12-31' },
+  { id: 'i16', filename: '特写2.png', url: '/images/gallery/compressed/特写2.png', thumbnail: '/images/gallery/thumbnails/特写2.png', title: '可乐特写 II', description: '可乐产品特写摄影，捕捉产品精彩瞬间。', category: '可乐品牌', tags: ['可乐', '特写', '产品'], dimensions: { width: 1920, height: 1080 }, createdAt: '2024-12-31' },
+  { id: 'i17', filename: '细节特写3.png', url: '/images/gallery/compressed/细节特写3.png', thumbnail: '/images/gallery/thumbnails/细节特写3.png', title: '可乐细节特写', description: '可乐产品细节特写，展现精致工艺与质感。', category: '可乐品牌', tags: ['可乐', '细节', '特写'], dimensions: { width: 1920, height: 1080 }, createdAt: '2024-12-31' },
+  { id: 'i18', filename: '银色标志4.png', url: '/images/gallery/compressed/银色标志4.png', thumbnail: '/images/gallery/thumbnails/银色标志4.png', title: '可乐银色标志', description: '可乐品牌银色标志设计，体现专业与品质。', category: '可乐品牌', tags: ['可乐', '标志', 'Logo'], dimensions: { width: 1920, height: 1080 }, createdAt: '2024-12-31' },
+  { id: 'i19', filename: '营养成分表5.png', url: '/images/gallery/compressed/营养成分表5.png', thumbnail: '/images/gallery/thumbnails/营养成分表5.png', title: '可乐营养成分表', description: '可乐产品营养成分表设计，信息可视化。', category: '可乐品牌', tags: ['可乐', '营养', '信息设计'], dimensions: { width: 1920, height: 1080 }, createdAt: '2024-12-31' },
+  { id: 'i20', filename: '主KV视觉6.png', url: '/images/gallery/compressed/主KV视觉6.png', thumbnail: '/images/gallery/thumbnails/主KV视觉6.png', title: '可乐主KV视觉', description: '可乐品牌主视觉KV设计，强烈的视觉冲击力。', category: '可乐品牌', tags: ['可乐', 'KV设计', '主视觉'], dimensions: { width: 1920, height: 1080 }, createdAt: '2024-12-31' },
+  { id: 'i21', filename: '气泡动力7.png', url: '/images/gallery/compressed/气泡动力7.png', thumbnail: '/images/gallery/thumbnails/气泡动力7.png', title: '可乐气泡动力', description: '可乐气泡动力视觉设计，动感与美感的完美结合。', category: '可乐品牌', tags: ['可乐', '气泡', '动力'], dimensions: { width: 1920, height: 1080 }, createdAt: '2024-12-31' },
+  { id: 'i22', filename: '最后插画8.png', url: '/images/gallery/compressed/最后插画8.png', thumbnail: '/images/gallery/thumbnails/最后插画8.png', title: '可乐创意插画', description: '可乐品牌创意插画设计，展现独特的艺术风格。', category: '可乐品牌', tags: ['可乐', '插画', '创意'], dimensions: { width: 1920, height: 1080 }, createdAt: '2024-12-31' },
+];
+
+export const VIDEOS: ProjectVideo[] = [
+  {
+    id: 'v1',
+    filename: '片场合影.mp4',
+    url: '/videos/gallery/compressed/片场合影.mp4',
+    thumbnail: '/videos/gallery/thumbnails/片场合影.png',
+    title: '片场合影',
+    description: 'AI 生成的影视风格影像作品。',
+    duration: 120,
+    aspectRatio: '16:9',
+    category: 'AI影视',
+    tags: ['AI视频', '影视', '创意'],
+    createdAt: '2024-12-31'
+  },
+  {
+    id: 'v2',
+    filename: '20251202搞笑漫二.mp4',
+    url: '/videos/gallery/compressed/20251202搞笑漫二.mp4',
+    thumbnail: '/videos/gallery/thumbnails/20251202搞笑漫二-封面.jpg',
+    title: 'AI 搞笑漫剧场',
+    description: '使用 AI 工具生成的创意搞笑动画短片。',
+    duration: 60,
+    aspectRatio: '16:9',
+    category: 'AI动画',
+    tags: ['AI动画', '搞笑', '创意'],
+    createdAt: '2024-12-02'
+  },
+  {
+    id: 'v3',
+    filename: '教父.mp4',
+    url: '/videos/gallery/compressed/教父.mp4',
+    thumbnail: '/videos/gallery/compressed/教父.mp4#t=0.1',
+    title: '教父风格影像',
+    description: 'AI 生成的经典电影风格影像作品。',
+    duration: 90,
+    aspectRatio: '16:9',
+    category: 'AI影视',
+    tags: ['AI视频', '经典风格', '影视'],
+    createdAt: '2024-12-02'
+  }
+];
