@@ -111,7 +111,7 @@ export const VIDEOS: ProjectVideo[] = [
   {
     id: 'v1',
     filename: '片场合影.mp4',
-    url: '/videos/gallery/compressed/片场合影.mp4',
+    url: 'https://ai-portfolio-videos-1394039784.cos.ap-guangzhou.myqcloud.com/%E7%89%87%E5%9C%BA%E5%90%88%E5%BD%B1.mp4',
     thumbnail: '/videos/gallery/thumbnails/片场合影.png',
     title: '片场合影',
     description: 'AI 生成的影视风格影像作品。',
@@ -124,7 +124,7 @@ export const VIDEOS: ProjectVideo[] = [
   {
     id: 'v2',
     filename: '20251202搞笑漫二.mp4',
-    url: '/videos/gallery/compressed/20251202搞笑漫二.mp4',
+    url: 'https://ai-portfolio-videos-1394039784.cos.ap-guangzhou.myqcloud.com/20251202%E6%90%9E%E7%AC%91%E6%BC%AB%E4%BA%8C.mp4',
     thumbnail: '/videos/gallery/thumbnails/20251202搞笑漫二-封面.jpg',
     title: 'AI 搞笑漫剧场',
     description: '使用 AI 工具生成的创意搞笑动画短片。',
@@ -137,7 +137,7 @@ export const VIDEOS: ProjectVideo[] = [
   {
     id: 'v3',
     filename: '教父.mp4',
-    url: '/videos/gallery/compressed/教父.mp4',
+    url: 'https://ai-portfolio-videos-1394039784.cos.ap-guangzhou.myqcloud.com/%E6%95%99%E7%88%B6.mp4',
     thumbnail: '/videos/gallery/compressed/教父.mp4#t=0.1',
     title: '教父风格影像',
     description: 'AI 生成的经典电影风格影像作品。',
