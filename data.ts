@@ -138,7 +138,7 @@ export const VIDEOS: ProjectVideo[] = [
     id: 'v3',
     filename: '教父.mp4',
     url: 'https://ai-portfolio-videos-1394039784.cos.ap-guangzhou.myqcloud.com/%E6%95%99%E7%88%B6.mp4',
-    thumbnail: '/videos/gallery/compressed/教父.mp4#t=0.1',
+    thumbnail: 'https://ai-portfolio-videos-1394039784.cos.ap-guangzhou.myqcloud.com/%E6%95%99%E7%88%B6%E6%97%A0%E6%B0%B4%E5%8D%B0%E7%89%88-%E5%B0%81%E9%9D%A2.jpg',
     title: '教父风格影像',
     description: 'AI 生成的经典电影风格影像作品。',
     duration: 90,
