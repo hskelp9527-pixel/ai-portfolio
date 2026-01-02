@@ -111,7 +111,7 @@ export const VIDEOS: ProjectVideo[] = [
   {
     id: 'v1',
     filename: '片场合影 (2).mp4',
-    url: 'https://ai-portfolio-videos-1394039784.cos.ap-guangzhou.myqcloud.com/%E7%89%87%E5%9C%BA%E5%90%88%E5%BD%B1%20(2).mp4',
+    url: 'https://ai-portfolio-videos-1394039784.cos.ap-guangzhou.myqcloud.com/%E7%89%87%E5%9C%BA%E5%90%88%E5%BD%B1%20%282%29.mp4',
     thumbnail: 'https://ai-portfolio-videos-1394039784.cos.ap-guangzhou.myqcloud.com/%E7%89%87%E5%9C%BA%E5%90%88%E5%BD%B1.png',
     title: '片场合影',
     description: 'AI 生成的影视风格影像作品。',
@@ -124,7 +124,7 @@ export const VIDEOS: ProjectVideo[] = [
   {
     id: 'v2',
     filename: 'AI搞笑漫(1).mp4',
-    url: 'https://ai-portfolio-videos-1394039784.cos.ap-guangzhou.myqcloud.com/AI%E6%90%9E%E7%AC%91%E6%BC%AB(1).mp4',
+    url: 'https://ai-portfolio-videos-1394039784.cos.ap-guangzhou.myqcloud.com/AI%E6%90%9E%E7%AC%91%E6%BC%AB%281%29.mp4',
     thumbnail: 'https://ai-portfolio-videos-1394039784.cos.ap-guangzhou.myqcloud.com/%E6%90%9E%E7%AC%91%E6%BC%AB-%E5%B0%81%E9%9D%A2.jpg',
     title: 'AI 搞笑漫剧场',
     description: '使用 AI 工具生成的创意搞笑动画短片。',
