@@ -126,3 +126,43 @@ https://aicunchu-1394039784.cos.ap-guangzhou.myqcloud.com/[type]/[filename]?q-si
 ### 结果
 - 所有 URL 已转换为无签名的公开访问 URL
 - 图片和视频现在应该可以正常加载
+
+---
+
+## 2025-01-02 - 视频封面更新与懒加载优化
+
+### 需求
+1. 更新三个视频的封面图 URL 到新的 aicunchu 存储桶
+2. 实现媒体文件的懒加载，避免页面加载时立即从腾讯云下载
+
+### 执行操作
+
+#### 1. 更新视频封面 URL
+在 `data.ts` 的 VIDEOS 数组中更新三个视频的 thumbnail：
+- **片场合影** (v1): `片场合影-封面.png`
+- **AI搞笑漫** (v2): `搞笑漫-封面.jpg`
+- **教父** (v3): `教父无水印版-封面.jpg`
+
+#### 2. 懒加载优化
+在 `components/Theater.tsx` 中：
+- 导入 LazyImage 组件
+- Grid 模式：视频封面图使用 LazyImage，滚动到视口才加载
+- Carousel 模式：视频封面图使用 LazyImage
+- 视频格式封面：设置 `preload="none"` 不预加载
+
+#### 3. 已有的懒加载实现
+- **Gallery 组件**：图片使用 LazyImage 组件，支持视口检测懒加载
+- **Theater 视频播放器**：使用 `preload="none"`，只有点击播放才开始下载视频流
+
+### 优化效果
+- ✅ 图片轮播模式：只加载当前显示的图片
+- ✅ 图片平铺模式：滚动到视口才加载
+- ✅ 视频封面：滚动到视口才加载（使用 LazyImage）
+- ✅ 视频文件：点击播放才加载流（preload="none"）
+- ✅ 节省腾讯云 COS 流量费用
+
+### Git 提交
+```
+commit 121a284
+Update video thumbnails and add lazy loading for media optimization
+```
