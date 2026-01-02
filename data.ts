@@ -17,7 +17,7 @@ export const PERSONAL_INFO = {
   avatar: '/images/avatar/admin.jpg', 
   phone: '19068046220',
   email: 'rhydewy@163.com',
-  summary: '拥有 3–4 年信息化项目协调 with 交付经验，曾参与管理总项目规模约 10 亿元的信息化平台，直接负责数千万级子项目的进度、文档与缺陷闭环，保障项目合规运行、确保项目按照里程碑交付。',
+  summary: '拥有 3–4 年信息化项目协调与交付经验，曾参与管理总项目规模约 10 亿元的信息化平台，直接负责数千万级子项目的进度、文档与缺陷闭环，保障项目合规运行、确保项目按照里程碑交付。',
   aiDescription: '为提升效率，我在工作中广泛使用 AI 工具：ChatGPT/Gemini/豆包/千问/Grok等AI应用软件生成会议纪要与文档内容提升工作效率；业余时间使用Midjourney 、Nano Bnana、即梦、豆包、千问等AI应用图像创作、hailuo、Runway、Pika 、Veo3.1、Vidu、千问等工具的视频制作，以及搭建AI资讯日报跟踪收集 Bot、个人知识库（AI类）。熟练掌握 Coze，Claude Code使用，产出智能体应用，目前也正在探索Spec Codding AI编程，可以做提质有效的Web端应用。积极关注AI前沿发展，热情探索AI相关应用，对AI行业发展具有热情。',
   education: [
     { school: '深圳大学', major: '计算机科学与技术 | 本科 (在读)', period: '2024.01 – 2027.07 (预计)' },
@@ -110,8 +110,8 @@ export const IMAGES: ProjectImage[] = [
 export const VIDEOS: ProjectVideo[] = [
   {
     id: 'v1',
-    filename: '片场合影.mp4',
-    url: 'https://ai-portfolio-videos-1394039784.cos.ap-guangzhou.myqcloud.com/%E7%89%87%E5%9C%BA%E5%90%88%E5%BD%B1.mp4',
+    filename: '片场合影 (2).mp4',
+    url: 'https://ai-portfolio-videos-1394039784.cos.ap-guangzhou.myqcloud.com/%E7%89%87%E5%9C%BA%E5%90%88%E5%BD%B1%20(2).mp4',
     thumbnail: 'https://ai-portfolio-videos-1394039784.cos.ap-guangzhou.myqcloud.com/%E7%89%87%E5%9C%BA%E5%90%88%E5%BD%B1.png',
     title: '片场合影',
     description: 'AI 生成的影视风格影像作品。',
@@ -123,8 +123,8 @@ export const VIDEOS: ProjectVideo[] = [
   },
   {
     id: 'v2',
-    filename: '20251202搞笑漫二.mp4',
-    url: 'https://ai-portfolio-videos-1394039784.cos.ap-guangzhou.myqcloud.com/20251202%E6%90%9E%E7%AC%91%E6%BC%AB%E4%BA%8C.mp4',
+    filename: 'AI搞笑漫(1).mp4',
+    url: 'https://ai-portfolio-videos-1394039784.cos.ap-guangzhou.myqcloud.com/AI%E6%90%9E%E7%AC%91%E6%BC%AB(1).mp4',
     thumbnail: 'https://ai-portfolio-videos-1394039784.cos.ap-guangzhou.myqcloud.com/%E6%90%9E%E7%AC%91%E6%BC%AB-%E5%B0%81%E9%9D%A2.jpg',
     title: 'AI 搞笑漫剧场',
     description: '使用 AI 工具生成的创意搞笑动画短片。',
