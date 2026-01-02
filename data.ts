@@ -146,5 +146,18 @@ export const VIDEOS: ProjectVideo[] = [
     category: 'AI影视',
     tags: ['AI视频', '经典风格', '影视'],
     createdAt: '2024-12-02'
+  },
+  {
+    id: 'v4',
+    filename: '星际救援.mp4',
+    url: 'https://aicunchu-1394039784.cos.ap-guangzhou.myqcloud.com/video/%E6%98%9F%E9%99%85%E6%95%91%E6%8F%B4.mp4',
+    thumbnail: 'https://aicunchu-1394039784.cos.ap-guangzhou.myqcloud.com/video/%E6%98%9F%E9%99%85%E6%95%91%E6%8F%B4.png',
+    title: '星际救援',
+    description: 'AI 生成的科幻风格太空救援影像作品。',
+    duration: 120,
+    aspectRatio: '16:9',
+    category: 'AI影视',
+    tags: ['AI视频', '科幻', '太空'],
+    createdAt: '2025-01-03'
   }
 ];
