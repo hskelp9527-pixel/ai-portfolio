@@ -471,7 +471,8 @@ export const Theater: React.FC<TheaterProps> = ({ theme, onModalStateChange }) =
                     key={selectedVideo.url}
                     ref={videoRef}
                     src={selectedVideo.url}
-                    preload="auto"
+                    preload="none"
+                    poster={selectedVideo.thumbnail}
                     className="w-full h-full object-contain bg-black cursor-pointer"
                     onTimeUpdate={handleTimeUpdate}
                     onLoadedMetadata={handleLoadedMetadata}
