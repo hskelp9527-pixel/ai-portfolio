@@ -4,6 +4,7 @@ import { VIDEOS } from '../data';
 import { Play, Pause, X, Grid, Columns2, ChevronLeft, ChevronRight, Volume2, VolumeX, Maximize, SkipBack, SkipForward, AlertCircle } from 'lucide-react';
 import { ProjectVideo, Theme } from '../types';
 import { ParallaxCard } from './ParallaxCard';
+import { LazyImage } from './LazyImage';
 
 interface TheaterProps {
   theme: Theme;
@@ -304,13 +305,15 @@ export const Theater: React.FC<TheaterProps> = ({ theme, onModalStateChange }) =
                           src={video.thumbnail}
                           muted
                           className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
-                          preload="metadata"
+                          preload="none"
                         />
                       ) : (
-                        <img
+                        <LazyImage
                           src={video.thumbnail}
                           alt={video.title}
+                          theme={theme}
                           className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+                          threshold={300}
                         />
                       )}
                       
@@ -364,13 +367,15 @@ export const Theater: React.FC<TheaterProps> = ({ theme, onModalStateChange }) =
                       src={VIDEOS[carouselIndex].thumbnail}
                       muted
                       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                      preload="metadata"
+                      preload="none"
                     />
                   ) : (
-                    <img
+                    <LazyImage
                       src={VIDEOS[carouselIndex].thumbnail}
                       alt={VIDEOS[carouselIndex].title}
+                      theme={theme}
                       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      threshold={300}
                     />
                   )}
                   <div className="absolute inset-0 flex items-center justify-center">
