@@ -166,3 +166,27 @@ https://aicunchu-1394039784.cos.ap-guangzhou.myqcloud.com/[type]/[filename]?q-si
 commit 121a284
 Update video thumbnails and add lazy loading for media optimization
 ```
+
+---
+
+## 2025-01-03 - 添加新视频：星际救援
+
+### 需求
+添加新视频到项目视频库
+
+### 执行操作
+在 `data.ts` 的 VIDEOS 数组中添加第四个视频：
+- **id**: v4
+- **filename**: 星际救援.mp4
+- **url**: `https://aicunchu-1394039784.cos.ap-guangzhou.myqcloud.com/video/%E6%98%9F%E9%99%85%E6%95%91%E6%8F%B4.mp4`
+- **thumbnail**: `https://aicunchu-1394039784.cos.ap-guangzhou.myqcloud.com/video/%E6%98%9F%E9%99%85%E6%95%91%E6%8F%B4.png`
+- **title**: 星际救援
+- **category**: AI影视
+- **tags**: AI视频, 科幻, 太空
+- **duration**: 120 秒
+
+### Git 提交
+```
+commit 90f505d
+Add new video: 星际救援 (Interstellar Rescue)
+```
