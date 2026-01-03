@@ -11,8 +11,8 @@ interface IdentitySectionProps {
 
 export const IdentitySection: React.FC<IdentitySectionProps> = ({ theme }) => {
   const p1 = "为提升效率，我在工作中广泛使用 AI 工具：ChatGPT/Gemini/豆包/千问/Grok等AI应用软件生成会议纪要与文档内容提升工作效率。";
-  const p2 = "业余时间使用 Midjourney、Nano Banana、即梦、豆包、千问等 AI 应用进行图像创作，利用 hailuo、Runway、Pika、Veo3.1、Vidu 等工具制作视频，并搭建了 AI 资讯日报跟踪收集 Bot 与个人 AI 知识库。";
-  const p3 = "熟练掌握 Coze 和 Claude Code 使用，产出智能体应用，并积极探索 Spec Coding AI 编程，致力于产出更高质有效的 Web 端应用。我对 AI 前沿发展及行业应用充满热情。";
+  const p2 = "业余时间使用 Nano Banana、即梦、豆包、千问等 AI 应用进行图像创作，利用Sora2、hailuo、Runway、Veo3.1、Vidu 等工具制作视频，并搭建了 AI 资讯日报跟踪收集 Bot 与个人 AI 知识库。";
+  const p3 = "熟练掌握 Coze 和 Claude Code 使用，产出智能体应用、Skill，并积极探索 Spec Coding AI 编程，致力于产出更高质有效的应用。我对 AI 前沿发展及行业应用充满热情。";
 
   const cardBg = theme === 'dark' ? 'bg-[#0d1117]/50 border-white/10' : 'bg-white/30 border-white/40';
 

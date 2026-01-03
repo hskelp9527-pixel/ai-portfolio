@@ -135,7 +135,7 @@ export const Resume: React.FC<ResumeProps> = ({ theme }) => {
               <div className="space-y-3 sm:space-y-4 flex-grow">
                 {proj.description.split('\n').map((line, idx) => (
                   <div key={idx} className="flex gap-3 items-start">
-                    <Terminal className={`shrink-0 mt-1 transition-all ${theme === 'dark' ? 'text-purple-300' : 'text-purple-500'}`} size={16} />
+                    {line.includes('：') && <Terminal className={`shrink-0 mt-1 transition-all ${theme === 'dark' ? 'text-purple-300' : 'text-purple-500'}`} size={16} />}
                     <p className={`text-sm sm:text-base leading-relaxed font-medium transition-colors duration-300 ${theme === 'dark' ? 'text-gray-200' : 'text-[#1D1D1F]/70'}`}>{line}</p>
                   </div>
                 ))}
