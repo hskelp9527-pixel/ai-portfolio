@@ -119,3 +119,45 @@ export interface GLMChatResponse {
     total_tokens: number;
   };
 }
+
+// RAG 相关类型定义
+export interface KnowledgeChunk {
+  id: string;
+  content: string;
+  source: string;
+  metadata?: {
+    category?: string;
+    keywords?: string[];
+  };
+}
+
+export interface VectorIndex {
+  chunks: KnowledgeChunk[];
+  embeddings: number[][];
+  updatedAt: string;
+}
+
+export interface RAGSearchResult {
+  chunk: KnowledgeChunk;
+  score: number;
+}
+
+export interface GLMEmbeddingRequest {
+  model: string;
+  input: string;
+}
+
+export interface GLMEmbeddingResponse {
+  id: string;
+  object: string;
+  created: number;
+  data: Array<{
+    index: number;
+    object: string;
+    embedding: number[];
+  }>;
+  usage: {
+    prompt_tokens: number;
+    total_tokens: number;
+  };
+}

@@ -190,3 +190,127 @@ Update video thumbnails and add lazy loading for media optimization
 commit 90f505d
 Add new video: 星际救援 (Interstellar Rescue)
 ```
+
+---
+
+## 2025-01-03 - 个人项目内容更新与显示优化
+
+### 需求
+1. 更新图1（AI Workflow & Passion）内容
+2. 新增两个个人项目：桌面清理工具、AI Skill 自动化书评创作工具
+3. 优化项目卡片显示格式
+
+### 执行操作
+
+#### 1. 更新图1内容 (components/IdentitySection.tsx)
+**位置**: 右侧卡片 "AI Workflow & Passion" 区域
+
+**修改内容**:
+- **p2 (图像创作工具)**: 移除 `Midjourney`，视频工具新增 `Sora2`，移除 `Pika`
+- **p3 (技能产出)**: 新增 `Skill` 关键字，移除 `Web 端` 限定词
+
+**变更对比**:
+```
+旧: Midjourney、Nano Banana、即梦...
+新: Nano Banana、即梦... (移除 Midjourney)
+
+旧: hailuo、Runway、Pika、Veo3.1、Vidu
+新: Sora2、hailuo、Runway、Veo3.1、Vidu (Pika 换成 Sora2)
+
+旧: 产出智能体应用
+新: 产出智能体应用、Skill
+
+旧: 致力于产出更高质有效的 Web 端应用
+新: 致力于产出更高质有效的应用 (移除 Web 端限定)
+```
+
+#### 2. 新增个人项目 (data.ts)
+
+**pp3 - 桌面清理工具**
+```
+是什么：Vibe Coding 开发 Windows 桌面文件管理应用，使用 Python + tkinter 开发，打包成单个 exe 文件。
+核心功能：
+            1、扫描桌面所有文件，按类型自动分组（图片、文档、视频、音频等）
+            2、文件夹可递归展开（最多3层），快捷方式(.lnk)可展开目标内容
+            3、右侧复选框多选，支持批量转移/删除/重命名
+            4、双击文件在资源管理器中打开，右键重命名
+界面特点：深色标题栏，扁平设计，左侧三角形展开，显示文件名、时间、大小三列。
+适用场景：桌面太乱时快速查看并批量清理文件。
+```
+
+**pp4 - AI Skill 自动化书评创作工具**
+```
+是什么：深度整合大语言模型与 Seedream 4.5 MCP 图像生成能力的全流程自动化书评创作工具。
+核心功能：
+            1、书籍背景自动检索与信息提取
+            2、精华观点智能提炼与结构化输出
+            3、AI 自动配图，视觉化呈现书评内容
+            4、多格式一键导出（Markdown、PDF、图片等）
+技术特点：集成 LLM 与 MCP 协议，实现"秒级生成"高质量书评。
+适用场景：内容创作者快速产出专业书评，将创作周期从"数小时"缩短至"秒级"。
+```
+
+**格式说明**:
+- 使用统一的描述结构：是什么 → 核心功能 → 界面特点/技术特点 → 适用场景
+- 核心功能使用 `1、2、3、4` 编号，带12个空格缩进对齐
+- 只在带冒号的标题（是什么：、核心功能：、界面特点：、技术特点：、适用场景：）前显示图标
+
+#### 3. 优化项目显示 (components/Resume.tsx)
+**位置**: Resume.tsx:136-138
+
+**修改逻辑**:
+```tsx
+// 修改前：每行都显示图标
+{proj.description.split('\n').map((line, idx) => (
+  <div key={idx} className="flex gap-3 items-start">
+    <Terminal className={...} size={16} />
+    <p>{line}</p>
+  </div>
+))}
+
+// 修改后：只在包含冒号的行显示图标
+{proj.description.split('\n').map((line, idx) => (
+  <div key={idx} className="flex gap-3 items-start">
+    {line.includes('：') && <Terminal className={...} size={16} />}
+    <p>{line}</p>
+  </div>
+))}
+```
+
+**优化效果**:
+- ✅ 标题行（是什么：、核心功能：等）显示 Terminal 图标
+- ✅ 内容行（1、扫描...等）不显示图标
+- ✅ 视觉层次更清晰
+
+#### 4. Git 提交与部署
+
+**提交信息**:
+```
+commit 4abe85d
+更新个人项目内容和显示优化
+
+- 新增两个个人项目：桌面清理工具、AI Skill 自动化书评创作工具
+- 优化项目描述格式，统一使用"是什么"、"核心功能"等标题
+- 只在带冒号的标题前显示图标，其他内容不显示图标
+- 调整核心功能列表缩进，使序号对齐
+```
+
+**推送记录**:
+```bash
+git push
+To https://github.com/hskelp9527-pixel/ai-portfolio.git
+82ba195..4abe85d  main -> main
+```
+
+### 结果
+- ✅ 图1内容已更新，移除 Midjourney 和 Pika，新增 Sora2 和 Skill
+- ✅ 新增 2 个个人项目，共 4 个个人项目
+- ✅ 项目显示格式统一，图标只在标题行显示
+- ✅ 代码已推送到 GitHub main 分支
+
+### 文件变更
+- **修改**: `components/IdentitySection.tsx` (图1内容)
+- **修改**: `data.ts` (新增 pp3, pp4 项目)
+- **修改**: `components/Resume.tsx` (图标显示逻辑)
+
+---

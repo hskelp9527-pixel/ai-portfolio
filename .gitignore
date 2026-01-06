@@ -21,6 +21,9 @@ build
 .env.*.local
 server/.env
 
+# Generated files
+public/vector-index.json
+
 # Problematic Windows files
 nul
 server/nul

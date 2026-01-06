@@ -41,7 +41,14 @@ export class ChatService {
         throw new Error(errorMessage);
       }
 
-      const data: GLMChatResponse = await response.json();
+      const data = await response.json();
+
+      // 支持两种返回格式：
+      // 1. 新格式：{ success: true, content: "..." }
+      // 2. 原始 GLM 格式：{ choices: [{ message: { content: "..." } }] }
+      if (data.success && data.content) {
+        return data.content;
+      }
 
       if (data.choices && data.choices.length > 0) {
         return data.choices[0].message.content;

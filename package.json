@@ -8,7 +8,9 @@
     "build": "vite build",
     "preview": "vite preview",
     "test": "vitest",
-    "test:run": "vitest run"
+    "test:run": "vitest run",
+    "build:kb": "tsx scripts/build-knowledge-base.ts",
+    "vercel-build": "npm run build:kb && vite build"
   },
   "dependencies": {
     "cors": "^2.8.5",

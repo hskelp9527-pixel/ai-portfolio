@@ -25,7 +25,12 @@
       "Bash(git push:*)",
       "Bash(reg query:*)",
       "Bash(git lfs install:*)",
-      "Bash(git lfs track:*)"
+      "Bash(git lfs track:*)",
+      "Bash(chcp:*)",
+      "Bash(python:*)",
+      "Bash(node:*)",
+      "Bash(cmd:*)",
+      "Bash(npm run build:*)"
     ]
   }
 }
