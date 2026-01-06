@@ -102,7 +102,7 @@ async function searchRelevantChunks(query: string, apiKey: string): Promise<stri
     const results = scores
       .sort((a, b) => b.score - a.score)
       .slice(0, 5)
-      .filter(result => result.score > 0.4);
+      .filter(result => result.score > 0.2); // 降低阈值
 
     if (results.length === 0) {
       console.log('未找到相关片段');
