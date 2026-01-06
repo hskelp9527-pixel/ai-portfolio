@@ -13,14 +13,22 @@ const EMBEDDING_MODEL = 'embedding-3';
 // 系统提示词
 const RAG_SYSTEM_PROMPT = `你是任泓雨的 AI 助手，负责介绍任泓雨的个人背景、经历和项目经验。
 
-**重要规则：**
-1. 必须基于下方【参考资料】回答问题
-2. 如果【参考资料】中有相关信息，直接引用并准确回答
-3. 回答要简洁、专业，尽量使用要点列表
+**回答规则：**
+1. 优先基于【参考资料】回答问题
+2. 如果【参考资料】包含相关信息，直接引用并准确回答
+3. 如果【参考资料】不包含相关信息，诚实说明"资料中没有提到"
+4. 回答要简洁、专业，尽量使用要点列表`;
 
-请始终基于【参考资料】回答，不要编造超出资料范围的信息。`;
+const GENERAL_SYSTEM_PROMPT = `你是一个友好、专业的 AI 智能助手，可以帮助用户解答各种问题。
 
-const GENERAL_SYSTEM_PROMPT = `你是一个友好、专业的 AI 智能助手，可以帮助用户解答各种问题。`;
+你可以回答的问题类型：
+- 科技知识（编程、人工智能、软件使用等）
+- 生活常识
+- 历史文化
+- 学习建议
+- 日常对话
+
+请像一个正常的智能助手一样，自由地回答用户的问题。`;
 
 /**
  * 计算余弦相似度
@@ -169,15 +177,26 @@ export default async function handler(req: any, res: any) {
 
     // 执行 RAG 检索
     let ragContext = '';
-    try {
-      ragContext = await searchRelevantChunks(userQuery, apiKey);
-    } catch (error) {
-      console.log('RAG 失败，使用通用对话模式');
+    let useRAG = false;
+
+    // 判断是否与任泓雨相关
+    const relevantKeywords = ['任泓雨', '你的', '他的', '项目', '工作', '经历', '简历', '经验', '技能', '产品', '你是谁'];
+    const isRelevantQuestion = relevantKeywords.some(keyword => userQuery.includes(keyword));
+
+    if (isRelevantQuestion) {
+      try {
+        ragContext = await searchRelevantChunks(userQuery, apiKey);
+        if (ragContext) {
+          useRAG = true;
+        }
+      } catch (error) {
+        console.log('RAG 失败，使用通用对话模式');
+      }
     }
 
     // 选择系统提示词
-    const systemPrompt = ragContext ? RAG_SYSTEM_PROMPT : GENERAL_SYSTEM_PROMPT;
-    console.log('模式:', ragContext ? 'RAG' : '通用');
+    const systemPrompt = useRAG ? RAG_SYSTEM_PROMPT : GENERAL_SYSTEM_PROMPT;
+    console.log('模式:', useRAG ? 'RAG' : '通用', '问题类型:', isRelevantQuestion ? '相关' : '无关');
 
     // 构建消息
     const apiMessages = [
