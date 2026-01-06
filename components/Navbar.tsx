@@ -1,5 +1,4 @@
 
-import React from 'react';
 import { Layout, User, Image as ImageIcon, Video, FileDown, Moon, Sun } from 'lucide-react';
 import { Theme } from '../types';
 

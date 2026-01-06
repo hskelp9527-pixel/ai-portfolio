@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FileText, Image, Play, Sun, Moon, Menu, X, MessageSquare } from 'lucide-react';
 import { NavigationItem } from './NavigationItem';

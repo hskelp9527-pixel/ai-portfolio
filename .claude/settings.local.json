@@ -30,7 +30,15 @@
       "Bash(python:*)",
       "Bash(node:*)",
       "Bash(cmd:*)",
-      "Bash(npm run build:*)"
+      "Bash(npm run build:*)",
+      "Bash(test:*)",
+      "Bash(npm run build:kb:*)",
+      "Bash(npm run dev:*)",
+      "Bash(npm ls:*)",
+      "Bash(tsx test-rag.js:*)",
+      "Bash(npx tsx:*)",
+      "Bash(npm run dev:api:*)",
+      "Bash(npm run dev:vite:*)"
     ]
   }
 }

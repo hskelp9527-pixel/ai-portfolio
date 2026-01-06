@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ImageIcon, AlertCircle, RotateCcw } from 'lucide-react';
 import { useLazyLoad, preloadImage } from '../hooks/useLazyLoad';

@@ -1,5 +1,4 @@
 
-import React from 'react';
 import { motion } from 'framer-motion';
 import { PERSONAL_INFO, SKILLS } from '../data';
 import { Mail, Phone, Cpu, Zap, Activity } from 'lucide-react';

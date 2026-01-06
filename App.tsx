@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { FloatingNavigation } from './components/FloatingNavigation';
 import { AIChatDrawer } from './components/AIChatDrawer';
 import { Hero } from './components/Hero';

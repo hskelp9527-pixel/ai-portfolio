@@ -1,4 +1,3 @@
-import React from 'react';
 import { motion } from 'framer-motion';
 import { NavigationItem as NavigationItemType, Theme } from '../types';
 

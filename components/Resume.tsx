@@ -1,5 +1,4 @@
 
-import React from 'react';
 import { motion } from 'framer-motion';
 import { EXPERIENCES, SKILLS, PERSONAL_INFO, MAIN_PROJECTS, PERSONAL_PROJECTS } from '../data';
 import { Briefcase, Zap, GraduationCap, CheckCircle2, ChevronRight, Globe, Cpu, Terminal } from 'lucide-react';

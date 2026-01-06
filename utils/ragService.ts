@@ -22,20 +22,17 @@ export class RAGService {
     this.knowledgeBasePath = path.join(process.cwd(), 'Rag');
     // 向量索引存储路径
     this.indexPath = path.join(process.cwd(), 'public', 'vector-index.json');
-    // API key 在运行时动态获取（不缓存）
+    // API key 在运行时动态获取（每次调用时重新读取）
     this.apiKey = '';
-
-    const apiKey = this.getApiKey();
-    if (!apiKey) {
-      console.warn('警告: 未设置 GLM_API_KEY 环境变量，RAG 功能将无法使用');
-    }
   }
 
   /**
-   * 获取 API Key（运行时动态读取）
+   * 获取 API Key（运行时动态读取，不缓存）
    */
   private getApiKey(): string {
-    return process.env.GLM_API_KEY || process.env.ZHIPU_API_KEY || '';
+    // 每次都从环境变量中读取最新的值
+    const key = process.env.GLM_API_KEY || process.env.ZHIPU_API_KEY || '';
+    return key;
   }
 
   public static getInstance(): RAGService {
@@ -130,20 +127,70 @@ export class RAGService {
   }
 
   /**
-   * 调用智谱 Embedding API
+   * 辅助函数：延迟执行
    */
-  private async getEmbedding(text: string): Promise<number[]> {
+  private sleep(ms: number): Promise<void> {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
+  /**
+   * 智能重试包装器（指数退避 + Retry-After）
+   */
+  private async withRetry<T>(
+    fn: () => Promise<T>,
+    maxRetries: number = 8
+  ): Promise<T> {
+    let attempt = 0;
+
+    while (true) {
+      try {
+        return await fn();
+      } catch (error: any) {
+        const status = error?.response?.status;
+
+        // 非 429 错误或超过最大重试次数，直接抛出
+        if (status !== 429 || attempt >= maxRetries) {
+          throw error;
+        }
+
+        // 读取 Retry-After 头（优先级最高）
+        const retryAfter = Number(error?.response?.headers?.['retry-after'] ?? 0);
+
+        // 指数退避计算（1s, 2s, 4s, 8s, 16s, 32s, 60s, 60s）
+        const backoff = Math.min(60000, (2 ** attempt) * 1000);
+
+        // 添加随机抖动（±300ms）避免多个客户端同步重试
+        const jitter = Math.floor(Math.random() * 300);
+
+        // 计算最终等待时间
+        const waitMs = retryAfter > 0
+          ? retryAfter * 1000
+          : backoff + jitter;
+
+        console.log(`⚠️  429 限流，等待 ${waitMs}ms 后重试 (${attempt + 1}/${maxRetries})...`);
+        await this.sleep(waitMs);
+        attempt++;
+      }
+    }
+  }
+
+  /**
+   * 批量调用智谱 Embedding API（方案1：批量处理）
+   * 智谱支持最多 64 个文本同时请求
+   */
+  private async getBatchEmbeddingsFromAPI(texts: string[]): Promise<number[][]> {
     const apiKey = this.getApiKey();
     if (!apiKey) {
       throw new Error('API Key 未设置');
     }
 
-    try {
+    // 使用智能重试
+    return this.withRetry(async () => {
       const response = await axios.post(
         `${GLM_API_BASE}/embeddings`,
         {
           model: EMBEDDING_MODEL,
-          input: text
+          input: texts  // ← 直接传入数组，智谱 API 支持批量
         },
         {
           headers: {
@@ -153,37 +200,45 @@ export class RAGService {
         }
       );
 
-      if (response.data?.data?.[0]?.embedding) {
-        return response.data.data[0].embedding;
+      if (response.data?.data) {
+        // 智谱返回的是数组，按原顺序排序
+        return response.data.data.map((item: any) => item.embedding);
       }
 
       throw new Error('Embedding API 返回数据格式错误');
-    } catch (error) {
-      console.error('获取 embedding 失败:', error);
-      throw error;
-    }
+    });
   }
 
   /**
-   * 批量获取 embeddings（避免一次性请求过多）
+   * 批量获取 embeddings（企业级方案）
+   * - 使用批量 API（最多 64 条/请求）
+   * - 智能重试（指数退避 + Retry-After）
+   * - 串行处理（避免并发）
    */
   private async getBatchEmbeddings(texts: string[]): Promise<number[][]> {
     const embeddings: number[][] = [];
-    const batchSize = 5; // 每批处理 5 个（降低批次大小以避免频率限制）
+    const BATCH_SIZE = 32; // 每批 32 个（智谱上限 64，保守一点）
 
-    for (let i = 0; i < texts.length; i += batchSize) {
-      const batch = texts.slice(i, i + batchSize);
+    console.log(`📦 批量处理模式：${texts.length} 个文本 → ${Math.ceil(texts.length / BATCH_SIZE)} 个请求`);
 
-      // 串行处理（避免并发请求触发频率限制）
-      for (const text of batch) {
-        const embedding = await this.getEmbedding(text);
-        embeddings.push(embedding);
+    for (let i = 0; i < texts.length; i += BATCH_SIZE) {
+      const batch = texts.slice(i, i + BATCH_SIZE);
+      const batchNum = Math.floor(i / BATCH_SIZE) + 1;
+      const totalBatches = Math.ceil(texts.length / BATCH_SIZE);
 
-        // 每个请求之间等待 2 秒
-        await new Promise(resolve => setTimeout(resolve, 2000));
+      console.log(`  [${batchNum}/${totalBatches}] 处理 ${batch.length} 个文本...`);
+
+      // 批量调用 API（单次请求处理多个文本）
+      const batchEmbeddings = await this.getBatchEmbeddingsFromAPI(batch);
+      embeddings.push(...batchEmbeddings);
+
+      // 批次之间短暂等待（避免连续请求）
+      if (i + BATCH_SIZE < texts.length) {
+        await this.sleep(1000); // 仅等待 1 秒
       }
     }
 
+    console.log(`✅ 批量处理完成，共生成 ${embeddings.length} 个向量`);
     return embeddings;
   }
 
@@ -277,8 +332,8 @@ export class RAGService {
     }
 
     try {
-      // 1. 获取查询的 embedding
-      const queryEmbedding = await this.getEmbedding(query);
+      // 1. 获取查询的 embedding（使用批量 API 的单元素版本）
+      const [queryEmbedding] = await this.getBatchEmbeddingsFromAPI([query]);
 
       // 2. 计算与所有片段的相似度
       const scores = this.vectorIndex.embeddings.map((embedding, index) => ({
@@ -290,9 +345,10 @@ export class RAGService {
       const results = scores
         .sort((a, b) => b.score - a.score)
         .slice(0, topK)
-        .filter(result => result.score > 0.3); // 过滤掉相似度太低的结果
+        .filter(result => result.score > 0.15); // 降低阈值以获取更多相关结果
 
-      console.log(`检索到 ${results.length} 个相关片段（阈值: 0.3）`);
+      console.log(`检索到 ${results.length} 个相关片段（阈值: 0.15）`);
+      console.log(`相似度分数: ${results.map(r => r.score.toFixed(3)).join(', ')}`);
       return results;
     } catch (error) {
       console.error('检索失败:', error);
@@ -308,14 +364,16 @@ export class RAGService {
       return '';
     }
 
-    let context = '以下是相关参考资料：\n\n';
+    let context = '\n【参考资料】\n\n';
 
     results.forEach((result, index) => {
-      context += `【资料 ${index + 1}】（相似度: ${result.score.toFixed(3)}，来源: ${result.chunk.source}）\n`;
+      context += `--- 资料 ${index + 1} ---\n`;
       context += `${result.chunk.content}\n\n`;
     });
 
-    context += '请基于以上资料回答用户的问题。如果资料中没有相关信息，请明确说明"资料中未包含此信息"。';
+    context += '--- 参考资料结束 ---\n\n';
+
+    console.log(`RAG 上下文已格式化，包含 ${results.length} 个片段`);
 
     return context;
   }

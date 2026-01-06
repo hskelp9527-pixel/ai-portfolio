@@ -4,7 +4,10 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "npm run dev:api",
+    "dev:all": "npm run dev:api & npm run dev:vite",
+    "dev:api": "tsx server.ts",
+    "dev:vite": "vite",
     "build": "vite build",
     "preview": "vite preview",
     "test": "vitest",
@@ -33,6 +36,7 @@
     "@vitejs/plugin-react": "^5.0.0",
     "fast-check": "^4.5.3",
     "jest-environment-jsdom": "^30.2.0",
+    "tsx": "^4.21.0",
     "typescript": "~5.8.2",
     "vite": "^6.2.0",
     "vitest": "^4.0.16"

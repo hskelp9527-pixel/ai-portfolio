@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Send, Bot, User, Loader2 } from 'lucide-react';
 import { Theme, ChatMessage } from '../types';
@@ -19,7 +19,7 @@ export const AIChatDrawer: React.FC<AIChatDrawerProps> = ({
     {
       id: '1',
       role: 'assistant',
-      content: '你好！我是 AI 助手，有什么可以帮你的吗？',
+      content: '你好！我是 AI 助手，有什么可以帮你的吗？\n\n已新增 RAG 系统，您可以提问：\n1、请做一个自我介绍\n2、你的工作经验是什么？\n3、有哪些项目经验？\n4、为什么想做AI产品？',
       timestamp: Date.now()
     }
   ]);
