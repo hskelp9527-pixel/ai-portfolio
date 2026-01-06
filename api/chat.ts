@@ -65,7 +65,8 @@ async function getEmbedding(text: string, apiKey: string): Promise<number[]> {
       headers: {
         'Authorization': `Bearer ${apiKey}`,
         'Content-Type': 'application/json'
-      }
+      },
+      timeout: 20000 // Embedding API 超时 20 秒
     }
   );
 
@@ -180,7 +181,12 @@ export default async function handler(req: any, res: any) {
     let useRAG = false;
 
     // 判断是否与任泓雨相关
-    const relevantKeywords = ['任泓雨', '你的', '他的', '项目', '工作', '经历', '简历', '经验', '技能', '产品', '你是谁'];
+    const relevantKeywords = [
+      '任泓雨', '你的', '他的', '项目', '工作', '经历', '简历', '经验',
+      '技能', '产品', '你是谁', '自我介绍', '介绍', '介绍一下',
+      '做什么', '擅长', '会什么', '能力', '背景', '学历',
+      '公司', '职位', '负责', '参与', '产出', '上线'
+    ];
     const isRelevantQuestion = relevantKeywords.some(keyword => userQuery.includes(keyword));
 
     if (isRelevantQuestion) {
@@ -231,7 +237,7 @@ export default async function handler(req: any, res: any) {
           'Authorization': `Bearer ${apiKey}`,
           'Content-Type': 'application/json'
         },
-        timeout: 30000
+        timeout: 60000 // Chat API 超时 60 秒
       }
     );
 
