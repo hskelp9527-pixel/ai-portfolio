@@ -1,11 +1,4 @@
 {
-  "version": 2,
-  "buildCommand": "vite build",
-  "functions": {
-    "api/**/*.ts": {
-      "runtime": "nodejs20.x"
-    }
-  },
   "rewrites": [
     {
       "source": "/api/(.*)",
