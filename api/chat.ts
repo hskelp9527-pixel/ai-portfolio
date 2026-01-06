@@ -73,11 +73,26 @@ async function getEmbedding(text: string, apiKey: string): Promise<number[]> {
  */
 async function searchRelevantChunks(query: string, apiKey: string): Promise<string> {
   try {
-    // 读取向量索引
-    const indexPath = path.join(process.cwd(), 'public', 'vector-index.json');
+    // 尝试多个路径
+    const possiblePaths = [
+      path.join(process.cwd(), 'public', 'vector-index.json'),
+      path.join(process.cwd(), '..', 'public', 'vector-index.json'),
+      '/var/task/public/vector-index.json',
+      './public/vector-index.json'
+    ];
 
-    if (!fs.existsSync(indexPath)) {
-      console.log('向量索引不存在');
+    let indexPath = '';
+    for (const p of possiblePaths) {
+      console.log('检查路径:', p);
+      if (fs.existsSync(p)) {
+        indexPath = p;
+        console.log('找到索引文件:', indexPath);
+        break;
+      }
+    }
+
+    if (!indexPath) {
+      console.log('向量索引不存在，尝试的路径:', possiblePaths);
       return '';
     }
 
