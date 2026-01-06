@@ -9,7 +9,10 @@
  */
 
 import axios from 'axios';
+import fs from 'fs';
+import path from 'path';
 import type { GLMChatRequest, GLMChatResponse } from '../types';
+import { ragService } from '../utils/ragService';
 
 // 智谱 API 配置
 const GLM_API_BASE = 'https://open.bigmodel.cn/api/paas/v4';
@@ -78,20 +81,11 @@ export default async function handler(req: any, res: any) {
     // 尝试加载向量索引并进行 RAG 检索
     let ragContext = '';
     try {
-      const fs = await import('fs');
-      const path = await import('path');
-
       const indexPath = path.join(process.cwd(), 'public', 'vector-index.json');
       console.log('向量索引路径:', indexPath);
       console.log('索引文件存在:', fs.existsSync(indexPath));
 
       if (fs.existsSync(indexPath)) {
-        // 动态导入 RAG 服务
-        console.log('开始导入 RAG 服务...');
-        const { ragService } = await import('../utils/ragService.js');
-        console.log('RAG 服务导入成功');
-
-        // 执行检索
         console.log('开始执行 RAG 检索...');
         const searchResults = await ragService.search(userQuery, 5);
         console.log('RAG 检索完成，结果数:', searchResults.length);

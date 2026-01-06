@@ -1,7 +1,20 @@
 {
   "version": 2,
-  "buildCommand": "npm run build",
+  "buildCommand": "vite build",
+  "functions": {
+    "api/**/*.ts": {
+      "runtime": "nodejs20.x"
+    }
+  },
   "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "/api/index"
+    },
+    {
+      "source": "/health",
+      "destination": "/api/index"
+    },
     {
       "source": "/(.*)",
       "destination": "/index.html"
