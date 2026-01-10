@@ -123,13 +123,21 @@ async function searchRelevantChunks(query: string, apiKey: string): Promise<stri
     }));
 
     // 排序并取 top-5
-    const results = scores
-      .sort((a, b) => b.score - a.score)
+    const sortedScores = scores.sort((a, b) => b.score - a.score);
+
+    console.log('========== RAG 相似度排名 ==========');
+    console.log('查询:', query);
+    sortedScores.slice(0, 5).forEach((result, index) => {
+      console.log(`#${index + 1} 相似度: ${result.score.toFixed(4)} | 内容: ${result.chunk.content.substring(0, 50)}...`);
+    });
+    console.log('====================================');
+
+    const results = sortedScores
       .slice(0, 5)
-      .filter(result => result.score > 0.2); // 降低阈值
+      .filter(result => result.score > 0.15); // 进一步降低阈值，避免问号导致匹配失败
 
     if (results.length === 0) {
-      console.log('未找到相关片段');
+      console.log('未找到相关片段（所有相似度都 < 0.2）');
       return '';
     }
 
@@ -174,7 +182,10 @@ export default async function handler(req: any, res: any) {
     const lastMessage = messages[messages.length - 1];
     const userQuery = lastMessage?.content || '';
 
-    console.log('用户提问:', userQuery);
+    console.log('========== 用户提问 ==========');
+    console.log('问题内容:', userQuery);
+    console.log('问题长度:', userQuery.length);
+    console.log('==============================');
 
     // 执行 RAG 检索
     let ragContext = '';
@@ -243,6 +254,10 @@ export default async function handler(req: any, res: any) {
 
     if (response.data?.choices?.[0]?.message?.content) {
       const aiMessage = response.data.choices[0].message.content;
+      console.log('========== AI 回复 ==========');
+      console.log('回复内容:', aiMessage.substring(0, 200) + '...');
+      console.log('回复长度:', aiMessage.length);
+      console.log('============================');
       return res.status(200).json({
         success: true,
         content: aiMessage
@@ -252,7 +267,14 @@ export default async function handler(req: any, res: any) {
     throw new Error('API 返回数据格式错误');
 
   } catch (error: any) {
-    console.error('API 请求失败:', error);
+    console.error('========== API 错误详情 ==========');
+    console.error('错误消息:', error.message);
+    console.error('错误堆栈:', error.stack);
+    console.error('用户提问:', userQuery);
+    console.error('错误代码:', error.code);
+    console.error('响应状态:', error.response?.status);
+    console.error('响应数据:', error.response?.data);
+    console.error('====================================');
 
     let errorMessage = '请求失败，请重试';
     let statusCode = 500;
@@ -263,9 +285,13 @@ export default async function handler(req: any, res: any) {
         errorMessage = 'API 密钥无效';
       } else if (statusCode === 429) {
         errorMessage = '请求过于频繁';
+      } else {
+        errorMessage = `API 错误: ${statusCode}`;
       }
     } else if (error.code === 'ECONNABORTED') {
       errorMessage = '请求超时';
+    } else if (error.message) {
+      errorMessage = error.message;
     }
 
     return res.status(statusCode).json({ error: errorMessage });

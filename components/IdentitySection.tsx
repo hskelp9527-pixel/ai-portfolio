@@ -1,7 +1,7 @@
 
 import { motion } from 'framer-motion';
 import { PERSONAL_INFO, SKILLS } from '../data';
-import { Mail, Phone, Cpu, Zap, Activity } from 'lucide-react';
+import { Mail, Phone, Cpu, Zap, Activity, Heart } from 'lucide-react';
 import { Theme } from '../types';
 
 interface IdentitySectionProps {
@@ -120,6 +120,32 @@ export const IdentitySection: React.FC<IdentitySectionProps> = ({ theme }) => {
                 {tag}
               </span>
             ))}
+          </div>
+        </div>
+      </motion.div>
+
+      {/* 个人兴趣爱好卡片 */}
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        whileHover={{ y: -5 }}
+        viewport={{ once: true }}
+        transition={{ delay: 0.2 }}
+        className="lg:col-span-12"
+      >
+        <div className={`glass rounded-[3rem] p-8 sm:p-12 border shadow-sm transition-all duration-700 hover:shadow-xl ${cardBg}`}>
+          <div className="space-y-6">
+            <div className="flex items-center gap-4">
+              <div className={`p-2.5 rounded-xl transition-all duration-700 ${theme === 'dark' ? 'bg-pink-900/30 text-pink-300 border-pink-500/30' : 'bg-pink-500/10 text-pink-500 border-pink-500/10'}`}>
+                <Heart size={24} />
+              </div>
+              <h3 className={`text-2xl sm:text-3xl font-bold tracking-tight transition-colors duration-300 ${theme === 'dark' ? 'text-white' : 'text-[#1D1D1F]'}`}>
+                个人兴趣爱好
+              </h3>
+            </div>
+            <p className={`text-sm sm:text-base lg:text-lg leading-relaxed font-medium transition-colors duration-300 ${theme === 'dark' ? 'text-gray-100' : 'text-[#1D1D1F]/80'}`}>
+              个人爱好偏输入型：平常比较多的看电影、探索AI、听音乐、玩游戏、看文字性内容，看一些比赛，例如足球类的、电竞类的。比较喜欢聆听和沟通讨论，偶尔会晚上边听音乐边徒步思考。也很愿意探索新兴事物，个人成长上目前意识到更多的要根据现有AI知识形成复盘数据，后续会专注提升这个方面。
+            </p>
           </div>
         </div>
       </motion.div>

@@ -17,7 +17,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
-const PORT = 3002; // API 服务器端口
+const PORT = 4000; // API 服务器端口（改到 4000 避免冲突）
 
 // 中间件
 app.use(cors());
@@ -43,11 +43,9 @@ app.get('/api/health', (req, res) => {
 // API 路由：聊天（RAG）
 app.post('/api/chat', async (req, res) => {
   try {
-    console.log('收到聊天请求');
-
-    // 动态导入 API handler
-    const apiModule = await import('./api/index.js');
-    const apiHandler = apiModule.default;
+    // 直接调用 API 逻辑
+    const chatModule = await import('./api/chat.js');
+    const handler = chatModule.default;
 
     // 模拟 Vercel 的 req/res 对象
     const vercelReq = {
@@ -65,7 +63,7 @@ app.post('/api/chat', async (req, res) => {
       }
     };
 
-    await apiHandler(vercelReq, vercelRes);
+    await handler(vercelReq, vercelRes);
   } catch (error) {
     console.error('API 错误:', error);
     res.status(500).json({ error: '服务器内部错误' });
