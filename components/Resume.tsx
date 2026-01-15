@@ -68,7 +68,7 @@ export const Resume: React.FC<ResumeProps> = ({ theme }) => {
           <div className={`p-2.5 sm:p-3 rounded-xl sm:rounded-2xl border transition-all duration-700 ${theme === 'dark' ? 'bg-blue-900/30 text-blue-200 border-blue-400/30' : 'bg-blue-500/10 text-blue-500 border-blue-500/10'}`}>
             <Globe size={24} className="sm:size-[28px]" />
           </div>
-          <h2 className={`text-3xl sm:text-4xl font-bold tracking-tight transition-colors duration-300 ${theme === 'dark' ? 'text-white' : 'text-[#1D1D1F]'}`}>主要项目经历</h2>
+          <h2 className={`text-3xl sm:text-4xl font-bold tracking-tight transition-colors duration-300 ${theme === 'dark' ? 'text-white' : 'text-[#1D1D1F]'}`}>项目实践</h2>
         </div>
 
         {MAIN_PROJECTS.map((proj) => (
@@ -115,7 +115,7 @@ export const Resume: React.FC<ResumeProps> = ({ theme }) => {
           <div className={`p-2.5 sm:p-3 rounded-xl sm:rounded-2xl border transition-all duration-700 ${theme === 'dark' ? 'bg-purple-900/30 text-purple-200 border-purple-400/30' : 'bg-purple-500/10 text-purple-500 border-purple-500/10'}`}>
             <Cpu size={24} className="sm:size-[28px]" />
           </div>
-          <h2 className={`text-3xl sm:text-4xl font-bold tracking-tight transition-colors duration-300 ${theme === 'dark' ? 'text-white' : 'text-[#1D1D1F]'}`}>个人项目经历</h2>
+          <h2 className={`text-3xl sm:text-4xl font-bold tracking-tight transition-colors duration-300 ${theme === 'dark' ? 'text-white' : 'text-[#1D1D1F]'}`}>AI 应用项目</h2>
         </div>
 
         <div className="grid md:grid-cols-2 gap-6 sm:gap-8">
@@ -179,7 +179,7 @@ export const Resume: React.FC<ResumeProps> = ({ theme }) => {
       </div>
 
       {/* 技能 */}
-      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
         {SKILLS.map((skillGroup) => (
           <motion.div
             key={skillGroup.category}
@@ -187,13 +187,13 @@ export const Resume: React.FC<ResumeProps> = ({ theme }) => {
             whileInView={{ opacity: 1, y: 0 }}
             whileHover={{ y: -5, scale: 1.02 }}
             viewport={{ once: true }}
-            className={`glass p-8 sm:p-10 rounded-[2rem] sm:rounded-[3rem] border-b-[6px] sm:border-b-[8px] shadow-xl transition-all duration-500 ${theme === 'dark' ? 'bg-[#0d1117]/70 border-white/10 border-b-blue-400/40' : 'bg-white/30 border-white/40 border-b-purple-500/10'}`}
+            className={`glass p-8 sm:p-10 rounded-[2rem] sm:rounded-[3rem] border-b-[6px] sm:border-b-[8px] shadow-xl transition-all duration-500 flex flex-col min-h-[420px] ${theme === 'dark' ? 'bg-[#0d1117]/70 border-white/10 border-b-blue-400/40' : 'bg-white/30 border-white/40 border-b-purple-500/10'}`}
           >
             <h3 className={`text-xs sm:text-[10px] font-black mb-4 sm:mb-6 flex items-center gap-3 uppercase tracking-[0.2em] sm:tracking-[0.3em] transition-colors duration-300 ${theme === 'dark' ? 'text-blue-300' : 'text-[#1D1D1F]/40'}`}>
               <Zap size={14} className={theme === 'dark' ? 'text-blue-400' : 'text-purple-500'} />
               {skillGroup.category}
             </h3>
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-2 mb-4">
               {skillGroup.items.map(skill => (
                 <span
                   key={skill}
@@ -203,6 +203,11 @@ export const Resume: React.FC<ResumeProps> = ({ theme }) => {
                 </span>
               ))}
             </div>
+            {skillGroup.summary && (
+              <p className={`text-xs leading-relaxed transition-colors duration-300 mt-auto ${theme === 'dark' ? 'text-gray-400' : 'text-[#1D1D1F]/60'}`}>
+                {skillGroup.summary}
+              </p>
+            )}
           </motion.div>
         ))}
       </div>

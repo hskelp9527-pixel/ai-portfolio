@@ -9,9 +9,9 @@ interface IdentitySectionProps {
 }
 
 export const IdentitySection: React.FC<IdentitySectionProps> = ({ theme }) => {
-  const p1 = "为提升效率，我在工作中广泛使用 AI 工具：ChatGPT/Gemini/豆包/千问/Grok等AI应用软件生成会议纪要与文档内容提升工作效率。";
-  const p2 = "业余时间使用 Nano Banana、即梦、豆包、千问等 AI 应用进行图像创作，利用Sora2、hailuo、Runway、Veo3.1、Vidu 等工具制作视频，并搭建了 AI 资讯日报跟踪收集 Bot 与个人 AI 知识库。";
-  const p3 = "熟练掌握 Coze 和 Claude Code 使用，产出智能体应用、Skill，并积极探索 Spec Coding AI 编程，致力于产出更高质有效的应用。我对 AI 前沿发展及行业应用充满热情。";
+  const p1 = "在日常工作中，我将 AI 引入会议记录、文档整理与信息归纳等环节，通过结构化提示与流程化使用，减少人工整理成本，将更多精力集中在问题分析与执行决策上。";
+  const p2 = '在个人实践中，我围绕"信息获取与内容生产效率"进行探索，搭建了用于 AI 资讯跟踪的自动化 Bot 以及个人 AI 知识库，用于持续整理行业信息与个人经验沉淀，同时进行图像与视频类 AIGC 创作实践。';
+  const p3 = "熟悉 Coze、Dify 与 Claude Code 等平台的使用方式，能够独立完成智能体与 Skill 的设计与落地，并通过 AI 编程方式快速验证想法，形成可实际使用的应用原型。";
 
   const cardBg = theme === 'dark' ? 'bg-[#0d1117]/50 border-white/10' : 'bg-white/30 border-white/40';
 
@@ -115,7 +115,7 @@ export const IdentitySection: React.FC<IdentitySectionProps> = ({ theme }) => {
           </div>
           
           <div className="mt-8 flex flex-wrap gap-2 sm:gap-3">
-            {['10亿级平台经验', 'AIGC 深度集成', 'Spec Coding 探索者'].map(tag => (
+            {['10 亿级信息化平台项目经验', 'AIGC 在实际工作流中的落地应用', 'AI 编程辅助的快速原型实践'].map(tag => (
               <span key={tag} className={`px-4 sm:px-6 py-2 sm:py-2.5 rounded-full text-xs sm:text-xs font-black uppercase tracking-[0.1em] transition-all duration-300 ${theme === 'dark' ? 'bg-blue-900/40 text-blue-100 border border-blue-400/30 hover:bg-blue-800/60' : 'bg-black/5 text-[#1D1D1F] hover:bg-black/10'}`}>
                 {tag}
               </span>
@@ -144,7 +144,7 @@ export const IdentitySection: React.FC<IdentitySectionProps> = ({ theme }) => {
               </h3>
             </div>
             <p className={`text-sm sm:text-base lg:text-lg leading-relaxed font-medium transition-colors duration-300 ${theme === 'dark' ? 'text-gray-100' : 'text-[#1D1D1F]/80'}`}>
-              个人爱好偏输入型：平常比较多的看电影、探索AI、听音乐、玩游戏、看文字性内容，看一些比赛，例如足球类的、电竞类的。比较喜欢聆听和沟通讨论，偶尔会晚上边听音乐边徒步思考。也很愿意探索新兴事物，个人成长上目前意识到更多的要根据现有AI知识形成复盘数据，后续会专注提升这个方面。
+              在个人成长方面，我更关注信息输入与复盘能力的提升，持续通过阅读、讨论与记录的方式，将零散经验整理为可复用的知识，为后续在 AI 与产品方向上的实践提供支撑。
             </p>
           </div>
         </div>

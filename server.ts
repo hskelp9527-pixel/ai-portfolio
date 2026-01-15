@@ -17,7 +17,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
-const PORT = 4000; // API 服务器端口（改到 4000 避免冲突）
+const PORT = process.env.PORT || 4001; // API 服务器端口（改到 4001 避免冲突）
 
 // 中间件
 app.use(cors());

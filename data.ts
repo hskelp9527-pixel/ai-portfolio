@@ -17,7 +17,7 @@ export const PERSONAL_INFO = {
   avatar: '/images/avatar/admin.jpg', 
   phone: '19068046220',
   email: 'rhydewy@163.com',
-  summary: '拥有 3–4 年信息化项目协调与交付经验，曾参与管理总项目规模约 10 亿元的信息化平台，直接负责数千万级子项目的进度、文档与缺陷闭环，保障项目合规运行、确保项目按照里程碑交付。',
+  summary: '具备 3–4 年信息化项目交付与协同经验，曾在 10 亿级信息化平台项目中承担关键子项目的执行与协调工作，负责数千万级模块的进度控制、文档规范与缺陷闭环管理，保障项目在合规约束下稳定推进，并按既定里程碑完成交付。',
   aiDescription: '为提升效率，我在工作中广泛使用 AI 工具：ChatGPT/Gemini/豆包/千问/Grok等AI应用软件生成会议纪要与文档内容提升工作效率；业余时间使用Midjourney 、Nano Bnana、即梦、豆包、千问等AI应用图像创作、hailuo、Runway、Pika 、Veo3.1、Vidu、千问等工具的视频制作，以及搭建AI资讯日报跟踪收集 Bot、个人知识库（AI类）。熟练掌握 Coze，Claude Code使用，产出智能体应用，目前也正在探索Spec Codding AI编程，可以做提质有效的Web端应用。积极关注AI前沿发展，热情探索AI相关应用，对AI行业发展具有热情。',
   education: [
     { school: '深圳大学', major: '计算机科学与技术 | 本科 (在读)', period: '2024.01 – 2027.07 (预计)' },
@@ -60,23 +60,35 @@ export const PERSONAL_PROJECTS = [
   {
     id: 'pp1',
     title: '基于 Coze 的智能客服 Agent',
-    description: '项目描述：针对传统客服回复效率低的问题，利用 Coze 平台搭建的自动化助手。\n核心动作：收集整理行业文档，清洗数据后导入飞书知识库；配置工作流（Workflow），让Bot能自动识别用户意图并调用知识库准确回答。',
+    description: '项目描述：针对传统客服依赖人工检索资料、回复效率低的问题，设计并实现了一套基于 Coze 的智能客服 Agent，用于自动识别用户问题并从知识库中返回结构化答案。\n核心动作：收集整理行业文档，清洗数据后导入飞书知识库；配置工作流（Workflow），让Bot能自动识别用户意图并调用知识库准确回答。',
     tags: ['Coze', '知识库', 'Workflow', '智能客服']
   },
   {
     id: 'pp2',
-    title: '个人数字化简历网站',
-    description: '利用 Spec Coding AI 编写代码，独立完成个人简历网站的开发与部署。网站集成个人作品集（AI生成的视频/图像）及智能对话入口，展现了快速学习技术并落地的能力。',
-    tags: ['Spec Coding', 'AI编程', 'React', 'Vercel', '个人网站']
+    title: 'TimeReminder',
+    description: '是什么：针对传统待办工具需要用户频繁查看、容易错过执行时机的问题，设计并实现了一款 Windows 桌面任务提醒工具 TimeReminder。产品以"设好就不管"为核心理念，用户只需输入截止时间与预计耗时，系统即可自动推导"应开始时间"，并在关键节点通过系统级通知进行强提醒，减少用户的认知负担。\n核心设计与实现：\n            1、基于「截止时间 − 预计耗时」的时间推导逻辑，自动计算提醒时机\n            2、采用 Windows Toast 通知，实现必须确认的强提醒机制\n            3、托盘常驻与开机自启设计，保证提醒不被遗漏\n            4、本地 SQLite 存储，免配置、免服务端，支持数据导入导出\n            5、打包为单文件 exe，双击即用，降低使用与分发成本',
+    tags: ['Python', 'PyQt5', '任务管理', 'Windows桌面应用']
   },
   {
     id: 'pp3',
+    title: '基于 Dify 的个人知识库问答系统（RAG）',
+    description: '是什么：为解决个人项目资料分散、难以快速检索与复述的问题，基于 Dify 平台构建了一套个人知识库问答系统。系统通过知识检索增强生成（RAG）机制，将个人项目文档、产品总结等资料转化为可对话的智能知识库，实现对个人经历与项目的自然语言问答。\n核心实现：\n            1、构建混合检索知识库（向量检索 + 关键词检索），提升召回准确率\n            2、基于 Chatflow 设计「用户输入 → 知识检索 → LLM → 回复」的问答流程\n            3、通过 Prompt 约束，强制模型仅基于知识库内容回答，避免幻觉\n            4、对项目类问题采用结构化输出（背景 → 方案 → 价值）',
+    tags: ['RAG', 'Dify', '知识库', 'LLM', '向量检索']
+  },
+  {
+    id: 'pp4',
+    title: '个人数字化简历网站',
+    description: '是什么：基于 React + TypeScript 的 AIGC 个人履历展示网站，集成作品集展示与 RAG 智能问答功能，使用 AI 编程辅助快速开发完成。\n核心设计与实现：\n            1、前端使用 React 19.2.3 + Vite + Framer Motion，实现流畅动画与响应式设计\n            2、媒体文件托管腾讯云 COS，支持懒加载优化（22张图片 + 4个视频）\n            3、集成 RAG 智能问答系统，基于向量检索实现简历内容的自然语言交互\n            4、Express API 服务器 + Vercel 部署，实现前后端分离架构',
+    tags: ['React', 'TypeScript', 'RAG', 'Vercel', 'AI编程']
+  },
+  {
+    id: 'pp5',
     title: '桌面清理工具',
     description: '是什么：Vibe Coding 开发 Windows 桌面文件管理应用，使用 Python + tkinter 开发，打包成单个 exe 文件。\n核心功能：\n            1、扫描桌面所有文件，按类型自动分组（图片、文档、视频、音频等）\n            2、文件夹可递归展开（最多3层），快捷方式(.lnk)可展开目标内容\n            3、右侧复选框多选，支持批量转移/删除/重命名\n            4、双击文件在资源管理器中打开，右键重命名\n界面特点：深色标题栏，扁平设计，左侧三角形展开，显示文件名、时间、大小三列。\n适用场景：桌面太乱时快速查看并批量清理文件。',
     tags: ['Python', 'tkinter', '桌面应用', '文件管理']
   },
   {
-    id: 'pp4',
+    id: 'pp6',
     title: 'AI Skill 自动化书评创作工具',
     description: '是什么：深度整合大语言模型与 Seedream 4.5 MCP 图像生成能力的全流程自动化书评创作工具。\n核心功能：\n            1、书籍背景自动检索与信息提取\n            2、精华观点智能提炼与结构化输出\n            3、AI 自动配图，视觉化呈现书评内容\n            4、多格式一键导出（Markdown、PDF、图片等）\n技术特点：集成 LLM 与 MCP 协议，实现"秒级生成"高质量书评。\n适用场景：内容创作者快速产出专业书评，将创作周期从"数小时"缩短至"秒级"。',
     tags: ['LLM', 'MCP', '内容创作', '自动化', '效率工具']
@@ -84,9 +96,21 @@ export const PERSONAL_PROJECTS = [
 ];
 
 export const SKILLS: Skill[] = [
-  { category: 'AI 工具栈 (办公与提效)', items: ['ChatGPT', 'Gemini', '豆包', '千问', 'Grok', 'Coze', 'Claude Code', 'AI资讯日报Bot'] },
-  { category: 'AI 工具栈 (创作与编程)', items: ['Midjourney', 'Nano Banana', '即梦', 'Runway', 'Pika', 'Veo 3.1', 'Vidu', 'Spec Coding AI'] },
-  { category: '专业交付技能', items: ['信息化项目管理', 'G端交付验收', '需求调研', '技术方案PPT', '全周期文档管控', '跨组织协同'] }
+  {
+    category: '⚡ AI 工具能力 · 内容生成与原型实现',
+    items: ['多模型对比与结果校验（ChatGPT / Gemini / 千问）', 'Prompt 设计与输出约束', '文档生成与结构化重写', '会议纪要与信息提炼自动化', 'AI 资讯跟踪与日报 Bot 构建', '基于 Coze 的轻量 Agent 实践', 'AI 编程辅助（Claude Code）'],
+    summary: '我擅长将 AI 工具组合成可复用的工作流，用于信息处理、内容生成和产品原型验证。'
+  },
+  {
+    category: '⚡ 产品与交付能力（AI 项目背景）',
+    items: ['信息化项目协同与交付推进', '多角色沟通与需求拆解', '技术方案梳理与表达（PPT / 文档）', '复杂项目的流程与风险管理', '跨团队协作与资源协调'],
+    summary: '我具备在多方干系人与复杂流程中推进项目落地的能力，能平衡需求与技术实现。'
+  },
+  {
+    category: '⚡ 常用 AI 模型与创作工具',
+    items: ['大语言模型（ChatGPT / Claude / Gemini / 千问 / 豆包）', '图像生成（Nano Banana / 即梦 / Midjourney）', '视频生成（Runway / Vidu / Veo3.1 / hailuo / Sora2）'],
+    summary: '熟悉多类 AI 工具的特性与适用场景，能根据任务需求选择合适的模型与工具组合。'
+  }
 ];
 
 export const IMAGES: ProjectImage[] = [

@@ -13,6 +13,7 @@ export interface Experience {
 export interface Skill {
   category: string;
   items: string[];
+  summary?: string; // 新增：技能总结句
 }
 
 export interface ProjectImage {

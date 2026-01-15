@@ -193,6 +193,49 @@ Add new video: 星际救援 (Interstellar Rescue)
 
 ---
 
+## 2026-01-15 - 启动时模块加载错误修复
+
+### 问题描述
+启动项目后浏览器显示模块加载错误：
+```
+css2:1 Failed to load resource: the server responded with a status of 400 ()
+Failed to load module script: Expected a JavaScript module script but the server responded with a MIME type of "text/html"
+```
+
+### 根本原因
+1. **双服务器架构**：项目需要同时运行 Vite 前端服务器和 Express API 服务器
+2. **启动命令不完整**：`npm run dev` 只启动了 API 服务器
+3. **端口冲突**：默认端口 4000 被占用
+
+### 解决方案
+1. 修改 `server.ts`：端口改为 `process.env.PORT || 4001`
+2. 修改 `vite.config.ts`：代理 target 改为 `http://localhost:4001`
+3. 同时启动两个服务器：
+   - `npm run dev:api` (API 服务器，端口 4001)
+   - `npm run dev:vite` (Vite 前端服务器，端口 3001/3002)
+
+### 技术要点
+- **Vite 服务器**：负责 ES 模块转换、热更新、静态资源（必需）
+- **Express 服务器**：提供 `/api` 路由（必需）
+- **代理配置**：Vite 将 `/api` 请求代理到 Express
+- 两者缺一不可
+
+### 快速诊断
+```bash
+# 检查端口占用
+netstat -ano | findstr :4000
+
+# 同时启动两个服务器
+npm run dev:api  # 终端1
+npm run dev:vite  # 终端2
+```
+
+### 文件变更
+- **修改**: `server.ts` (端口配置)
+- **修改**: `vite.config.ts` (代理配置)
+
+---
+
 ## 2025-01-03 - 个人项目内容更新与显示优化
 
 ### 需求
