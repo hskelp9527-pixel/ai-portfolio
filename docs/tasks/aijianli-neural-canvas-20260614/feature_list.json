@@ -1,0 +1,468 @@
+[
+  {
+    "id": "N001",
+    "phase": "0",
+    "feature": "备份当前前端 7 个关键文件到 _trash/pre-neural-canvas-backup-20260614/",
+    "files": [
+      "_trash/pre-neural-canvas-backup-20260614/App.tsx",
+      "_trash/pre-neural-canvas-backup-20260614/data.ts",
+      "_trash/pre-neural-canvas-backup-20260614/index.html",
+      "_trash/pre-neural-canvas-backup-20260614/index.tsx",
+      "_trash/pre-neural-canvas-backup-20260614/tailwind.config.ts",
+      "_trash/pre-neural-canvas-backup-20260614/components/Hero.tsx",
+      "_trash/pre-neural-canvas-backup-20260614/components/AIChatDrawer.tsx"
+    ],
+    "user_steps": [
+      "ls _trash/pre-neural-canvas-backup-20260614/"
+    ],
+    "acceptance": [
+      "7 个文件全部存在且内容与源文件一致",
+      "源文件未被删除（备份是复制不是移动）"
+    ],
+    "passes": false,
+    "evidence": [],
+    "notes": "硬约束：备份完成前不得修改任何前端文件"
+  },
+  {
+    "id": "N002",
+    "phase": "1",
+    "feature": "安装新依赖 three / @react-three/fiber / d3-force / react-force-graph",
+    "files": ["package.json", "package-lock.json"],
+    "user_steps": [
+      "npm install three @react-three/fiber d3-force react-force-graph @types/three",
+      "检查 package.json dependencies 字段"
+    ],
+    "acceptance": [
+      "package.json 含 four packages",
+      "npm install 无报错",
+      "vite build 仍通过"
+    ],
+    "passes": false,
+    "evidence": [],
+    "notes": "three 单独引入，@react-three/fiber 用于 React 集成"
+  },
+  {
+    "id": "N003",
+    "phase": "1",
+    "feature": "tailwind.config.ts 加 OKLCH 色板 + 字体 stack + 自定义动画曲线",
+    "files": ["tailwind.config.ts", "src/index.css"],
+    "user_steps": [
+      "查看 tailwind.config.ts theme.extend.colors",
+      "grep oklch src/index.css"
+    ],
+    "acceptance": [
+      "colors 含 ink/canvas/glass-foreground/signature-teal/warm-amber 等 token",
+      "fontFamily.sans 含 AlibabaPuHuiTi, Geist, sans-serif",
+      "fontFamily.mono 含 JetBrains Mono"
+    ],
+    "passes": false,
+    "evidence": [],
+    "notes": "色板按 PRD §1.2 设计语言：墨蓝黑底 + 矿物青 + 暖琥珀"
+  },
+  {
+    "id": "N004",
+    "phase": "1",
+    "feature": "index.html 改字体引用为阿里巴巴普惠体 + Geist + JetBrains Mono",
+    "files": ["index.html"],
+    "user_steps": [
+      "查看 index.html head",
+      "浏览器访问首页查看网络面板字体加载"
+    ],
+    "acceptance": [
+      "Google Fonts link 改为普惠体 CDN 或本地字体",
+      "Geist 通过 vercel/font 或 CDN 引入",
+      "JetBrains Mono 通过 Google Fonts 引入",
+      "所有字体用 font-display: swap"
+    ],
+    "passes": false,
+    "evidence": [],
+    "notes": "普惠体用阿里官方 CDN：https://fonts.alibabausercontent.com/"
+  },
+  {
+    "id": "N005",
+    "phase": "1",
+    "feature": "新建 three/ParticleField.ts 深空粒子背景",
+    "files": ["three/ParticleField.ts", "components/NeuralCanvas.tsx"],
+    "user_steps": [
+      "npm run dev:vite 启动",
+      "浏览器访问首页",
+      "截图保存粒子背景"
+    ],
+    "acceptance": [
+      "页面背景显示慢速漂浮粒子",
+      "鼠标移动粒子有微弱响应",
+      "浏览器 console 无 three 报错",
+      "首屏 LCP < 3s"
+    ],
+    "passes": false,
+    "evidence": [],
+    "notes": "粒子数量限制 200-300 个，避免低端机卡顿"
+  },
+  {
+    "id": "N006",
+    "phase": "2",
+    "feature": "重构 data.ts：加 importance 字段 + 删除 pp4 + 调整 PERSONAL_PROJECTS 顺序 + 新增 GraphNode 类型",
+    "files": ["data.ts", "types.ts"],
+    "user_steps": [
+      "查看 data.ts PERSONAL_PROJECTS 顺序",
+      "grep importance data.ts",
+      "确认 pp4 已删除"
+    ],
+    "acceptance": [
+      "顺序为 pp8→pp7→pp3→pp1→pp6→pp2→pp5（按 importance 倒序）",
+      "pp4（个人数字化简历网站）已删除",
+      "每个项目含 importance: number 字段",
+      "types.ts 含 GraphNode 接口"
+    ],
+    "passes": false,
+    "evidence": [],
+    "notes": "pp4 循环引用简历本身，图谱会显示元节点造成体验断裂"
+  },
+  {
+    "id": "N007",
+    "phase": "2",
+    "feature": "新建 NeuralCanvas.tsx + NodeCluster.tsx 节点图谱",
+    "files": ["components/NeuralCanvas.tsx", "components/NodeCluster.tsx", "App.tsx"],
+    "user_steps": [
+      "npm run dev:vite 启动",
+      "浏览器访问首页",
+      "查看节点图谱"
+    ],
+    "acceptance": [
+      "首屏显示中心节点'任泓雨' + 4 簇（项目/技能/哲学/时间线）",
+      "节点尺寸按 importance 分级",
+      "d3-force 计算节点位置，连线呼吸",
+      "App.tsx 不再渲染 Hero/Resume/Gallery/Theater 五段式"
+    ],
+    "passes": false,
+    "evidence": [],
+    "notes": "节点用 DOM 渲染（不用 three），three 只做粒子背景"
+  },
+  {
+    "id": "N008",
+    "phase": "2",
+    "feature": "新建 GlassCard.tsx hover 节点显示玻璃卡预览",
+    "files": ["components/GlassCard.tsx", "components/NodeCluster.tsx"],
+    "user_steps": [
+      "npm run dev:vite 启动",
+      "鼠标悬停任意节点"
+    ],
+    "acceptance": [
+      "节点 hover 时光晕扩大",
+      "周围节点透明度降到 0.4",
+      "玻璃卡 backdrop-blur(30px) 显示节点摘要",
+      "鼠标移开后玻璃卡淡出"
+    ],
+    "passes": false,
+    "evidence": [],
+    "notes": "玻璃卡内容：标题 + 1-2 句摘要 + 关键标签"
+  },
+  {
+    "id": "N009",
+    "phase": "2",
+    "feature": "点击节点 zoom-in 进入详情",
+    "files": ["components/NeuralCanvas.tsx", "components/GlassCard.tsx", "hooks/useNodeGraph.ts"],
+    "user_steps": [
+      "点击任意节点"
+    ],
+    "acceptance": [
+      "相机平滑推近（600ms cubic-bezier(0.16, 1, 0.3, 1)）",
+      "目标节点放大到屏幕 60%",
+      "玻璃卡从节点位置 grow 出详情面板（不是淡入）",
+      "ESC 键退出 zoom-in 状态"
+    ],
+    "passes": false,
+    "evidence": [],
+    "notes": "详情面板含项目完整描述 + 标签 + 链接（如有）"
+  },
+  {
+    "id": "N010",
+    "phase": "2",
+    "feature": "删除 Hero.tsx + 修复 #about 锚点",
+    "files": ["components/Hero.tsx", "components/FloatingNavigation.tsx"],
+    "user_steps": [
+      "ls components/Hero.tsx（应不存在）",
+      "点击 FloatingNavigation 的 about 链接"
+    ],
+    "acceptance": [
+      "components/Hero.tsx 已删除",
+      "#about 锚点指向 NeuralCanvas 中心节点",
+      "FloatingNavigation 不报错"
+    ],
+    "passes": false,
+    "evidence": [],
+    "notes": "Hero 已备份到 _trash/pre-neural-canvas-backup-20260614/"
+  },
+  {
+    "id": "N011",
+    "phase": "3",
+    "feature": "新建 AIGuideBubble.tsx 右下角悬浮 AI 导览",
+    "files": ["components/AIGuideBubble.tsx", "hooks/useAIGuide.ts"],
+    "user_steps": [
+      "npm run dev:vite 启动",
+      "首屏加载完成后观察右下角",
+      "hover 同一节点 3 秒"
+    ],
+    "acceptance": [
+      "AI 气泡首次访问主动浮出'想了解我的哪一面？'",
+      "hover 同一节点 3 秒后气泡浮出推荐问题",
+      "单次会话最多主动搭话 2 次",
+      "用户 dismiss 后该会话不再触发"
+    ],
+    "passes": false,
+    "evidence": [],
+    "notes": "推荐问题根据 hover 的节点类型动态生成"
+  },
+  {
+    "id": "N012",
+    "phase": "3",
+    "feature": "重写 AIChatDrawer → AIConversationPanel.tsx（dock 形态常驻）",
+    "files": ["components/AIConversationPanel.tsx", "components/AIChatDrawer.tsx", "App.tsx"],
+    "user_steps": [
+      "浏览器访问首页",
+      "查看右侧 dock"
+    ],
+    "acceptance": [
+      "AIConversationPanel 默认 dock 在右侧 280px 窄条不收起",
+      "首条消息不再是通稿'你好我是 AI 助手'，改为有上下文的引导",
+      "支持展开为 450px 全功能对话",
+      "旧的 AIChatDrawer.tsx 删除或保留为备份"
+    ],
+    "passes": false,
+    "evidence": [],
+    "notes": "保留 chatService.ts 后端调用逻辑不变"
+  },
+  {
+    "id": "N013",
+    "phase": "3",
+    "feature": "访客类型自适应逻辑（useVisitorType hook）",
+    "files": ["hooks/useVisitorType.ts", "components/AIGuideBubble.tsx"],
+    "user_steps": [
+      "首次访问页面",
+      "1 秒内做不同动作（滚动 / hover / 点对话框）"
+    ],
+    "acceptance": [
+      "滚动 → 判定 HR 型，AI 推荐 30 秒精华导览",
+      "hover 节点 → 判定同行型，AI 推荐技术深度路径",
+      "点对话框 → 判定对话型，AI 进入主动问答",
+      "类型确定后 5 秒内不重新判定"
+    ],
+    "passes": false,
+    "evidence": [],
+    "notes": "判定逻辑：访客首个动作 + 停留时长"
+  },
+  {
+    "id": "N014",
+    "phase": "3",
+    "feature": "AI 流式输出 + 思考状态可视化",
+    "files": ["components/AIConversationPanel.tsx", "utils/chatService.ts"],
+    "user_steps": [
+      "在 AIConversationPanel 发送一条消息",
+      "观察回复过程"
+    ],
+    "acceptance": [
+      "AI 回复按 token 流式渲染（20ms/字符）",
+      "等待回复时显示'思考中'动画（脉冲点 + JetBrains Mono 文字）",
+      "回复完成后停止动画",
+      "无回复内容时不显示空消息"
+    ],
+    "passes": false,
+    "evidence": [],
+    "notes": "如果 chatService 当前不支持流式，先做 UI 层模拟流式（接收完整回复后逐字渲染）"
+  },
+  {
+    "id": "N015",
+    "phase": "4",
+    "feature": "暗色主题切换适配 Neural Canvas",
+    "files": ["App.tsx", "components/NeuralCanvas.tsx", "tailwind.config.ts"],
+    "user_steps": [
+      "点击右上角主题切换按钮"
+    ],
+    "acceptance": [
+      "画布 + 节点 + 玻璃卡平滑过渡到暗色（300ms cubic-bezier(0.4, 0, 0.2, 1)）",
+      "粒子背景在暗色下亮度提升",
+      "字体颜色对比度 WCAG AA 通过"
+    ],
+    "passes": false,
+    "evidence": [],
+    "notes": "darkMode: 'class' 已配置，需在所有自定义组件加 dark: 变体"
+  },
+  {
+    "id": "N016",
+    "phase": "4",
+    "feature": "PDF 导出兼容（节点图谱降级为静态列表）",
+    "files": ["utils/exportPDF.ts", "components/NeuralCanvas.tsx"],
+    "user_steps": [
+      "点击导出 PDF 按钮"
+    ],
+    "acceptance": [
+      "导出触发时 NeuralCanvas 切换为静态列表视图",
+      "PDF 内容是个人信息 + 项目列表 + 技能 + 经历",
+      "导出完成后自动切回图谱",
+      "three canvas 不参与 html2canvas（已知不兼容）"
+    ],
+    "passes": false,
+    "evidence": [],
+    "notes": "PDF 内容要专业可读，不能是图谱截图"
+  },
+  {
+    "id": "N017",
+    "phase": "4",
+    "feature": "移动端 375px 响应（节点图谱降级为纵向时间线）",
+    "files": ["components/NeuralCanvas.tsx", "components/MobileTimeline.tsx"],
+    "user_steps": [
+      "Chrome DevTools 切到 iPhone 12 (375px)",
+      "刷新页面"
+    ],
+    "acceptance": [
+      "不加载 three.js（性能保护）",
+      "节点图谱降级为纵向时间线",
+      "AIConversationPanel 改为底部抽屉",
+      "首屏 LCP < 2s"
+    ],
+    "passes": false,
+    "evidence": [],
+    "notes": "Media query 断点：768px 以下触发移动端模式"
+  },
+  {
+    "id": "N018",
+    "phase": "4",
+    "feature": "性能优化 + 更新 AGENTS.md",
+    "files": ["components/NeuralCanvas.tsx", "AGENTS.md"],
+    "user_steps": [
+      "Lighthouse 跑分",
+      "查看 AGENTS.md 已知问题列表"
+    ],
+    "acceptance": [
+      "粒子数量动态调整（低端机减少）",
+      "帧率监控，<30fps 自动降级到静态节点",
+      "three.js 用 import() 动态加载",
+      "AGENTS.md 已知问题列表更新（移除已修的 1-4，加新依赖说明）",
+      "AGENTS.md 加新组件架构说明"
+    ],
+    "passes": false,
+    "evidence": [],
+    "notes": "Lighthouse 性能分目标：>70（桌面）"
+  },
+  {
+    "id": "F005",
+    "phase": "5",
+    "feature": "统一 GLM 模型版本为 glm-4.5-air（继承自 bug-fix 开发包）",
+    "files": ["api/chat.ts", "types.ts"],
+    "user_steps": [
+      "grep -r 'glm-4' --include='*.ts' --include='*.tsx' E:/claudecode/AIJianLi/"
+    ],
+    "acceptance": [
+      "只出现 glm-4.5-air",
+      "不出现 glm-4.7 或 glm-4.5（不带 -air）"
+    ],
+    "passes": false,
+    "evidence": [],
+    "notes": "types.ts 中模型联合类型收窄为 'glm-4.5-air'"
+  },
+  {
+    "id": "F006",
+    "phase": "5",
+    "feature": "修复 useLazyLoad 类型断言绕过接口（继承自 bug-fix 开发包）",
+    "files": ["hooks/useLazyLoad.ts"],
+    "user_steps": [
+      "npx tsc --noEmit"
+    ],
+    "acceptance": [
+      "UseLazyLoadReturn 接口含 markAsLoaded 和 markAsError",
+      "line 110 无 as 断言",
+      "tsc 不报类型错误"
+    ],
+    "passes": false,
+    "evidence": [],
+    "notes": "继承自 docs/tasks/aijianli-bug-fix-20260614/feature_list.json F006"
+  },
+  {
+    "id": "F007",
+    "phase": "5",
+    "feature": "删除重复的测试 setup 文件（继承自 bug-fix 开发包）",
+    "files": ["src/test-setup.ts", "vitest.config.ts"],
+    "user_steps": [
+      "npm test"
+    ],
+    "acceptance": [
+      "src/test-setup.ts 不存在",
+      "vitest.config.ts setupFiles 数组只有一项 './vitest.setup.ts'",
+      "测试全部通过"
+    ],
+    "passes": false,
+    "evidence": [],
+    "notes": "继承自 docs/tasks/aijianli-bug-fix-20260614/feature_list.json F007"
+  },
+  {
+    "id": "F008",
+    "phase": "5",
+    "feature": "email 从 data.ts 引入到 App.tsx（继承自 bug-fix 开发包）",
+    "files": ["App.tsx"],
+    "user_steps": [
+      "grep 'rhydewy@163.com' --include='*.tsx' --include='*.ts'"
+    ],
+    "acceptance": [
+      "App.tsx 不再硬编码 email",
+      "email 来源是 PERSONAL_INFO.email"
+    ],
+    "passes": false,
+    "evidence": [],
+    "notes": "继承自 docs/tasks/aijianli-bug-fix-20260614/feature_list.json F008"
+  },
+  {
+    "id": "F009",
+    "phase": "5",
+    "feature": "简化 api/chat.ts 错误日志（继承自 bug-fix 开发包）",
+    "files": ["api/chat.ts"],
+    "user_steps": [
+      "阅读 api/chat.ts catch 块"
+    ],
+    "acceptance": [
+      "不打印 error.stack",
+      "不打印 error.response.data",
+      "保留 error.message 和 error.response?.status"
+    ],
+    "passes": false,
+    "evidence": [],
+    "notes": "继承自 docs/tasks/aijianli-bug-fix-20260614/feature_list.json F009"
+  },
+  {
+    "id": "F010",
+    "phase": "5",
+    "feature": "image.csv / video.csv 加用途注释（继承自 bug-fix 开发包）",
+    "files": ["image.csv", "video.csv"],
+    "user_steps": [
+      "head -3 image.csv",
+      "head -3 video.csv"
+    ],
+    "acceptance": [
+      "文件头有注释说明用途",
+      "注释说明不参与运行时"
+    ],
+    "passes": false,
+    "evidence": [],
+    "notes": "CSV 不支持 # 注释，用文件首行的伪注释列或 README"
+  },
+  {
+    "id": "F011",
+    "phase": "5",
+    "feature": "批量替换外脑 4 个文件的 macOS 路径（继承自 bug-fix 开发包）",
+    "files": [
+      "E:/claudecode/human_rhy_soul/AGENTS.md",
+      "E:/claudecode/human_rhy_soul/System/working-memory/OPERATING_RULES.md",
+      "E:/claudecode/human_rhy_soul/System/session_hooks/auto_sync.sh",
+      "E:/claudecode/human_rhy_soul/Resources/方法论/新电脑AI协作开发环境启动方案.md"
+    ],
+    "user_steps": [
+      "grep -r '/Users/jimm' E:/claudecode/human_rhy_soul/"
+    ],
+    "acceptance": [
+      "grep 输出为空",
+      "4 个文件路径都是 E:/claudecode/human_rhy_soul/"
+    ],
+    "passes": false,
+    "evidence": [],
+    "notes": "外脑是独立 git repo，只本地改不 push"
+  }
+]
