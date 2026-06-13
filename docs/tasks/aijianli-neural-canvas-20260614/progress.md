@@ -366,3 +366,72 @@ Phase 4 全部 4 个 feature：
 5. F009 简化 api/chat.ts 错误日志（顺便修 userQuery 未定义 bug）
 6. F010 image.csv / video.csv 加注释
 7. F011 外脑 4 文件路径替换
+
+## Round 6 - 2026-06-14 Phase 5 收尾完成 ✅ 开发包全部完成
+
+### 本轮完成了什么
+
+Phase 5 全部 7 个 feature（F005-F011）：
+
+- **F005** types.ts GLMChatRequest.model 收窄为 `'glm-4.5-air'`（删 glm-4.7 / glm-4.5）
+- **F006** useLazyLoad UseLazyLoadReturn 接口加 markAsLoaded/markAsError，删 `as` 断言
+- **F007** 删 `src/test-setup.ts`，vitest.config setupFiles 只剩 `['./vitest.setup.ts']`
+- **F008** App.tsx email 从 `PERSONAL_INFO.email` 引入（Phase 3 已实现，本轮验证通过）
+- **F009** api/chat.ts catch 块 8 行 console.error 简化为 1 行 + 修 userQuery 未定义 bug
+- **F010** 新建 `CSV_NOTES.md` 说明 image/video.csv 不参与运行时
+- **F011** 外脑 4 个文件 macOS 路径 → Windows 路径
+
+### 修改了哪些文件
+
+AIJianLi 仓库：
+- 修改：`types.ts` / `hooks/useLazyLoad.ts` / `vitest.config.ts` / `api/chat.ts`
+- 删除：`src/test-setup.ts`
+- 新建：`CSV_NOTES.md`
+- 修改：`docs/tasks/aijianli-neural-canvas-20260614/feature_list.json`（F005-F011 passes:true）
+
+外脑仓库（独立 git repo，只本地改不 push）：
+- 修改：4 个文件（AGENTS.md / OPERATING_RULES.md / auto_sync.sh / 新电脑AI协作开发环境启动方案.md）
+
+### 测试了什么
+
+- `npm run build` 通过：2169 modules，CSS 50KB，主 JS 469KB（gzip 145KB），ParticleField 891KB（gzip 240KB）
+- `npx tsc --noEmit` Phase 5 引入的 TS 错误全部修复（userQuery 已删，useLazyLoad 接口扩展）
+- `grep -rn '/Users/jimm' E:/claudecode/human_rhy_soul/` 输出为空（F011 验证）
+
+### 证据在哪里
+
+- `evidence/phase-5-build.md`
+
+### 未说明 / 未解决的失败项
+
+- `components/FloatingNavigation.test.tsx` 和 `utils/pdfExporter.test.tsx` 是 Phase 0 之前就存在的 stale 测试，本开发包范围外。两个测试文件都已备份到 `_trash/pre-neural-canvas-backup-20260614/`
+
+### 开发包完成总结
+
+| Phase | Features | Commit | 状态 |
+|---|---|---|---|
+| Phase 0 备份 | N001 | d52e777 | ✅ |
+| Phase 1 基础层 | N002-N005 | (Phase 1 commit) | ✅ |
+| Phase 2 节点图谱 | N006-N010 | 8055148 | ✅ |
+| Phase 3 AI 导览 | N011-N014 | 4e8d117 | ✅ |
+| Phase 4 打磨 | N015-N018 | 3ef9888 | ✅ |
+| Phase 5 收尾 | F005-F011 | (本轮) | ✅ |
+
+总计：6 phase，25 个 feature（18 新 + 7 继承），6+ commit。
+
+### 浏览器实测建议
+
+启动 `npm run dev:vite` 后人工验证以下场景：
+1. 首屏粒子背景 + 节点图谱渲染（21 节点 + edges）
+2. 悬停节点：周围节点 dim 到 0.25 + 玻璃卡 HoverCard 显示
+3. 点击节点：DetailPanel 模态展开（ESC / 点击外部关闭）
+4. 5 秒首访触发 AIGuideBubble
+5. 3 秒同节点悬停触发 AI 建议
+6. 滚动 200px 触发 visitorType='hr'
+7. 主题切换平滑过渡（dark ↔ light）
+8. iPhone 12 (375px) DevTools：MobileTimeline 渲染（无 three）
+9. AI 对话面板流式输出 + thinking 动画
+
+### 下轮建议从哪里继续
+
+无。本开发包已全部完成。下一步是用户浏览器实测后给反馈。

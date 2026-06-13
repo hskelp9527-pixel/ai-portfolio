@@ -267,14 +267,7 @@ export default async function handler(req: any, res: any) {
     throw new Error('API 返回数据格式错误');
 
   } catch (error: any) {
-    console.error('========== API 错误详情 ==========');
-    console.error('错误消息:', error.message);
-    console.error('错误堆栈:', error.stack);
-    console.error('用户提问:', userQuery);
-    console.error('错误代码:', error.code);
-    console.error('响应状态:', error.response?.status);
-    console.error('响应数据:', error.response?.data);
-    console.error('====================================');
+    console.error('API chat error:', error.message, 'status:', error.response?.status);
 
     let errorMessage = '请求失败，请重试';
     let statusCode = 500;

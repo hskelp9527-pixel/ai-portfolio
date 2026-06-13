@@ -116,7 +116,7 @@ export interface ChatMessage {
 }
 
 export interface GLMChatRequest {
-  model: 'glm-4.7' | 'glm-4.5' | 'glm-4.5-air';
+  model: 'glm-4.5-air';
   messages: Array<{
     role: 'user' | 'assistant' | 'system';
     content: string;

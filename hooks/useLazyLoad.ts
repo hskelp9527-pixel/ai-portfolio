@@ -13,6 +13,8 @@ interface UseLazyLoadReturn {
   isLoaded: boolean;
   hasError: boolean;
   retry: () => void;
+  markAsLoaded: () => void;
+  markAsError: () => void;
 }
 
 /**
@@ -104,12 +106,8 @@ export const useLazyLoad = (options: UseLazyLoadOptions = {}): UseLazyLoadReturn
     isLoaded,
     hasError,
     retry,
-    // 提供给外部使用的标记函数
     markAsLoaded,
-    markAsError
-  } as UseLazyLoadReturn & {
-    markAsLoaded: () => void;
-    markAsError: () => void;
+    markAsError,
   };
 };
 

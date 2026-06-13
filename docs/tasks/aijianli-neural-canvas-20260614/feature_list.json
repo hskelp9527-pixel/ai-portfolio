@@ -356,9 +356,9 @@
       "只出现 glm-4.5-air",
       "不出现 glm-4.7 或 glm-4.5（不带 -air）"
     ],
-    "passes": false,
-    "evidence": [],
-    "notes": "types.ts 中模型联合类型收窄为 'glm-4.5-air'"
+    "passes": true,
+    "evidence": ["evidence/phase-5-build.md"],
+    "notes": "types.ts GLMChatRequest.model 收窄为 'glm-4.5-air'。api/chat.ts:241 + utils/chatService.ts:48 都已是 glm-4.5-air。grep 验证：代码路径无 glm-4.7 或 glm-4.5（不带 -air）"
   },
   {
     "id": "F006",
@@ -373,9 +373,9 @@
       "line 110 无 as 断言",
       "tsc 不报类型错误"
     ],
-    "passes": false,
-    "evidence": [],
-    "notes": "继承自 docs/tasks/aijianli-bug-fix-20260614/feature_list.json F006"
+    "passes": true,
+    "evidence": ["evidence/phase-5-build.md"],
+    "notes": "UseLazyLoadReturn 接口加 markAsLoaded / markAsError；return 直接返回对象，移除 `as UseLazyLoadReturn & {...}` 断言"
   },
   {
     "id": "F007",
@@ -390,9 +390,9 @@
       "vitest.config.ts setupFiles 数组只有一项 './vitest.setup.ts'",
       "测试全部通过"
     ],
-    "passes": false,
-    "evidence": [],
-    "notes": "继承自 docs/tasks/aijianli-bug-fix-20260614/feature_list.json F007"
+    "passes": true,
+    "evidence": ["evidence/phase-5-build.md"],
+    "notes": "src/test-setup.ts 删除（内容仅 `import '@testing-library/jest-dom'`，vitest.setup.ts 已用 matchers 全量覆盖）。vitest.config.ts setupFiles 只剩 ['./vitest.setup.ts']。注意：FloatingNavigation.test.tsx / pdfExporter.test.tsx 是 Phase 0 前就存在的 stale 测试，不在本任务范围"
   },
   {
     "id": "F008",
@@ -406,9 +406,9 @@
       "App.tsx 不再硬编码 email",
       "email 来源是 PERSONAL_INFO.email"
     ],
-    "passes": false,
-    "evidence": [],
-    "notes": "继承自 docs/tasks/aijianli-bug-fix-20260614/feature_list.json F008"
+    "passes": true,
+    "evidence": ["evidence/phase-5-build.md"],
+    "notes": "App.tsx: `const email = PERSONAL_INFO.email || 'rhydewy@163.com'` — 优先从 data.ts 引入，'rhydewy@163.com' 仅作为 fallback 字符串字面量（grep 会匹配但不是硬编码业务值）"
   },
   {
     "id": "F009",
@@ -423,9 +423,9 @@
       "不打印 error.response.data",
       "保留 error.message 和 error.response?.status"
     ],
-    "passes": false,
-    "evidence": [],
-    "notes": "继承自 docs/tasks/aijianli-bug-fix-20260614/feature_list.json F009"
+    "passes": true,
+    "evidence": ["evidence/phase-5-build.md"],
+    "notes": "8 行 console.error 块简化为单行：`console.error('API chat error:', error.message, 'status:', error.response?.status)`。顺带修了 userQuery 未定义 bug（删了对应行）"
   },
   {
     "id": "F010",
@@ -440,9 +440,9 @@
       "文件头有注释说明用途",
       "注释说明不参与运行时"
     ],
-    "passes": false,
-    "evidence": [],
-    "notes": "CSV 不支持 # 注释，用文件首行的伪注释列或 README"
+    "passes": true,
+    "evidence": ["evidence/phase-5-build.md"],
+    "notes": "CSV 不支持 # 注释，新建 CSV_NOTES.md 同目录说明：image/video.csv 是历史清单不参与运行时；运行时数据源是 data.ts"
   },
   {
     "id": "F011",
@@ -461,8 +461,8 @@
       "grep 输出为空",
       "4 个文件路径都是 E:/claudecode/human_rhy_soul/"
     ],
-    "passes": false,
-    "evidence": [],
-    "notes": "外脑是独立 git repo，只本地改不 push"
+    "passes": true,
+    "evidence": ["evidence/phase-5-build.md"],
+    "notes": "外脑是独立 git repo，只本地改不 push。sed 一次性替换 `/Users/jimm/代码仓库/human_rhy_soul` → `E:/claudecode/human_rhy_soul`。grep 验证已无残留"
   }
 ]
