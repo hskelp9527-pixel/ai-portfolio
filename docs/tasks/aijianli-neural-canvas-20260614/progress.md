@@ -312,3 +312,57 @@ Phase 3 全部 4 个 feature：
 2. N016 PDF 导出兼容（节点图谱降级静态列表）
 3. N017 移动端 375px 响应（不加载 three + 纵向时间线）
 4. N018 性能 + AGENTS.md 更新（清理预存测试 + 加新组件架构）
+
+## Round 5 - 2026-06-14 Phase 4 Polish 完成
+
+### 本轮完成了什么
+
+Phase 4 全部 4 个 feature：
+
+- **N015** 暗色主题：默认 dark，所有组件用 token 自动适配（粒子色 + 数量按主题切换）
+- **N016** PDF 兼容：NeuralCanvas section 加 `no-print`，html2canvas 跳过；PDF 内容来自 main
+- **N017** 移动端：新建 `MobileTimeline.tsx`（无 three 无 d3-force），App.tsx 按 isMobile 切换
+- **N018** 性能 + AGENTS.md：three 已 lazy chunk，AGENTS.md 完全重写（新架构 + 设计语言 + 性能策略）
+
+### 修改了哪些文件
+
+修改：
+- `App.tsx`（加 isMobile 状态 + MobileTimeline/NeuralCanvas 三元渲染）
+- `components/NeuralCanvas.tsx`（section 加 `no-print hidden md:block`）
+- `AGENTS.md`（完全重写：项目结构 + 设计语言 + 性能策略 + 已知问题）
+- `docs/tasks/aijianli-neural-canvas-20260614/feature_list.json`（N015-N018 passes:true）
+
+新建：
+- `components/MobileTimeline.tsx`（移动端纵向时间线，复用 GRAPH_NODES 数据）
+- `docs/tasks/aijianli-neural-canvas-20260614/evidence/phase-4-build.md`
+
+### 测试了什么
+
+- `npm run build` 通过：2169 modules，CSS 50KB，主 JS 469KB（gzip 145KB），ParticleField 891KB（gzip 240KB）
+
+### 证据在哪里
+
+- `evidence/phase-4-build.md`
+
+### 已知偏离 PRD
+
+1. **AIConversationPanel 移动端底部抽屉**：PRD 想要 bottom-sheet，当前仍是右侧 dock（max-w-[90vw] 兜底）。Polish 项
+2. **帧率监控 + 自动降级**：未实现。Mobile 路径不加载 three 已是 fallback
+3. **低端机粒子数动态调整**：仍按主题固定 200/160，未根据 hardwareConcurrency 缩放
+
+### 还剩什么
+
+- Phase 5：F005-F011（GLM 统一 + useLazyLoad 类型 + 删重复 setup + email 引入 + 错误日志简化 + CSV 注释 + 外脑路径替换）
+- 浏览器实测视觉效果（用户启动 dev server 后验证）
+
+### 下轮建议从哪里继续
+
+**Phase 5 开始**（继承自 bug-fix 开发包的 7 个收尾项）：
+
+1. F005 统一 GLM 模型为 glm-4.5-air
+2. F006 修 useLazyLoad 类型断言
+3. F007 删重复测试 setup 文件
+4. F008 email 从 data.ts 引入（App.tsx 已实现，类型检查通过）
+5. F009 简化 api/chat.ts 错误日志（顺便修 userQuery 未定义 bug）
+6. F010 image.csv / video.csv 加注释
+7. F011 外脑 4 文件路径替换

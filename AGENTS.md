@@ -1,44 +1,66 @@
-# AGENTS.md — AIGC 沉浸式个人履历门户
+# AGENTS.md — AIJianLi Neural Canvas
 
 ## 项目概述
 
-任泓雨的个人作品集 + 动态简历网站，集成 AI 对话（RAG）。
+任泓雨的个人作品集 + AI 简历。**Neural Canvas** 形态：节点图谱首屏 + AI 主动导览 + 传统简历详情。
 
 - **仓库**：https://github.com/hskelp9527-pixel/ai-portfolio
-- **分支**：main
+- **分支**：main（本地，不自动 push）
 - **线上**：Vercel 部署
 
 ## 技术栈
 
 ### 前端
 - React 19 + TypeScript 5.8 + Vite 6
-- framer-motion（动画）、lucide-react（图标）
-- html2canvas + jspdf（前端截图导出 PDF）
+- **three.js + @react-three/fiber**（深空粒子背景，lazy chunk）
+- **d3-force**（节点力导向布局）
+- framer-motion（节点动画 + 玻璃态过渡）
+- Tailwind v3（OKLCH 色板 + 自定义 token）
+- html2canvas（截图导出）
 
 ### 后端
-- Express 5（本地开发，端口 4001）
-- Vercel Serverless Functions（线上 `/api/chat`）
+- Express 5（本地 4001）+ Vercel Serverless（`/api/chat`）
 - 智谱 GLM-4.5-air（对话）+ embedding-3（RAG 向量化）
 
 ### 测试
 - Vitest 4 + Testing Library + fast-check
 
-## 项目结构
+## 项目结构（Neural Canvas 重构后）
 
 ```
 AIJianLi/
-├── components/         # React 组件（Hero/Resume/Gallery/Theater/AIChatDrawer 等）
-├── api/chat.ts         # Vercel Serverless：AI 对话 + RAG 检索
-├── server.ts           # 本地开发服务器（Express, 4001）
-├── Rag/                # RAG 源文档（5 个 .md，用于构建 vector-index）
-├── scripts/
-│   ├── build-knowledge-base.ts   # 构建 public/vector-index.json
-│   └── export-pdf.ts             # Playwright 导出 PDF
-├── data.ts             # 简历数据（个人信息、经历、项目、媒体 URL）
-├── types.ts            # TypeScript 类型
-├── public/             # 静态资源 + vector-index.json
-└── index.html / index.tsx / App.tsx
+├── components/
+│   ├── NeuralCanvas.tsx       # 节点图谱首屏（desktop, hidden md:block no-print）
+│   ├── MobileTimeline.tsx     # 移动端纵向时间线（md:hidden）
+│   ├── NodeCluster.tsx        # 节点 DOM 渲染（d3-force 位置 + hover/active/dim）
+│   ├── GlassCard.tsx          # HoverCard + DetailPanel
+│   ├── AIGuideBubble.tsx      # 右下角 AI 主动导览气泡
+│   ├── AIConversationPanel.tsx # 360px 右侧 dock 对话面板（替换 AIChatDrawer）
+│   ├── AIChatDrawer.tsx       # 旧抽屉，保留为备份不引用
+│   ├── FloatingNavigation.tsx
+│   ├── IdentitySection / Resume / Gallery / Theater  # 传统简历详情（滚动后展示）
+├── three/ParticleField.tsx    # 深空粒子（lazy chunk）
+├── hooks/
+│   ├── useNodeGraph.ts        # d3-force 力导向布局（500 tick 同步）
+│   ├── useVisitorType.ts      # 访客类型判定（scroll/hr · hover/peer · chat/conversational）
+│   ├── useAIGuide.ts          # AI 气泡触发（5s 首访 + 3s 同节点 hover，session 上限 2 次）
+├── api/chat.ts                # Vercel Serverless：AI 对话 + RAG
+├── data.ts                    # 简历数据 + GRAPH_NODES (21) + GRAPH_EDGES
+├── types.ts                   # GraphNode / GraphEdge / VisitorType / NodeAccent 等
+├── utils/pdfExporter.ts       # html2canvas 导出（NeuralCanvas no-print 不参与）
+└── App.tsx                    # 顶层：根据 isMobile 切换 NeuralCanvas / MobileTimeline
 ```
+
+## 设计语言
+
+- **色板**（OKLCH）：
+  - 矿物青 `oklch(0.78 0.18 165)` — signature-teal
+  - 暖琥珀 `oklch(0.75 0.20 50)` — signature-amber
+  - 墨蓝黑 `oklch(0.12 0.02 250)` — ink-deep（dark theme 背景）
+- **字体**：
+  - 阿里巴巴普惠体（CDN: puhuiti.oss-cn-hangzhou.aliyuncs.com）
+  - Geist + JetBrains Mono（Google Fonts）
+- **缓动曲线**：`cubic-bezier(0.16, 1, 0.3, 1)`（neural） / `cubic-bezier(0.4, 0, 0.2, 1)`（neural-out）
 
 ## 开发命令
 
@@ -50,12 +72,12 @@ npm run dev:api    # 终端 1：Express API（端口 4001）
 npm run dev:vite   # 终端 2：Vite 前端（端口 3001，代理 /api 到 4001）
 ```
 
-⚠️ `package.json` 中 `dev` 脚本当前只启动 API（`dev:api`），前端需单独运行 `dev:vite`。同时跑请开两个终端，不要用 `dev:all`（其 `&` 是 Unix 语法，Windows 不工作）。
+⚠️ `dev:all` 用 Unix `&` 语法，Windows 不工作。同时跑请开两个终端。
 
 ## 媒体存储
 
 腾讯云 COS（公有读私有写），桶名 `aicunchu-1394039784`，区域 `ap-guangzhou`。
-URL 不带签名参数（旧版签名 URL 已废弃，详见 `memory.md`）。
+URL 不带签名参数。
 
 ## 环境变量
 
@@ -64,27 +86,37 @@ URL 不带签名参数（旧版签名 URL 已废弃，详见 `memory.md`）。
 | `GLM_API_KEY` | 智谱 API Key（对话 + Embedding） | server.ts / Vercel |
 | `ZHIPU_API_KEY` | 同上（fallback 名） | vite.config.ts |
 
-⚠️ 命名不统一，建议统一为 `GLM_API_KEY`。
+## 主题策略
+
+- 默认 **dark**（App.tsx `useState<Theme>('dark')`）
+- light 模式可用（FloatingNavigation 切换），所有自定义组件用 token（`text-fg-primary` 等）自动适配
+- PDF 导出时强制 light 主题（pdfExporter.ts），NeuralCanvas `no-print` 不参与截图
+
+## 性能策略
+
+- three.js 用 React.lazy + Suspense 独立 chunk（gzip 240KB），不阻塞首屏
+- d3-force 用 500 次同步 tick 计算位置（避免运行时持续 simulation 开销）
+- 移动端不渲染 NeuralCanvas，改用 MobileTimeline（无 three.js，无 d3-force）
+- AI 流式是 UI 模拟（chatService 后端不支持真流式），用 setInterval 18ms 渲染 chunk
 
 ## 已知问题
 
-按严重程度排序：
+### Phase 4+ 待处理
+1. **`api/chat.ts:273` userQuery 未定义** — F009 范畴（Phase 5）
+2. **FloatingNavigation.test.tsx 用旧 prop `onExportPDF`** — 已废弃，需更新测试或删除
+3. **pdfExporter.test.ts 引用已删除的 `quality`/`scale` 字段** — 需更新或删除
+4. **AIConversationPanel 没有展开/收起动画**（PRD 280→450）— 当前单一 360px 宽度，可作为后续 polish
 
-### 严重
-1. **`server.ts` 路由顺序错误**：SPA 兜底（line 73-81）在 `express.static`（line 84）之前 → 所有静态文件被拦截返回 index.html
-2. **`server.ts:47` 引用 `./api/chat.js`**：仓库里只有 `api/chat.ts`，没有 `.js`，也未配置 esbuild 生成 → 本地 chat API 一调用就崩
-3. **Tailwind 用 CDN 模式**（`index.html:7`）：生产环境会弹警告，性能差
+### Phase B 已修复（保留为历史）
+- F001-F004：RAG 索引路径、PDF 命令、AIChatDrawer 流式、server.ts 路由顺序（详见 `docs/tasks/aijianli-bug-fix-20260614/`）
 
-### 中等
-4. **重复的 server 项目**：根目录 `server.ts`（express 5）与独立 `server/` 目录（express 4）功能重叠
-5. **RAG 索引路径不稳定**：`api/chat.ts:86-91` 尝试 4 个候选路径查找 `vector-index.json`
-6. **RAG 判定逻辑粗糙**：`api/chat.ts:195-201` 用关键词数组判断，含"你的""他的"等高频词 → 误判
-7. **tsconfig 太宽松**：未启用 `strict`、`noUnusedLocals`
-
-### 噪声
-8. **错误日志过度打印**：`api/chat.ts:270-277` 把 stack/response.data 全打到 console
-9. **数据源重复维护**：`data.ts` 硬编码 URL，同时维护 `image.csv` / `video.csv`
+### 数据
+- `data.ts` 含 `PERSONAL_PROJECTS` + `GRAPH_NODES`（21 节点）+ `GRAPH_EDGES`
+- pp4（个人数字化简历网站）已删，因循环引用简历本身
+- 项目顺序按 importance 倒序：pp8 → pp7 → pp3 → pp1 → pp6 → pp2 → pp5
 
 ## 下一任务建议
 
-优先修严重问题 1-3，再处理中等 4-7。
+1. F005-F011 Phase 5 收尾（GLM 版本统一 + 类型修复 + 错误日志简化 + 外脑路径替换）
+2. 浏览器实测 NeuralCanvas 视觉效果（粒子、节点布局、hover/dim 透明度）
+3. AIConversationPanel 展开/收起动画 polish（可选）

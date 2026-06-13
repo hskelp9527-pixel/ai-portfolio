@@ -3,6 +3,7 @@ import { FloatingNavigation } from './components/FloatingNavigation';
 import { AIConversationPanel } from './components/AIConversationPanel';
 import { AIGuideBubble } from './components/AIGuideBubble';
 import { NeuralCanvas } from './components/NeuralCanvas';
+import { MobileTimeline } from './components/MobileTimeline';
 import { IdentitySection } from './components/IdentitySection';
 import { Resume } from './components/Resume';
 import { Gallery } from './components/Gallery';
@@ -23,7 +24,15 @@ const App: React.FC = () => {
   const [isAIChatOpen, setIsAIChatOpen] = useState(false);
   const [injectedQuestion, setInjectedQuestion] = useState<string | null>(null);
   const [hoveredNodeForGuide, setHoveredNodeForGuide] = useState<GraphNode | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
   const email = PERSONAL_INFO.email || 'rhydewy@163.com';
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.matchMedia('(max-width: 768px)').matches);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   const { type: visitorType, signal } = useVisitorType();
   const firstVisitFiredRef = useRef(false);
@@ -97,7 +106,11 @@ const App: React.FC = () => {
 
   return (
     <div className="relative min-h-screen transition-all duration-300 text-fg-primary">
-      <NeuralCanvas theme={theme} onHoverNode={setHoveredNodeForGuide} />
+      {isMobile ? (
+        <MobileTimeline theme={theme} onAskQuestion={handleAskQuestion} />
+      ) : (
+        <NeuralCanvas theme={theme} onHoverNode={setHoveredNodeForGuide} />
+      )}
 
       <FloatingNavigation
         theme={theme}

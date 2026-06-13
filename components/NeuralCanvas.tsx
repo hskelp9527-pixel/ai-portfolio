@@ -76,7 +76,7 @@ export const NeuralCanvas: React.FC<NeuralCanvasProps> = ({
     <section
       ref={containerRef}
       id="about"
-      className="relative w-full h-screen overflow-hidden"
+      className="relative w-full h-screen overflow-hidden no-print hidden md:block"
       aria-label="Neural Canvas"
     >
       {showParticles && (
