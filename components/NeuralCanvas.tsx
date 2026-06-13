@@ -11,9 +11,14 @@ const ParticleField = lazy(() => import('../three/ParticleField'));
 interface NeuralCanvasProps {
   theme: Theme;
   reducedMotion?: boolean;
+  onHoverNode?: (node: GraphNode | null) => void;
 }
 
-export const NeuralCanvas: React.FC<NeuralCanvasProps> = ({ theme, reducedMotion = false }) => {
+export const NeuralCanvas: React.FC<NeuralCanvasProps> = ({
+  theme,
+  reducedMotion = false,
+  onHoverNode,
+}) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
   const [hoveredNode, setHoveredNode] = useState<GraphNode | null>(null);
@@ -35,14 +40,19 @@ export const NeuralCanvas: React.FC<NeuralCanvasProps> = ({ theme, reducedMotion
 
   const positions = useNodeGraph(GRAPH_NODES, GRAPH_EDGES, dimensions.width, dimensions.height);
 
-  const handleHover = useCallback((id: string | null) => {
-    if (!id) {
-      setHoveredNode(null);
-      return;
-    }
-    const node = GRAPH_NODES.find((n) => n.id === id) || null;
-    setHoveredNode(node);
-  }, []);
+  const handleHover = useCallback(
+    (id: string | null) => {
+      if (!id) {
+        setHoveredNode(null);
+        onHoverNode?.(null);
+        return;
+      }
+      const node = GRAPH_NODES.find((n) => n.id === id) || null;
+      setHoveredNode(node);
+      onHoverNode?.(node);
+    },
+    [onHoverNode]
+  );
 
   const handleClick = useCallback((id: string) => {
     const node = GRAPH_NODES.find((n) => n.id === id) || null;

@@ -70,6 +70,9 @@ export type NodeType = 'center' | 'project' | 'skill' | 'philosophy' | 'timeline
 export type NodeCluster = 'center' | 'projects' | 'skills' | 'philosophy' | 'timeline';
 export type NodeAccent = 'teal' | 'amber' | 'default';
 
+// 访客类型（AI 自适应判定）
+export type VisitorType = 'unknown' | 'hr' | 'peer' | 'conversational';
+
 export interface GraphNode {
   id: string;
   type: NodeType;

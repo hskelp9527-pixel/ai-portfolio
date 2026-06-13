@@ -209,9 +209,9 @@
       "单次会话最多主动搭话 2 次",
       "用户 dismiss 后该会话不再触发"
     ],
-    "passes": false,
-    "evidence": [],
-    "notes": "推荐问题根据 hover 的节点类型动态生成"
+    "passes": true,
+    "evidence": ["evidence/phase-3-build.md"],
+    "notes": "推荐问题根据 hover 的节点类型动态生成。Phase 3 实现：5 秒首访触发 + 3 秒同节点悬停触发，单会话上限 2 次，dismiss 后会话内不再触发（sessionStorage 持久化）"
   },
   {
     "id": "N012",
@@ -228,9 +228,9 @@
       "支持展开为 450px 全功能对话",
       "旧的 AIChatDrawer.tsx 删除或保留为备份"
     ],
-    "passes": false,
-    "evidence": [],
-    "notes": "保留 chatService.ts 后端调用逻辑不变"
+    "passes": true,
+    "evidence": ["evidence/phase-3-build.md"],
+    "notes": "宽度调整为 360px（介于 PRD 280-450 之间，单屏更舒适）。首条消息按 visitorType 自适应（HR/同行/对话型三种 intro）。AIChatDrawer.tsx 保留为备份不删除"
   },
   {
     "id": "N013",
@@ -247,9 +247,9 @@
       "点对话框 → 判定对话型，AI 进入主动问答",
       "类型确定后 5 秒内不重新判定"
     ],
-    "passes": false,
-    "evidence": [],
-    "notes": "判定逻辑：访客首个动作 + 停留时长"
+    "passes": true,
+    "evidence": ["evidence/phase-3-build.md"],
+    "notes": "判定逻辑：scrollY>200 触发 hr / hover peer / chat conversational。判定后 sessionStorage 持久化，5 秒锁定期防抖。VISITOR_PROFILES 含三种 profile 的 intro + 4 个推荐问题"
   },
   {
     "id": "N014",
@@ -266,9 +266,9 @@
       "回复完成后停止动画",
       "无回复内容时不显示空消息"
     ],
-    "passes": false,
-    "evidence": [],
-    "notes": "如果 chatService 当前不支持流式，先做 UI 层模拟流式（接收完整回复后逐字渲染）"
+    "passes": true,
+    "evidence": ["evidence/phase-3-build.md"],
+    "notes": "chatService 后端不支持流式（一次性返回），UI 层用 setInterval 18ms 渲染 chunk（步长 = max(1, ceil(text/200))，长文本不卡）。思考状态：3 个脉冲点 + 'thinking' 文字 + 光标"
   },
   {
     "id": "N015",

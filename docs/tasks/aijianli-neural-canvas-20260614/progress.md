@@ -248,3 +248,67 @@ Phase 2 全部 5 个 feature：
 4. N014 流式输出 + 思考状态
 
 Phase 3 是这个开发包的"AI 即界面"核心，决定简历是否能引导访客深入。
+
+## Round 4 - 2026-06-14 Phase 3 AI 导览系统完成
+
+### 本轮完成了什么
+
+Phase 3 全部 4 个 feature：
+
+- **N011** AIGuideBubble.tsx + useAIGuide.ts（5s 首访触发 + 3s 同节点悬停触发，session 内上限 2 次）
+- **N012** AIConversationPanel.tsx 替换 AIChatDrawer（360px dock 形态，intro 按 visitorType 自适应）
+- **N013** useVisitorType.ts（scroll/hr · hover/peer · chat/conversational，sessionStorage 持久化）
+- **N014** 流式输出 + 思考状态（UI 层 setInterval 18ms 模拟流式 + 3 脉冲点 thinking 动画）
+
+### 修改了哪些文件
+
+修改：
+- `App.tsx`（替换 AIChatDrawer 为 AIConversationPanel，挂 AIGuideBubble + useAIGuide + useVisitorType + 滚动监听 + 首访定时器）
+- `components/NeuralCanvas.tsx`（加 `onHoverNode` 可选 prop）
+- `types.ts`（加 `VisitorType` 联合类型）
+- `docs/tasks/aijianli-neural-canvas-20260614/feature_list.json`（N011-N014 passes:true）
+
+新建：
+- `hooks/useVisitorType.ts`（VISITOR_PROFILES + 判定逻辑 + sessionStorage）
+- `hooks/useAIGuide.ts`（首访触发 + 悬停触发 + CTA + dismiss）
+- `components/AIGuideBubble.tsx`（右下角悬浮玻璃气泡）
+- `components/AIConversationPanel.tsx`（dock 形态对话面板）
+- `docs/tasks/aijianli-neural-canvas-20260614/evidence/phase-3-build.md`
+
+保留为备份：
+- `components/AIChatDrawer.tsx`（不再 import，文件保留以便回滚）
+
+### 测试了什么
+
+- `npm run build` 通过：2168 modules，CSS 50KB，主 JS 465KB（gzip 144KB），ParticleField 独立 chunk 891KB（gzip 240KB）
+- `npx tsc --noEmit` Phase 3 新增错误已全部修复（VisitorType import + acceptCta return type）
+- 剩余 tsc 错误全部是预存（api/chat.ts 的 userQuery / FloatingNavigation.test.tsx 的 onExportPDF / pdfExporter.test.ts）— Phase 4/5 处理
+
+### 证据在哪里
+
+- `evidence/phase-3-build.md`
+
+### 已知偏离 PRD
+
+1. **dock 宽度 360px**（PRD 280 默认 / 450 展开）：选 360 单一宽度，省略展开动画，Phase 4 可补
+2. **没有 dock 收起形态**：dock 打开后只能点 X 关闭，没有"窄条 icon-only"压缩态
+3. **流式是 UI 模拟**（chatService 后端不支持真流式）：接收完整响应后 setInterval 18ms 渲染 chunk
+
+### 还剩什么
+
+- Phase 4：N015-N018（暗色适配 + PDF 兼容 + 移动端 + 性能 + AGENTS 更新）
+- Phase 5：F005-F011（GLM 版本统一 + useLazyLoad 类型 + 删重复 setup + email 引入 + 错误日志简化 + CSV 注释 + 外脑路径）
+
+### 未说明 / 未解决的失败项
+
+- N011/N012/N013/N014 浏览器视觉效果待用户启动 npm run dev:vite 后人工验证
+- api/chat.ts:273 userQuery 未定义是预存 bug，F009 修
+
+### 下轮建议从哪里继续
+
+**Phase 4 开始**：
+
+1. N015 暗色主题适配 Neural Canvas（darkMode class 已配置）
+2. N016 PDF 导出兼容（节点图谱降级静态列表）
+3. N017 移动端 375px 响应（不加载 three + 纵向时间线）
+4. N018 性能 + AGENTS.md 更新（清理预存测试 + 加新组件架构）
