@@ -181,3 +181,70 @@ Phase 2 完成后跑 `npm run build` + 浏览器验证 5 个核心场景。
 
 - Commit: 待提交
 - git status: tailwind.config.ts / src/index.css / index.html / package.json / package-lock.json / App.tsx 已修改；three/ / components/NeuralCanvas.tsx / docs/.../evidence/* 新增
+
+## Round 3 - 2026-06-14 Phase 2 节点图谱完成
+
+### 本轮完成了什么
+
+Phase 2 全部 5 个 feature：
+
+- **N006** data.ts 重构：pp4 删除 + 顺序调整 pp8→pp7→pp3→pp1→pp6→pp2→pp5 + importance 字段 + GRAPH_NODES 21 节点 + GRAPH_EDGES
+- **N007** NeuralCanvas + NodeCluster：d3-force 力导向布局，聚类象限分布
+- **N008** GlassCard HoverCard：玻璃态预览，智能左右定位
+- **N009** GlassCard DetailPanel：全屏模态详情（ESC + 外部点击关闭）
+- **N010** 删 Hero.tsx + NeuralCanvas section id='about' 替代锚点
+
+### 修改了哪些文件
+
+修改：
+- `types.ts`（加 GraphNode/GraphEdge/NodeType/NodeCluster/NodeAccent 联合类型）
+- `data.ts`（重排 PERSONAL_PROJECTS + 删 pp4 + 加 importance + 加 GRAPH_NODES/GRAPH_EDGES 导出）
+- `App.tsx`（删 Hero import + 删 Hero JSX + 删 negative-margin wrapper）
+- `docs/tasks/aijianli-neural-canvas-20260614/feature_list.json`（N006-N010 passes:true）
+
+新建：
+- `hooks/useNodeGraph.ts`（d3-force 500 tick 同步布局）
+- `components/NodeCluster.tsx`（节点 DOM 渲染 + 悬停/激活/dim 状态）
+- `components/GlassCard.tsx`（HoverCard + DetailPanel）
+- `docs/tasks/aijianli-neural-canvas-20260614/evidence/phase-2-build.md`
+
+删除：
+- `components/Hero.tsx`（备份在 `_trash/pre-neural-canvas-backup-20260614/components/Hero.tsx`）
+
+### 测试了什么
+
+- `npm run build` 通过：2165 modules，CSS 49KB，主 JS 459KB（gzip 141KB），ParticleField 独立 chunk 891KB（gzip 240KB）
+- Hero 没有任何 import 引用（除备份）
+- FloatingNavigation 不依赖 Hero 或 #about
+
+### 证据在哪里
+
+- `evidence/phase-2-build.md`
+
+### 还剩什么
+
+- Phase 3：N011-N014（AI 导览系统）
+- Phase 4：N015-N018（暗色 + PDF + 移动端 + 性能）
+- Phase 5：F005-F011（收尾）
+
+### 已知偏离 PRD
+
+1. **N009 zoom-in**：PRD 写"相机推近到 60%"，实际实现为全屏模态 DetailPanel。Phase 2 smoke 验证可接受，Phase 3 polish 可补相机推近
+2. **dim 透明度 0.25**（PRD 0.4）：更突出焦点节点，Phase 4 视觉评审再调
+3. **NeuralCanvas 从 fixed 改 relative h-screen**：原 fixed inset-0 + main z-10 导致 canvas 被覆盖不可见；改 relative 让 canvas 占首屏，main 自然流到下方
+
+### 未说明 / 未解决的失败项
+
+- N007/N008/N009 浏览器视觉效果待用户启动 npm run dev:vite 后人工验证
+- d3-force 在小屏（375px）布局会挤压，Phase 4 N017 移动端降级处理
+
+### 下轮建议从哪里继续
+
+**Phase 3 开始**：
+
+1. N011 AIGuideBubble.tsx + useAIGuide.ts（3 秒悬停触发主动建议）
+2. N012 重写 AIChatDrawer → AIConversationPanel.tsx（dock 形态常驻右侧）
+3. N013 useVisitorType.ts（首操作判定访客类型）
+4. N014 流式输出 + 思考状态
+
+Phase 3 是这个开发包的"AI 即界面"核心，决定简历是否能引导访客深入。

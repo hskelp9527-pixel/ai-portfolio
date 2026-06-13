@@ -64,6 +64,30 @@ export interface MediaError {
 }
 
 export type Theme = 'light' | 'dark';
+
+// Neural Canvas 节点相关类型
+export type NodeType = 'center' | 'project' | 'skill' | 'philosophy' | 'timeline';
+export type NodeCluster = 'center' | 'projects' | 'skills' | 'philosophy' | 'timeline';
+export type NodeAccent = 'teal' | 'amber' | 'default';
+
+export interface GraphNode {
+  id: string;
+  type: NodeType;
+  cluster: NodeCluster;
+  label: string;
+  summary: string;
+  detail?: string;
+  tags?: string[];
+  importance: number;
+  url?: string;
+  accent?: NodeAccent;
+}
+
+export interface GraphEdge {
+  source: string;
+  target: string;
+  strength?: number;
+}
 // 浮动导航相关类型定义
 export interface NavigationItem {
   id: string;

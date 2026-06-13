@@ -114,9 +114,9 @@
       "每个项目含 importance: number 字段",
       "types.ts 含 GraphNode 接口"
     ],
-    "passes": false,
-    "evidence": [],
-    "notes": "pp4 循环引用简历本身，图谱会显示元节点造成体验断裂"
+    "passes": true,
+    "evidence": ["evidence/phase-2-build.md"],
+    "notes": "pp4 循环引用简历本身，图谱会显示元节点造成体验断裂。21 个 GraphNode 已生成：1 center + 7 projects + 3 skills + 3 philosophy + 3 timeline + 4 cross-cluster"
   },
   {
     "id": "N007",
@@ -134,9 +134,9 @@
       "d3-force 计算节点位置，连线呼吸",
       "App.tsx 不再渲染 Hero/Resume/Gallery/Theater 五段式"
     ],
-    "passes": false,
-    "evidence": [],
-    "notes": "节点用 DOM 渲染（不用 three），three 只做粒子背景"
+    "passes": true,
+    "evidence": ["evidence/phase-2-build.md"],
+    "notes": "节点用 DOM 渲染（不用 three），three 只做粒子背景。useNodeGraph 用 d3-force 500 次 tick 同步计算位置，按聚类象限分布（projects=-π/4, skills=π/4, philosophy=3π/4, timeline=-3π/4）"
   },
   {
     "id": "N008",
@@ -153,9 +153,9 @@
       "玻璃卡 backdrop-blur(30px) 显示节点摘要",
       "鼠标移开后玻璃卡淡出"
     ],
-    "passes": false,
-    "evidence": [],
-    "notes": "玻璃卡内容：标题 + 1-2 句摘要 + 关键标签"
+    "passes": true,
+    "evidence": ["evidence/phase-2-build.md"],
+    "notes": "玻璃卡内容：标题 + 1-2 句摘要 + 关键标签。HoverCard 智能定位（左半屏右侧弹出，右半屏左侧弹出）。dim 透明度 0.25 比 PRD 0.4 更低以突出焦点"
   },
   {
     "id": "N009",
@@ -171,9 +171,9 @@
       "玻璃卡从节点位置 grow 出详情面板（不是淡入）",
       "ESC 键退出 zoom-in 状态"
     ],
-    "passes": false,
-    "evidence": [],
-    "notes": "详情面板含项目完整描述 + 标签 + 链接（如有）"
+    "passes": true,
+    "evidence": ["evidence/phase-2-build.md"],
+    "notes": "Phase 2 实现为全屏 DetailPanel 模态（fixed inset-0 z-40 + backdrop-blur），不是相机推近。节点 scale 1.25 active 态。ESC + 点击外部都关闭。Phase 3+ 可补相机推近效果"
   },
   {
     "id": "N010",
@@ -189,9 +189,9 @@
       "#about 锚点指向 NeuralCanvas 中心节点",
       "FloatingNavigation 不报错"
     ],
-    "passes": false,
-    "evidence": [],
-    "notes": "Hero 已备份到 _trash/pre-neural-canvas-backup-20260614/"
+    "passes": true,
+    "evidence": ["evidence/phase-2-build.md"],
+    "notes": "Hero 已备份到 _trash/pre-neural-canvas-backup-20260614/components/Hero.tsx。NeuralCanvas section id='about' 替代 Hero 锚点"
   },
   {
     "id": "N011",

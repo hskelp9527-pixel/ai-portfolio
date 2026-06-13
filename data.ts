@@ -1,4 +1,4 @@
-import { Experience, ProjectImage, ProjectVideo, Skill, MediaManagerConfig } from './types';
+import { Experience, ProjectImage, ProjectVideo, Skill, MediaManagerConfig, GraphNode, GraphEdge } from './types';
 
 // 媒体管理配置
 export const MEDIA_CONFIG: MediaManagerConfig = {
@@ -66,10 +66,21 @@ export const MAIN_PROJECTS = [
 
 export const PERSONAL_PROJECTS = [
   {
+    id: 'pp8',
+    title: 'Query Auto - 智能情报简报 Agent',
+    description: '是什么：基于 Vercel 部署的多智能体情报收集与分析系统，自动生成结构化情报简报并通过邮件投递。\n\n核心功能：\n• 多智能体协作：基于 LangGraph 构建规划器、研究员、编辑、评论家等多智能体系统\n• 实时信息聚合：从 Google News RSS 抓取国内外最新资讯，支持中外源混合检索\n• AI 报告生成：集成 OpenRouter 和智谱 AI，生成结构化情报简报\n• 定时任务调度：支持每日定时发送和即时执行两种模式\n• 邮件投递：通过 Resend webhook 自动投递生成的简报\n\n技术亮点：\n• LangGraph 多智能体编排，实现情报收集-分析-审核-生成全流程自动化\n• Vercel KV 持久化存储，支持任务状态跟踪与历史记录查询\n• 响应式设计，Web 界面实时监控任务执行状态',
+    tags: ['LangGraph', '多智能体', 'Vercel', '智谱AI', 'OpenRouter'],
+    importance: 10,
+    links: [
+      { name: '访问应用', url: 'https://query.airainyu.xyz/', icon: 'ExternalLink' }
+    ]
+  },
+  {
     id: 'pp7',
     title: '宠物健康AI服务平台',
     description: '是什么：为宠物健康AI服务平台开发的多页面SPA应用，包含智能问诊、四大AI识别（品种/情绪/排泄物/呕吐物）、用户权益管理等完整功能模块。\n\n核心亮点：\n• 全程AI辅助开发：零手写代码，100%使用Claude Code完成全部前端开发\n• 大规模交付：14个页面，核心JavaScript代码超过10,000行\n• 完整功能模块：AI智能问诊（3164行）、四大AI识别功能、用户权益系统\n• 独立联调：独立完成20+ API接口联调，具备上线条件\n\n技术栈：Claude Code、原生HTML/JavaScript、Tailwind CSS',
     tags: ['Claude Code', 'AI辅助开发', '前端交付', 'API联调'],
+    importance: 9,
     links: [
       { name: '宠物专区', url: 'http://pet.anykcloud.net:8088/ai_pet_sign.html?info=%2BEwLURWIPnSXJlbsX%2B9J6RsrNl0PP2QtRMtduiHxBbfAl7BwtykWGIdezQpiexE4hE76qOwTPoSmCtGiN%2FG7MJ7cxXGD3syKtleHenjOaiMA%2Fpia%2BeYlduimQyA%3D&id=41', icon: 'Heart' },
       { name: 'AI智能问诊', url: 'http://pet.anykcloud.net:8088/AIconsultation/AIconsultation.html?info=%2BEwLURWIPnSXJlbsX%2B9J6RsrNl0PP2QtRMtduiHxBbfAl7BwtykWGIdezQpiexE4hE76qOwTPoSmCtGiN%2FG7MJ7cxXGD3syKtleHenjOaiMA%2Fpia%2BeYlduimQyA%3D&id=41', icon: 'Stethoscope' },
@@ -78,49 +89,39 @@ export const PERSONAL_PROJECTS = [
     ]
   },
   {
-    id: 'pp8',
-    title: 'Query Auto - 智能情报简报 Agent',
-    description: '是什么：基于 Vercel 部署的多智能体情报收集与分析系统，自动生成结构化情报简报并通过邮件投递。\n\n核心功能：\n• 多智能体协作：基于 LangGraph 构建规划器、研究员、编辑、评论家等多智能体系统\n• 实时信息聚合：从 Google News RSS 抓取国内外最新资讯，支持中外源混合检索\n• AI 报告生成：集成 OpenRouter 和智谱 AI，生成结构化情报简报\n• 定时任务调度：支持每日定时发送和即时执行两种模式\n• 邮件投递：通过 Resend webhook 自动投递生成的简报\n\n技术亮点：\n• LangGraph 多智能体编排，实现情报收集-分析-审核-生成全流程自动化\n• Vercel KV 持久化存储，支持任务状态跟踪与历史记录查询\n• 响应式设计，Web 界面实时监控任务执行状态',
-    tags: ['LangGraph', '多智能体', 'Vercel', '智谱AI', 'OpenRouter'],
-    links: [
-      { name: '访问应用', url: 'https://query.airainyu.xyz/', icon: 'ExternalLink' }
-    ]
+    id: 'pp3',
+    title: '基于 Dify 的个人知识库问答系统（RAG）',
+    description: '是什么：为解决个人项目资料分散、难以快速检索与复述的问题，基于 Dify 平台构建了一套个人知识库问答系统。系统通过知识检索增强生成（RAG）机制，将个人项目文档、产品总结等资料转化为可对话的智能知识库，实现对个人经历与项目的自然语言问答。\n核心实现：\n            1、构建混合检索知识库（向量检索 + 关键词检索），提升召回准确率\n            2、基于 Chatflow 设计「用户输入 → 知识检索 → LLM → 回复」的问答流程\n            3、通过 Prompt 约束，强制模型仅基于知识库内容回答，避免幻觉\n            4、对项目类问题采用结构化输出（背景 → 方案 → 价值）',
+    tags: ['RAG', 'Dify', '知识库', 'LLM', '向量检索'],
+    importance: 8
   },
   {
     id: 'pp1',
     title: '基于 Coze 的智能客服 Agent',
     description: '项目描述：针对传统客服依赖人工检索资料、回复效率低的问题，设计并实现了一套基于 Coze 的智能客服 Agent，用于自动识别用户问题并从知识库中返回结构化答案。\n核心动作：收集整理行业文档，清洗数据后导入飞书知识库；配置工作流（Workflow），让Bot能自动识别用户意图并调用知识库准确回答。',
-    tags: ['Coze', '知识库', 'Workflow', '智能客服']
-  },
-  {
-    id: 'pp2',
-    title: 'TimeReminder',
-    description: '是什么：针对传统待办工具需要用户频繁查看、容易错过执行时机的问题，设计并实现了一款 Windows 桌面任务提醒工具 TimeReminder。产品以"设好就不管"为核心理念，用户只需输入截止时间与预计耗时，系统即可自动推导"应开始时间"，并在关键节点通过系统级通知进行强提醒，减少用户的认知负担。\n核心设计与实现：\n            1、基于「截止时间 − 预计耗时」的时间推导逻辑，自动计算提醒时机\n            2、采用 Windows Toast 通知，实现必须确认的强提醒机制\n            3、托盘常驻与开机自启设计，保证提醒不被遗漏\n            4、本地 SQLite 存储，免配置、免服务端，支持数据导入导出\n            5、打包为单文件 exe，双击即用，降低使用与分发成本',
-    tags: ['Python', 'PyQt5', '任务管理', 'Windows桌面应用']
-  },
-  {
-    id: 'pp3',
-    title: '基于 Dify 的个人知识库问答系统（RAG）',
-    description: '是什么：为解决个人项目资料分散、难以快速检索与复述的问题，基于 Dify 平台构建了一套个人知识库问答系统。系统通过知识检索增强生成（RAG）机制，将个人项目文档、产品总结等资料转化为可对话的智能知识库，实现对个人经历与项目的自然语言问答。\n核心实现：\n            1、构建混合检索知识库（向量检索 + 关键词检索），提升召回准确率\n            2、基于 Chatflow 设计「用户输入 → 知识检索 → LLM → 回复」的问答流程\n            3、通过 Prompt 约束，强制模型仅基于知识库内容回答，避免幻觉\n            4、对项目类问题采用结构化输出（背景 → 方案 → 价值）',
-    tags: ['RAG', 'Dify', '知识库', 'LLM', '向量检索']
-  },
-  {
-    id: 'pp4',
-    title: '个人数字化简历网站',
-    description: '是什么：基于 React + TypeScript 的 AIGC 个人履历展示网站，集成作品集展示与 RAG 智能问答功能，使用 AI 编程辅助快速开发完成。\n核心设计与实现：\n            1、前端使用 React 19.2.3 + Vite + Framer Motion，实现流畅动画与响应式设计\n            2、媒体文件托管腾讯云 COS，支持懒加载优化（22张图片 + 4个视频）\n            3、集成 RAG 智能问答系统，基于向量检索实现简历内容的自然语言交互\n            4、Express API 服务器 + Vercel 部署，实现前后端分离架构',
-    tags: ['React', 'TypeScript', 'RAG', 'Vercel', 'AI编程']
-  },
-  {
-    id: 'pp5',
-    title: '桌面清理工具',
-    description: '是什么：Vibe Coding 开发 Windows 桌面文件管理应用，使用 Python + tkinter 开发，打包成单个 exe 文件。\n核心功能：\n            1、扫描桌面所有文件，按类型自动分组（图片、文档、视频、音频等）\n            2、文件夹可递归展开（最多3层），快捷方式(.lnk)可展开目标内容\n            3、右侧复选框多选，支持批量转移/删除/重命名\n            4、双击文件在资源管理器中打开，右键重命名\n界面特点：深色标题栏，扁平设计，左侧三角形展开，显示文件名、时间、大小三列。\n适用场景：桌面太乱时快速查看并批量清理文件。',
-    tags: ['Python', 'tkinter', '桌面应用', '文件管理']
+    tags: ['Coze', '知识库', 'Workflow', '智能客服'],
+    importance: 7
   },
   {
     id: 'pp6',
     title: 'AI Skill 自动化书评创作工具',
     description: '是什么：深度整合大语言模型与 Seedream 4.5 MCP 图像生成能力的全流程自动化书评创作工具。\n核心功能：\n            1、书籍背景自动检索与信息提取\n            2、精华观点智能提炼与结构化输出\n            3、AI 自动配图，视觉化呈现书评内容\n            4、多格式一键导出（Markdown、PDF、图片等）\n技术特点：集成 LLM 与 MCP 协议，实现"秒级生成"高质量书评。\n适用场景：内容创作者快速产出专业书评，将创作周期从"数小时"缩短至"秒级"。',
-    tags: ['LLM', 'MCP', '内容创作', '自动化', '效率工具']
+    tags: ['LLM', 'MCP', '内容创作', '自动化', '效率工具'],
+    importance: 6
+  },
+  {
+    id: 'pp2',
+    title: 'TimeReminder',
+    description: '是什么：针对传统待办工具需要用户频繁查看、容易错过执行时机的问题，设计并实现了一款 Windows 桌面任务提醒工具 TimeReminder。产品以"设好就不管"为核心理念，用户只需输入截止时间与预计耗时，系统即可自动推导"应开始时间"，并在关键节点通过系统级通知进行强提醒，减少用户的认知负担。\n核心设计与实现：\n            1、基于「截止时间 − 预计耗时」的时间推导逻辑，自动计算提醒时机\n            2、采用 Windows Toast 通知，实现必须确认的强提醒机制\n            3、托盘常驻与开机自启设计，保证提醒不被遗漏\n            4、本地 SQLite 存储，免配置、免服务端，支持数据导入导出\n            5、打包为单文件 exe，双击即用，降低使用与分发成本',
+    tags: ['Python', 'PyQt5', '任务管理', 'Windows桌面应用'],
+    importance: 5
+  },
+  {
+    id: 'pp5',
+    title: '桌面清理工具',
+    description: '是什么：Vibe Coding 开发 Windows 桌面文件管理应用，使用 Python + tkinter 开发，打包成单个 exe 文件。\n核心功能：\n            1、扫描桌面所有文件，按类型自动分组（图片、文档、视频、音频等）\n            2、文件夹可递归展开（最多3层），快捷方式(.lnk)可展开目标内容\n            3、右侧复选框多选，支持批量转移/删除/重命名\n            4、双击文件在资源管理器中打开，右键重命名\n界面特点：深色标题栏，扁平设计，左侧三角形展开，显示文件名、时间、大小三列。\n适用场景：桌面太乱时快速查看并批量清理文件。',
+    tags: ['Python', 'tkinter', '桌面应用', '文件管理'],
+    importance: 4
   }
 ];
 
@@ -225,4 +226,233 @@ export const VIDEOS: ProjectVideo[] = [
     tags: ['AI视频', '科幻', '太空'],
     createdAt: '2025-01-03'
   }
+];
+
+// ===== Neural Canvas 节点数据 =====
+
+export const GRAPH_NODES: GraphNode[] = [
+  {
+    id: 'center',
+    type: 'center',
+    cluster: 'center',
+    label: '任泓雨',
+    summary: 'AI 应用工程师 · 用 AI 重塑生产力',
+    detail: '不是程序员，是用 AI 做产品的人。把任何重复 3 遍的事 AI 化或自动化。3-4 年信息化项目交付经验，深度使用 Claude Code / Codex 做企业级项目开发，效率提升 50%。',
+    importance: 10,
+    accent: 'teal',
+  },
+
+  // Projects cluster
+  {
+    id: 'pp8',
+    type: 'project',
+    cluster: 'projects',
+    label: 'Query Auto',
+    summary: '多智能体情报简报 Agent · LangGraph 编排',
+    detail: '基于 Vercel 部署的多智能体情报收集与分析系统。LangGraph 编排规划器 / 研究员 / 编辑 / 评论家，从 Google News RSS 抓取，集成 OpenRouter + 智谱 AI 生成结构化简报，通过 Resend 邮件投递。',
+    tags: ['LangGraph', '多智能体', 'Vercel', '智谱AI'],
+    importance: 10,
+    url: 'https://query.airainyu.xyz/',
+    accent: 'amber',
+  },
+  {
+    id: 'pp7',
+    type: 'project',
+    cluster: 'projects',
+    label: '宠物健康 AI',
+    summary: '14 页面 SPA · 100% Claude Code 开发',
+    detail: '宠物健康 AI 服务平台：智能问诊 + 四大 AI 识别（品种/情绪/排泄物/呕吐物）+ 用户权益。零手写代码，100% Claude Code 完成，核心 JS 10,000+ 行，独立联调 20+ API。',
+    tags: ['Claude Code', 'AI 辅助开发', 'API 联调'],
+    importance: 9,
+    accent: 'amber',
+  },
+  {
+    id: 'pp3',
+    type: 'project',
+    cluster: 'projects',
+    label: 'Dify RAG 知识库',
+    summary: '混合检索 + Prompt 约束防幻觉',
+    detail: '基于 Dify 的个人知识库问答系统。向量检索 + 关键词检索混合，Chatflow 设计「用户输入 → 知识检索 → LLM → 回复」，Prompt 强制模型仅基于知识库回答。',
+    tags: ['RAG', 'Dify', '向量检索'],
+    importance: 8,
+    accent: 'teal',
+  },
+  {
+    id: 'pp1',
+    type: 'project',
+    cluster: 'projects',
+    label: 'Coze 智能客服',
+    summary: 'Workflow + 知识库 · 自动识别意图',
+    detail: '基于 Coze 的智能客服 Agent。整理行业文档清洗后导入飞书知识库，配置 Workflow 让 Bot 识别用户意图并调用知识库回答。',
+    tags: ['Coze', 'Workflow', '智能客服'],
+    importance: 7,
+    accent: 'teal',
+  },
+  {
+    id: 'pp6',
+    type: 'project',
+    cluster: 'projects',
+    label: 'AI 书评工具',
+    summary: 'LLM + Seedream MCP · 秒级生成',
+    detail: '深度整合 LLM 与 Seedream 4.5 MCP 图像生成的全流程自动化书评工具。书籍背景检索 → 观点提炼 → AI 配图 → 多格式导出，将创作周期从数小时缩短至秒级。',
+    tags: ['LLM', 'MCP', '内容创作'],
+    importance: 6,
+    accent: 'teal',
+  },
+  {
+    id: 'pp2',
+    type: 'project',
+    cluster: 'projects',
+    label: 'TimeReminder',
+    summary: 'Windows 桌面 · 设好就不管',
+    detail: 'Windows 桌面任务提醒工具。"设好就不管"理念：用户输入截止时间 + 预计耗时，系统推导应开始时间，Toast 强提醒 + 托盘常驻 + SQLite 本地存储 + 单文件 exe。',
+    tags: ['Python', 'PyQt5', '桌面应用'],
+    importance: 5,
+    accent: 'default',
+  },
+  {
+    id: 'pp5',
+    type: 'project',
+    cluster: 'projects',
+    label: '桌面清理工具',
+    summary: 'Vibe Coding · Python + tkinter',
+    detail: 'Windows 桌面文件管理应用。扫描桌面按类型分组，文件夹递归展开 3 层，快捷方式展开，多选批量操作，双击打开，右键重命名。',
+    tags: ['Python', 'tkinter', '文件管理'],
+    importance: 4,
+    accent: 'default',
+  },
+
+  // Skills cluster
+  {
+    id: 'skill-ai',
+    type: 'skill',
+    cluster: 'skills',
+    label: 'AI 工具能力',
+    summary: '多模型对比 + Prompt 设计 + Agent 编排',
+    detail: '多模型对比校验（ChatGPT / Claude / Gemini / 千问）、Prompt 设计与输出约束、LangGraph 多智能体编排、OpenClaw 框架、AI 编程辅助（Claude Code / Codex）。',
+    tags: ['Prompt', 'LangGraph', 'Claude Code'],
+    importance: 9,
+    accent: 'teal',
+  },
+  {
+    id: 'skill-product',
+    type: 'skill',
+    cluster: 'skills',
+    label: '产品交付',
+    summary: 'AI 项目背景下的多方协调',
+    detail: '信息化项目协同 + Claude Code / Codex 深度参与企业级开发，多角色沟通与需求拆解，技术方案梳理（PPT / 文档），流程与风险管理，效率提升 50%。',
+    tags: ['需求拆解', '风险管控', '技术方案'],
+    importance: 8,
+    accent: 'teal',
+  },
+  {
+    id: 'skill-models',
+    type: 'skill',
+    cluster: 'skills',
+    label: 'AI 模型工具',
+    summary: 'LLM + 图像 + 视频 + 编程',
+    detail: 'LLM：ChatGPT / Claude / Gemini / 千问 / 豆包。图像：Nano Banana / 即梦 / Midjourney。视频：Runway / Vidu / Veo3.1 / hailuo / Sora2。编程：Claude Code / Codex / OpenClaw。框架：LangGraph / Coze / Dify。',
+    tags: ['LLM', '图像生成', '视频生成'],
+    importance: 7,
+    accent: 'teal',
+  },
+
+  // Philosophy cluster
+  {
+    id: 'philo-ai',
+    type: 'philosophy',
+    cluster: 'philosophy',
+    label: 'AI 应用工程师',
+    summary: '不是程序员 · 用 AI 做产品',
+    detail: '定位：AI 应用工程师。技术决策讲"为什么"和"对用户的影响"，不只讲实现。',
+    importance: 9,
+    accent: 'amber',
+  },
+  {
+    id: 'philo-3x',
+    type: 'philosophy',
+    cluster: 'philosophy',
+    label: '重复 3 遍即自动化',
+    summary: '工作哲学 · 把流程交给机器',
+    detail: '工作哲学：把任何重复 3 遍的事 AI 化或自动化。这是效率第一性原理。',
+    importance: 8,
+    accent: 'amber',
+  },
+  {
+    id: 'philo-user',
+    type: 'philosophy',
+    cluster: 'philosophy',
+    label: '用户体验最高',
+    summary: '优先级 > 技术偏好 + 代码整洁度',
+    detail: '用户体验是所有产品的最高准则。优先级高于技术偏好、代码整洁度、架构优雅度。后端可以复杂，用户触碰到的每一层必须丝滑。',
+    importance: 8,
+    accent: 'amber',
+  },
+
+  // Timeline cluster
+  {
+    id: 'w0',
+    type: 'timeline',
+    cluster: 'timeline',
+    label: '知行求索科技',
+    summary: 'AI 产品经理 · 2026.01 至今',
+    detail: 'AI 产品经理。负责项目原型快速落地、前端开发与前后端联调，效率提升 50%。参与产品设计、UI 设计、测试工作。',
+    tags: ['AI 产品', '前端开发', '原型落地'],
+    importance: 9,
+    accent: 'amber',
+  },
+  {
+    id: 'w1',
+    type: 'timeline',
+    cluster: 'timeline',
+    label: '艾泰克工程咨询',
+    summary: '信息化项目交付专员 · 2023.09-2025.09',
+    detail: '协助协同同事与多方干系人完成交付，规避系统性风险。参与项目技术性方案编制，明确用户需求。协助参与项目质量交付验收会议。',
+    tags: ['G端交付', '风险规避', '验收答疑'],
+    importance: 7,
+    accent: 'default',
+  },
+  {
+    id: 'w2',
+    type: 'timeline',
+    cluster: 'timeline',
+    label: '湖南大福信息',
+    summary: '项目交付助理 · 2021.09-2023.08',
+    detail: '需求分析与沟通，协助编写技术方案 PPT。现场交付保障，参与项目质量验收会议。跨组织协同交付，构建文档全周期管控流程。',
+    tags: ['需求调研', '跨组织协同', '文档管控'],
+    importance: 6,
+    accent: 'default',
+  },
+];
+
+export const GRAPH_EDGES: GraphEdge[] = [
+  // Center hub
+  { source: 'center', target: 'pp8', strength: 1 },
+  { source: 'center', target: 'skill-ai', strength: 1 },
+  { source: 'center', target: 'philo-ai', strength: 1 },
+  { source: 'center', target: 'w0', strength: 1 },
+
+  // Project to skill cross-links
+  { source: 'pp8', target: 'skill-ai', strength: 0.6 },
+  { source: 'pp7', target: 'skill-ai', strength: 0.5 },
+  { source: 'pp3', target: 'skill-ai', strength: 0.5 },
+  { source: 'pp1', target: 'skill-ai', strength: 0.4 },
+  { source: 'pp6', target: 'skill-models', strength: 0.4 },
+
+  // Skill cross-links
+  { source: 'skill-ai', target: 'skill-product', strength: 0.5 },
+  { source: 'skill-ai', target: 'skill-models', strength: 0.5 },
+
+  // Philosophy cross-links
+  { source: 'philo-ai', target: 'philo-3x', strength: 0.6 },
+  { source: 'philo-ai', target: 'philo-user', strength: 0.6 },
+
+  // Work → philosophy
+  { source: 'w0', target: 'philo-ai', strength: 0.5 },
+  { source: 'w0', target: 'skill-product', strength: 0.4 },
+  { source: 'w1', target: 'skill-product', strength: 0.4 },
+
+  // Timeline chain
+  { source: 'w0', target: 'w1', strength: 0.3 },
+  { source: 'w1', target: 'w2', strength: 0.3 },
 ];

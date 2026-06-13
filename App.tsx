@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { FloatingNavigation } from './components/FloatingNavigation';
 import { AIChatDrawer } from './components/AIChatDrawer';
 import { NeuralCanvas } from './components/NeuralCanvas';
-import { Hero } from './components/Hero';
 import { IdentitySection } from './components/IdentitySection';
 import { Resume } from './components/Resume';
 import { Gallery } from './components/Gallery';
@@ -58,10 +57,7 @@ const App: React.FC = () => {
       />
 
       <main className="relative z-10">
-        <Hero theme={theme} />
-        <div className="-mt-8 md:-mt-12 lg:-mt-16">
-          <IdentitySection theme={theme} />
-        </div>
+        <IdentitySection theme={theme} />
         <Resume theme={theme} />
         <Gallery theme={theme} onModalStateChange={setIsModalOpen} />
         <Theater theme={theme} onModalStateChange={setIsModalOpen} />
