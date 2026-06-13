@@ -44,7 +44,7 @@ app.get('/api/health', (req, res) => {
 app.post('/api/chat', async (req, res) => {
   try {
     // 直接调用 API 逻辑
-    const chatModule = await import('./api/chat.js');
+    const chatModule = await import('./api/chat');
     const handler = chatModule.default;
 
     // 模拟 Vercel 的 req/res 对象
@@ -70,6 +70,9 @@ app.post('/api/chat', async (req, res) => {
   }
 });
 
+// 前端静态文件（必须在 SPA 兜底之前，否则静态请求会被当成 SPA 路由返回 index.html）
+app.use(express.static(path.join(__dirname, 'public')));
+
 // 所有其他路由返回 index.html（SPA）
 app.use((req, res, next) => {
   // 如果是 API 请求，继续传递
@@ -79,9 +82,6 @@ app.use((req, res, next) => {
   // 否则返回 index.html
   res.sendFile(path.join(__dirname, 'index.html'));
 });
-
-// 前端静态文件（放最后）
-app.use(express.static(path.join(__dirname, 'public')));
 
 // 启动服务器
 app.listen(PORT, () => {

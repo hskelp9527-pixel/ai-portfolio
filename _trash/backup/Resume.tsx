@@ -3,7 +3,6 @@ import { motion } from 'framer-motion';
 import { EXPERIENCES, SKILLS, PERSONAL_INFO, MAIN_PROJECTS, PERSONAL_PROJECTS } from '../data';
 import { Briefcase, Zap, GraduationCap, CheckCircle2, ChevronRight, Globe, Cpu, Terminal } from 'lucide-react';
 import { Theme } from '../types';
-import { ProjectCard } from './ProjectCard';
 
 interface ResumeProps {
   theme: Theme;
@@ -69,7 +68,7 @@ export const Resume: React.FC<ResumeProps> = ({ theme }) => {
           <div className={`p-2.5 sm:p-3 rounded-xl sm:rounded-2xl border transition-all duration-700 ${theme === 'dark' ? 'bg-blue-900/30 text-blue-200 border-blue-400/30' : 'bg-blue-500/10 text-blue-500 border-blue-500/10'}`}>
             <Globe size={24} className="sm:size-[28px]" />
           </div>
-          <h2 className={`text-3xl sm:text-4xl font-bold tracking-tight transition-colors duration-300 ${theme === 'dark' ? 'text-white' : 'text-[#1D1D1F]'}`}>项目实践</h2>
+          <h2 className={`text-3xl sm:text-4xl font-bold tracking-tight transition-colors duration-300 ${theme === 'dark' ? 'text-white' : 'text-[#1D1D1F]'}`}>主要项目经历</h2>
         </div>
 
         {MAIN_PROJECTS.map((proj) => (
@@ -116,47 +115,40 @@ export const Resume: React.FC<ResumeProps> = ({ theme }) => {
           <div className={`p-2.5 sm:p-3 rounded-xl sm:rounded-2xl border transition-all duration-700 ${theme === 'dark' ? 'bg-purple-900/30 text-purple-200 border-purple-400/30' : 'bg-purple-500/10 text-purple-500 border-purple-500/10'}`}>
             <Cpu size={24} className="sm:size-[28px]" />
           </div>
-          <h2 className={`text-3xl sm:text-4xl font-bold tracking-tight transition-colors duration-300 ${theme === 'dark' ? 'text-white' : 'text-[#1D1D1F]'}`}>AI 应用项目</h2>
+          <h2 className={`text-3xl sm:text-4xl font-bold tracking-tight transition-colors duration-300 ${theme === 'dark' ? 'text-white' : 'text-[#1D1D1F]'}`}>个人项目经历</h2>
         </div>
 
         <div className="grid md:grid-cols-2 gap-6 sm:gap-8">
-          {PERSONAL_PROJECTS.map((proj) => {
-            // 如果是有 links 的项目（新增的两个项目），使用 ProjectCard
-            if ('links' in proj && proj.links && proj.links.length > 0) {
-              return <ProjectCard key={proj.id} project={proj} theme={theme} />;
-            }
-            // 否则使用原有的卡片样式
-            return (
-              <motion.div
-                key={proj.id}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                whileHover={{ y: -8, scale: 1.02 }}
-                viewport={{ once: true }}
-                transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                className={`glass p-6 sm:p-8 rounded-[2rem] sm:rounded-[2.5rem] border-l-[6px] sm:border-l-[8px] shadow-xl hover:shadow-2xl transition-all duration-500 flex flex-col ${theme === 'dark' ? 'bg-[#0d1117]/60 border-white/20 border-l-purple-400 hover:bg-[#0d1117]/80' : 'bg-white/30 border-white/40 border-l-purple-500 hover:bg-white/50'}`}
-              >
-                <h3 className={`text-xl sm:text-2xl font-bold mb-4 leading-tight transition-colors duration-300 ${theme === 'dark' ? 'text-white' : 'text-[#1D1D1F]'}`}>{proj.title}</h3>
+          {PERSONAL_PROJECTS.map((proj) => (
+            <motion.div
+              key={proj.id}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              whileHover={{ y: -8, scale: 1.02 }}
+              viewport={{ once: true }}
+              transition={{ type: "spring", stiffness: 300, damping: 20 }}
+              className={`glass p-6 sm:p-8 rounded-[2rem] sm:rounded-[2.5rem] border-l-[6px] sm:border-l-[8px] shadow-xl hover:shadow-2xl transition-all duration-500 flex flex-col ${theme === 'dark' ? 'bg-[#0d1117]/60 border-white/20 border-l-purple-400 hover:bg-[#0d1117]/80' : 'bg-white/30 border-white/40 border-l-purple-500 hover:bg-white/50'}`}
+            >
+              <h3 className={`text-xl sm:text-2xl font-bold mb-4 leading-tight transition-colors duration-300 ${theme === 'dark' ? 'text-white' : 'text-[#1D1D1F]'}`}>{proj.title}</h3>
 
-                <div className="space-y-3 sm:space-y-4 flex-grow">
-                  {proj.description.split('\n').map((line, idx) => (
-                    <div key={idx} className="flex gap-3 items-start">
-                      {line.includes('：') && <Terminal className={`shrink-0 mt-1 transition-all ${theme === 'dark' ? 'text-purple-300' : 'text-purple-500'}`} size={16} />}
-                      <p className={`text-sm sm:text-base leading-relaxed font-medium transition-colors duration-300 ${theme === 'dark' ? 'text-gray-200' : 'text-[#1D1D1F]/70'}`}>{line}</p>
-                    </div>
-                  ))}
-                </div>
+              <div className="space-y-3 sm:space-y-4 flex-grow">
+                {proj.description.split('\n').map((line, idx) => (
+                  <div key={idx} className="flex gap-3 items-start">
+                    {line.includes('：') && <Terminal className={`shrink-0 mt-1 transition-all ${theme === 'dark' ? 'text-purple-300' : 'text-purple-500'}`} size={16} />}
+                    <p className={`text-sm sm:text-base leading-relaxed font-medium transition-colors duration-300 ${theme === 'dark' ? 'text-gray-200' : 'text-[#1D1D1F]/70'}`}>{line}</p>
+                  </div>
+                ))}
+              </div>
 
-                <div className="flex flex-wrap gap-2 mt-5">
-                  {proj.tags.map(tag => (
-                    <span key={tag} className={`px-3 py-1 sm:px-4 sm:py-1.5 rounded-lg sm:rounded-xl text-xs sm:text-[9px] font-bold uppercase tracking-wider transition-all duration-700 ${theme === 'dark' ? 'bg-purple-900/40 text-purple-100 border border-purple-500/30' : 'bg-purple-500/10 text-purple-600 border border-purple-500/20'}`}>
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-              </motion.div>
-            );
-          })}
+              <div className="flex flex-wrap gap-2 mt-5">
+                {proj.tags.map(tag => (
+                  <span key={tag} className={`px-3 py-1 sm:px-4 sm:py-1.5 rounded-lg sm:rounded-xl text-xs sm:text-[9px] font-bold uppercase tracking-wider transition-all duration-700 ${theme === 'dark' ? 'bg-purple-900/40 text-purple-100 border border-purple-500/30' : 'bg-purple-500/10 text-purple-600 border border-purple-500/20'}`}>
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            </motion.div>
+          ))}
         </div>
       </div>
 
@@ -187,7 +179,7 @@ export const Resume: React.FC<ResumeProps> = ({ theme }) => {
       </div>
 
       {/* 技能 */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
+      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
         {SKILLS.map((skillGroup) => (
           <motion.div
             key={skillGroup.category}
@@ -195,13 +187,13 @@ export const Resume: React.FC<ResumeProps> = ({ theme }) => {
             whileInView={{ opacity: 1, y: 0 }}
             whileHover={{ y: -5, scale: 1.02 }}
             viewport={{ once: true }}
-            className={`glass p-8 sm:p-10 rounded-[2rem] sm:rounded-[3rem] border-b-[6px] sm:border-b-[8px] shadow-xl transition-all duration-500 flex flex-col min-h-[420px] ${theme === 'dark' ? 'bg-[#0d1117]/70 border-white/10 border-b-blue-400/40' : 'bg-white/30 border-white/40 border-b-purple-500/10'}`}
+            className={`glass p-8 sm:p-10 rounded-[2rem] sm:rounded-[3rem] border-b-[6px] sm:border-b-[8px] shadow-xl transition-all duration-500 ${theme === 'dark' ? 'bg-[#0d1117]/70 border-white/10 border-b-blue-400/40' : 'bg-white/30 border-white/40 border-b-purple-500/10'}`}
           >
             <h3 className={`text-xs sm:text-[10px] font-black mb-4 sm:mb-6 flex items-center gap-3 uppercase tracking-[0.2em] sm:tracking-[0.3em] transition-colors duration-300 ${theme === 'dark' ? 'text-blue-300' : 'text-[#1D1D1F]/40'}`}>
               <Zap size={14} className={theme === 'dark' ? 'text-blue-400' : 'text-purple-500'} />
               {skillGroup.category}
             </h3>
-            <div className="flex flex-wrap gap-2 mb-4">
+            <div className="flex flex-wrap gap-2">
               {skillGroup.items.map(skill => (
                 <span
                   key={skill}
@@ -211,11 +203,6 @@ export const Resume: React.FC<ResumeProps> = ({ theme }) => {
                 </span>
               ))}
             </div>
-            {skillGroup.summary && (
-              <p className={`text-xs leading-relaxed transition-colors duration-300 mt-auto ${theme === 'dark' ? 'text-gray-400' : 'text-[#1D1D1F]/60'}`}>
-                {skillGroup.summary}
-              </p>
-            )}
           </motion.div>
         ))}
       </div>

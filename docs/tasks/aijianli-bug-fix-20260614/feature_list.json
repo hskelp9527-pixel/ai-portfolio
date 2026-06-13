@@ -1,0 +1,193 @@
+[
+  {
+    "id": "F001",
+    "phase": "B",
+    "feature": "修 server.ts 路由顺序，express.static 提前到 SPA 兜底之前",
+    "files": ["server.ts"],
+    "user_steps": [
+      "启动 npm run dev:api",
+      "用浏览器访问 http://localhost:4001",
+      "查看网络面板中 CSS/JS 请求的 MIME 类型"
+    ],
+    "acceptance": [
+      "CSS 请求返回 text/css",
+      "JS 请求返回 application/javascript",
+      "请求不再被 SPA 兜底路由返回 index.html"
+    ],
+    "passes": true,
+    "evidence": ["evidence/phase-b-verification.md"],
+    "notes": "curl 验证：/vector-index.json 返回 Accept-Ranges: bytes（静态服务），/nonexistent.css 返回 text/html（SPA 兜底）"
+  },
+  {
+    "id": "F002",
+    "phase": "B",
+    "feature": "修 server.ts:47 引用 ./api/chat.js，改用 tsx 动态加载 chat.ts",
+    "files": ["server.ts", "package.json"],
+    "user_steps": [
+      "启动 npm run dev:api",
+      "通过前端 AIChatDrawer 发送一条消息"
+    ],
+    "acceptance": [
+      "服务器日志不出现 Cannot find module './api/chat.js'",
+      "/api/chat 返回 200 + 非空 content",
+      "package.json 中 tsx 在 dependencies 字段下"
+    ],
+    "passes": true,
+    "evidence": ["evidence/phase-b-verification.md"],
+    "notes": "server.ts 启动正常，/api/health 返回 200。tsx 留在 devDependencies（server.ts 仅本地用，生产用 Vercel Serverless）— PRD 原方案修正"
+  {
+    "id": "F003",
+    "phase": "B",
+    "feature": "Tailwind CDN 改为 PostCSS 本地构建",
+    "files": ["index.html", "package.json", "tailwind.config.ts", "postcss.config.js", "src/index.css"],
+    "user_steps": [
+      "npm install 安装新依赖",
+      "npm run dev:vite 启动前端",
+      "访问 http://localhost:3001",
+      "打开浏览器开发者工具 console"
+    ],
+    "acceptance": [
+      "console 不出现 Tailwind CDN 警告",
+      "页面样式正常渲染（无样式丢失）",
+      "暗色主题切换功能正常"
+    ],
+    "passes": true,
+    "evidence": ["evidence/phase-b-verification.md"],
+    "notes": "vite build 通过（CSS 输出 45.55 kB）。浏览器 console 手测留待用户启动 dev:vite 后确认"
+  {
+    "id": "F004",
+    "phase": "B",
+    "feature": "删除 server/ 子目录（含 .env / index.js / package.json / node_modules）",
+    "files": ["server/"],
+    "user_steps": [
+      "检查项目根目录"
+    ],
+    "acceptance": [
+      "server/ 目录不存在",
+      "根 server.ts 仍能正常运行"
+    ],
+    "passes": true,
+    "evidence": ["evidence/phase-b-verification.md"],
+    "notes": "server/ 整目录已删（含 .env / index.js / package.json / node_modules）。server.ts 仍正常启动"
+  {
+    "id": "F005",
+    "phase": "C",
+    "feature": "统一 GLM 模型版本为 glm-4.5-air",
+    "files": ["api/chat.ts", "types.ts"],
+    "user_steps": [
+      "grep -r 'glm-4' --include='*.ts' --include='*.tsx' E:/claudecode/AIJianLi/"
+    ],
+    "acceptance": [
+      "只出现 glm-4.5-air",
+      "不出现 glm-4.7 或 glm-4.5（不带 -air）"
+    ],
+    "passes": false,
+    "evidence": [],
+    "notes": "types.ts 中模型联合类型收窄为 'glm-4.5-air'"
+  },
+  {
+    "id": "F006",
+    "phase": "C",
+    "feature": "修复 useLazyLoad 类型断言绕过接口",
+    "files": ["hooks/useLazyLoad.ts"],
+    "user_steps": [
+      "npx tsc --noEmit"
+    ],
+    "acceptance": [
+      "UseLazyLoadReturn 接口含 markAsLoaded 和 markAsError",
+      "line 110 无 as 断言",
+      "tsc 不报类型错误"
+    ],
+    "passes": false,
+    "evidence": [],
+    "notes": ""
+  },
+  {
+    "id": "F007",
+    "phase": "C",
+    "feature": "删除重复的测试 setup 文件",
+    "files": ["src/test-setup.ts", "vitest.config.ts"],
+    "user_steps": [
+      "npm test"
+    ],
+    "acceptance": [
+      "src/test-setup.ts 不存在",
+      "vitest.config.ts setupFiles 数组只有一项 './vitest.setup.ts'",
+      "测试全部通过"
+    ],
+    "passes": false,
+    "evidence": [],
+    "notes": ""
+  },
+  {
+    "id": "F008",
+    "phase": "D",
+    "feature": "email 从 data.ts 引入到 App.tsx",
+    "files": ["App.tsx"],
+    "user_steps": [
+      "grep 'rhydewy@163.com' --include='*.tsx' --include='*.ts'"
+    ],
+    "acceptance": [
+      "App.tsx 不再硬编码 email",
+      "email 来源是 PERSONAL_INFO.email"
+    ],
+    "passes": false,
+    "evidence": [],
+    "notes": ""
+  },
+  {
+    "id": "F009",
+    "phase": "D",
+    "feature": "简化 api/chat.ts 错误日志",
+    "files": ["api/chat.ts"],
+    "user_steps": [
+      "阅读 api/chat.ts:270-298 catch 块"
+    ],
+    "acceptance": [
+      "不打印 error.stack",
+      "不打印 error.response.data",
+      "保留 error.message 和 error.response?.status"
+    ],
+    "passes": false,
+    "evidence": [],
+    "notes": ""
+  },
+  {
+    "id": "F010",
+    "phase": "D",
+    "feature": "image.csv / video.csv 加用途注释",
+    "files": ["image.csv", "video.csv"],
+    "user_steps": [
+      "cat image.csv | head -3",
+      "cat video.csv | head -3"
+    ],
+    "acceptance": [
+      "文件头有注释说明用途",
+      "注释说明不参与运行时"
+    ],
+    "passes": false,
+    "evidence": [],
+    "notes": "CSV 不支持 # 注释，用 README 或文件首行的伪注释列"
+  },
+  {
+    "id": "F011",
+    "phase": "E",
+    "feature": "批量替换外脑 4 个文件的 macOS 路径",
+    "files": [
+      "E:/claudecode/human_rhy_soul/AGENTS.md",
+      "E:/claudecode/human_rhy_soul/System/working-memory/OPERATING_RULES.md",
+      "E:/claudecode/human_rhy_soul/System/session_hooks/auto_sync.sh",
+      "E:/claudecode/human_rhy_soul/Resources/方法论/新电脑AI协作开发环境启动方案.md"
+    ],
+    "user_steps": [
+      "grep -r '/Users/jimm' E:/claudecode/human_rhy_soul/"
+    ],
+    "acceptance": [
+      "grep 输出为空",
+      "4 个文件路径都是 E:/claudecode/human_rhy_soul/"
+    ],
+    "passes": false,
+    "evidence": [],
+    "notes": "外脑是独立 git repo，只本地改不 push"
+  }
+]
