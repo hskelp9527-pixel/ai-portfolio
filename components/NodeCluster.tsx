@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { GraphNode, NodeAccent } from '../types';
 import { NodePosition } from '../hooks/useNodeGraph';
 
@@ -34,6 +34,18 @@ function nodeSize(importance: number, type: string): number {
   return Math.max(44, 28 + importance * 5);
 }
 
+function hashSeed(id: string): number {
+  let h = 0;
+  for (let i = 0; i < id.length; i++) {
+    h = (h * 31 + id.charCodeAt(i)) | 0;
+  }
+  return Math.abs(h);
+}
+
+const SATELLITE_ANGLES = [0, 120, 240];
+const SATELLITE_RADIUS = 80;
+const SATELLITE_DURATIONS = [8, 10, 12];
+
 export const NodeCluster: React.FC<NodeClusterProps> = ({
   nodes,
   positions,
@@ -42,6 +54,8 @@ export const NodeCluster: React.FC<NodeClusterProps> = ({
   onHover,
   onClick,
 }) => {
+  const prefersReducedMotion = useReducedMotion();
+
   return (
     <>
       {nodes.map((node) => {
@@ -55,19 +69,42 @@ export const NodeCluster: React.FC<NodeClusterProps> = ({
         const accent = accentConfig[node.accent || 'default'];
         const isCenter = node.type === 'center';
 
+        const seed = hashSeed(node.id);
+        const breathDuration = 2 + (seed % 3); // 2-4s 错峰
+        const breathDelay = (seed % 2000) / 1000;
+
+        const breathActive = !prefersReducedMotion && !isHovered && !isActive;
+
+        const scaleValue = isHovered
+          ? 1.15
+          : isActive
+          ? 1.25
+          : breathActive
+          ? [1, 1.04, 1]
+          : 1;
+
+        const scaleTransition = breathActive
+          ? {
+              duration: breathDuration,
+              repeat: Infinity,
+              ease: 'easeInOut' as const,
+              delay: breathDelay,
+            }
+          : { duration: 0.3, ease: [0.16, 1, 0.3, 1] as const };
+
         return (
           <motion.div
             key={node.id}
             initial={{ opacity: 0, scale: 0.4 }}
             animate={{
               opacity: isDimmed ? 0.25 : 1,
-              scale: isHovered ? 1.15 : isActive ? 1.25 : 1,
+              scale: scaleValue,
               x: pos.x - size / 2,
               y: pos.y - size / 2,
             }}
             transition={{
               opacity: { duration: 0.3, ease: [0.4, 0, 0.2, 1] },
-              scale: { duration: 0.3, ease: [0.16, 1, 0.3, 1] },
+              scale: scaleTransition,
               x: { duration: 0.7, ease: [0.16, 1, 0.3, 1] },
               y: { duration: 0.7, ease: [0.16, 1, 0.3, 1] },
             }}
@@ -79,10 +116,11 @@ export const NodeCluster: React.FC<NodeClusterProps> = ({
               width: size,
               height: size,
               zIndex: isHovered || isActive ? 20 : 10,
+              willChange: 'transform',
             }}
           >
             <div
-              className={`relative w-full h-full rounded-full flex items-center justify-center text-center font-display ${
+              className={`relative w-full h-full rounded-full flex items-center justify-center text-center font-display overflow-visible ${
                 isCenter ? 'shadow-glow-teal-strong' : ''
               }`}
               style={{
@@ -106,15 +144,83 @@ export const NodeCluster: React.FC<NodeClusterProps> = ({
               >
                 {node.label}
               </div>
+
+              {!isCenter && (
+                <AnimatePresence>
+                  {isHovered && !prefersReducedMotion && (
+                    <motion.div
+                      key={`ripple-${node.id}`}
+                      className="absolute inset-0 rounded-full pointer-events-none"
+                      initial={{ scale: 0, opacity: 0.6 }}
+                      animate={{ scale: 2, opacity: 0 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.8, ease: 'easeOut' }}
+                      style={{
+                        border: `2px solid ${accent.ring}`,
+                      }}
+                    />
+                  )}
+                </AnimatePresence>
+              )}
+
               {isCenter && (
-                <motion.div
-                  className="absolute inset-0 rounded-full pointer-events-none"
-                  animate={{ scale: [1, 1.15, 1], opacity: [0.6, 0.2, 0.6] }}
-                  transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
-                  style={{
-                    boxShadow: '0 0 0 2px oklch(0.78 0.18 165 / 0.4)',
-                  }}
-                />
+                <>
+                  {!prefersReducedMotion && (
+                    <motion.div
+                      className="absolute rounded-full pointer-events-none"
+                      style={{
+                        inset: -30,
+                        border: '1px dashed oklch(0.78 0.18 165 / 0.25)',
+                      }}
+                      animate={{ rotate: 360 }}
+                      transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
+                    />
+                  )}
+
+                  <motion.div
+                    className="absolute inset-0 rounded-full pointer-events-none"
+                    animate={
+                      prefersReducedMotion
+                        ? { opacity: 0.4 }
+                        : { scale: [1, 1.15, 1], opacity: [0.6, 0.2, 0.6] }
+                    }
+                    transition={
+                      prefersReducedMotion
+                        ? { duration: 0 }
+                        : { duration: 3, repeat: Infinity, ease: 'easeInOut' }
+                    }
+                    style={{
+                      boxShadow: '0 0 0 2px oklch(0.78 0.18 165 / 0.4)',
+                    }}
+                  />
+
+                  {!prefersReducedMotion &&
+                    SATELLITE_ANGLES.map((startAngle, i) => (
+                      <motion.div
+                        key={`satellite-${i}`}
+                        className="absolute top-1/2 left-1/2 pointer-events-none"
+                        style={{ width: 0, height: 0, willChange: 'transform' }}
+                        animate={{ rotate: [startAngle, startAngle + 360] }}
+                        transition={{
+                          duration: SATELLITE_DURATIONS[i],
+                          repeat: Infinity,
+                          ease: 'linear',
+                        }}
+                      >
+                        <div
+                          style={{
+                            position: 'absolute',
+                            width: 6,
+                            height: 6,
+                            borderRadius: '50%',
+                            background: 'oklch(0.78 0.18 165)',
+                            boxShadow: '0 0 8px oklch(0.78 0.18 165 / 0.8)',
+                            transform: `translateX(${SATELLITE_RADIUS}px) translateY(-3px)`,
+                          }}
+                        />
+                      </motion.div>
+                    ))}
+                </>
               )}
             </div>
           </motion.div>

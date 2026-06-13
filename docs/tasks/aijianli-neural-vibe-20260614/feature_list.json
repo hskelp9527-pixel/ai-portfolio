@@ -1,0 +1,325 @@
+[
+  {
+    "id": "L001",
+    "phase": "1",
+    "feature": "边线脉冲数据流（每条边 1-2 个光点沿直线运动）",
+    "files": ["components/NeuralCanvas.tsx"],
+    "user_steps": [
+      "npm run dev:vite 启动",
+      "浏览器 desktop 1920x1080 访问首页",
+      "观察节点之间的边线"
+    ],
+    "acceptance": [
+      "每条边上有光点沿直线从 source 流向 target",
+      "edge.strength ≥ 0.7 的边有 2 个光点，其余 1 个",
+      "光点颜色 dark 主题 signature-teal，light 主题 signature-teal-dim",
+      "光点循环不间断（repeat Infinity）",
+      "光点运动 duration 3-5s（strength 高 → 快）",
+      "prefers-reduced-motion 开启时光点不显示"
+    ],
+    "passes": true,
+    "evidence": ["evidence/phase-1-build.md"],
+    "notes": "Phase 1 今天开发。实现：保留 motion.line，新增 motion.circle。光点用 framer-motion animate cx/cy 多关键帧线性插值。每条边的光点 delay 错峰避免同步。已实施：每条边包 g，光点单方向 s→t（repeatType: 'loop'），delay = (di/dots)*duration + (i%7)*0.3 错峰，drop-shadow 4px 发光"
+  },
+  {
+    "id": "L002",
+    "phase": "1",
+    "feature": "节点错峰呼吸（所有非交互节点轻微 scale 呼吸）",
+    "files": ["components/NodeCluster.tsx"],
+    "user_steps": [
+      "npm run dev:vite 启动",
+      "观察节点（不 hover）"
+    ],
+    "acceptance": [
+      "所有非 center 节点 scale 在 1.0 ↔ 1.04 之间呼吸",
+      "每个节点呼吸周期 2-4s，错峰（基于 id 哈希，刷新后稳定）",
+      "hover 节点时呼吸暂停（节点 scale 锁定在 1.15）",
+      "active（DetailPanel 打开）时呼吸暂停",
+      "dim 状态（opacity 0.25）节点继续呼吸（不暂停）",
+      "prefers-reduced-motion 开启时呼吸暂停",
+      "Center 节点用独立的呼吸节奏（L003 处理）"
+    ],
+    "passes": true,
+    "evidence": ["evidence/phase-1-build.md"],
+    "notes": "Phase 1 今天开发。实现：motion.div animate 加 scale 多关键帧。delay 用 id 哈希算。hover/active 时 animate scale 切换为静态值，呼吸自然停止。已实施：hashSeed 函数（charCodeAt 累乘），breathDuration 2-4s，breathDelay 0-2s，scaleValue 条件切换（数组↔单值），scaleTransition 联动"
+  },
+  {
+    "id": "L003",
+    "phase": "1",
+    "feature": "Center 节点升级（外环旋转 + 中环脉动 + 内核光晕 + 3 卫星轨道）",
+    "files": ["components/NodeCluster.tsx"],
+    "user_steps": [
+      "npm run dev:vite 启动",
+      "观察 center 节点'任泓雨'"
+    ],
+    "acceptance": [
+      "外环：边框圆，绕 center 中心慢速旋转（duration 20s linear infinite）",
+      "中环：当前 scale 1↔1.15 脉冲保留（duration 3s）",
+      "内核：box-shadow 光晕加强（pulse 动画 opacity 0.6↔1）",
+      "3 颗卫星：motion.div 沿圆形轨道运动（duration 8/10/12s 错峰）",
+      "卫星颜色 signature-teal，大小 6px",
+      "卫星轨道半径约 80px（视觉延伸到 ~180px 整体）",
+      "整体不超出容器（z-index 不被遮挡）",
+      "prefers-reduced-motion 开启时卫星和外环停止，中环和内核保留静态光晕"
+    ],
+    "passes": true,
+    "evidence": ["evidence/phase-1-build.md"],
+    "notes": "Phase 1 今天开发。实现：center 分支重构。卫星用 transform: rotate() + translateX(80px) 沿轨道。每颗卫星起始角度 0/120/240 度。包裹层用 will-change: transform。已实施：4 部分（外环 dashed inset -30 旋转 20s + 中环保留 + 3 卫星 8/10/12s + 父容器 overflow-visible）"
+  },
+  {
+    "id": "L004",
+    "phase": "1",
+    "feature": "悬停涟漪扩散（hover 节点时从中心向外扩散圆环）",
+    "files": ["components/NodeCluster.tsx"],
+    "user_steps": [
+      "npm run dev:vite 启动",
+      "hover 任意非 center 节点"
+    ],
+    "acceptance": [
+      "hover 触发 1 圈涟漪从节点中心向外扩散",
+      "涟漪 scale 0 → 2，opacity 0.6 → 0，duration 0.8s",
+      "涟漪颜色按节点 accent：teal/amber/default",
+      "涟漪是 absolute，定位 center，pointer-events: none，不阻挡点击",
+      "hover 结束后涟漪完成本轮就消失（不立即中断）",
+      "rapid hover（快速来回）不堆积多个涟漪（用 AnimatePresence key 控制）",
+      "prefers-reduced-motion 开启时不触发涟漪",
+      "Center 节点 hover 不触发涟漪（已有卫星+多层环，再加涟漪过满）"
+    ],
+    "passes": true,
+    "evidence": ["evidence/phase-1-build.md"],
+    "notes": "Phase 1 今天开发。实现：motion.div 内嵌 ripple motion.div，AnimatePresence + key=isHovered 控制。已实施：非 center 节点 AnimatePresence + key=`ripple-${id}`，border 2px accent.ring，scale 0→2 opacity 0.6→0 duration 0.8s，prefersReducedMotion 关闭"
+  },
+  {
+    "id": "L005",
+    "phase": "2",
+    "feature": "粒子连线（constellation 效果，相近粒子之间画淡线）",
+    "files": ["three/ParticleField.tsx"],
+    "user_steps": [
+      "npm run dev:vite 启动",
+      "观察背景粒子"
+    ],
+    "acceptance": [
+      "距离 < 阈值的粒子之间画淡线（opacity 0.1-0.3）",
+      "线条颜色 signature-teal",
+      "粒子移动时连线动态更新",
+      "连线总数不超过 200（性能保护）",
+      "FPS 仍 ≥ 30"
+    ],
+    "passes": false,
+    "evidence": [],
+    "notes": "Phase 2 扩展（用户未启动）。实现：用 three.js LineSegments + BufferGeometry 动态更新。每 N 帧重算一次配对（不全帧算）"
+  },
+  {
+    "id": "L006",
+    "phase": "2",
+    "feature": "三层视差粒子（远/中/近不同速度漂浮）",
+    "files": ["three/ParticleField.tsx"],
+    "user_steps": [
+      "npm run dev:vite 启动",
+      "滚动页面或移动鼠标，观察粒子层次"
+    ],
+    "acceptance": [
+      "三层粒子：远（小、慢、暗）/ 中（默认）/ 近（大、快、亮）",
+      "鼠标移动时三层有视差错位",
+      "层间颜色微差（远偏蓝灰，近偏 teal）",
+      "总粒子数 ≤ 400（性能保护）"
+    ],
+    "passes": false,
+    "evidence": [],
+    "notes": "Phase 2 扩展（用户未启动）。实现：3 个 Points 实例，不同 size + speed + color"
+  },
+  {
+    "id": "L007",
+    "phase": "2",
+    "feature": "鼠标响应粒子（粒子被鼠标轻微吸引）",
+    "files": ["three/ParticleField.tsx"],
+    "user_steps": [
+      "npm run dev:vite 启动",
+      "鼠标在画布上移动"
+    ],
+    "acceptance": [
+      "鼠标周围 200px 内的粒子轻微向鼠标聚集（不是吸附）",
+      "粒子离开鼠标范围后回归原轨道",
+      "响应平滑，无卡顿",
+      "prefers-reduced-motion 开启时不响应"
+    ],
+    "passes": false,
+    "evidence": [],
+    "notes": "Phase 2 扩展（用户未启动）。实现：useFrame 内对每个粒子算到鼠标距离，< 200 时加速度向鼠标"
+  },
+  {
+    "id": "L008",
+    "phase": "3",
+    "feature": "Center 节点显示 3 行内容（姓名 / 职位 / slogan）",
+    "files": ["components/NodeCluster.tsx", "data.ts"],
+    "user_steps": [
+      "npm run dev:vite 启动",
+      "观察 center 节点"
+    ],
+    "acceptance": [
+      "center 节点显示：'任泓雨'（大）/ 'AI 应用工程师'（中）/ '用 AI 重塑生产力'（小）",
+      "三行垂直排列，字号层级清晰",
+      "字号适配节点尺寸（不溢出）"
+    ],
+    "passes": false,
+    "evidence": [],
+    "notes": "Phase 3 扩展（用户未启动）。GraphNode 加 subtitle / tagline 可选字段，center 节点渲染时使用"
+  },
+  {
+    "id": "L009",
+    "phase": "3",
+    "feature": "节点角标（等级 + 类型小图标）",
+    "files": ["components/NodeCluster.tsx"],
+    "user_steps": [
+      "npm run dev:vite 启动",
+      "观察任意非 center 节点角落"
+    ],
+    "acceptance": [
+      "每个非 center 节点右上角显示 L{importance} 角标（如 L10, L7）",
+      "左下角显示 cluster 小图标（projects=📁, skills=⚡, philosophy=💡, timeline=📅）或自定义 SVG",
+      "角标大小 10-12px，不抢节点主体",
+      "hover 时角标淡出（不干扰 HoverCard）"
+    ],
+    "passes": false,
+    "evidence": [],
+    "notes": "Phase 3 扩展（用户未启动）。用 lucide-react 图标库（已装）"
+  },
+  {
+    "id": "L010",
+    "phase": "3",
+    "feature": "键盘提示与快捷键（[Space] 自动导览 / [?] 帮助）",
+    "files": ["components/NeuralCanvas.tsx", "hooks/useAIGuide.ts"],
+    "user_steps": [
+      "npm run dev:vite 启动",
+      "按 Space 或 ?"
+    ],
+    "acceptance": [
+      "右下角显示键盘提示：[Space] 自动导览 · [?] 帮助",
+      "按 Space 触发 AI 自动导览模式（AI 主动讲解节点）",
+      "按 ? 弹出帮助面板（节点图操作说明 + AI 对话用法）",
+      "ESC 关闭帮助面板",
+      "input/textarea 聚焦时禁用快捷键"
+    ],
+    "passes": false,
+    "evidence": [],
+    "notes": "Phase 3 扩展（用户未启动）。Space 自动导览：AI 按 cluster 顺序逐个介绍节点（每 5 秒一个）"
+  },
+  {
+    "id": "L011",
+    "phase": "4",
+    "feature": "Light 主题色板（日间矿物：象牙白 + 浅青 + 暖金）",
+    "files": ["tailwind.config.ts", "src/index.css"],
+    "user_steps": [
+      "点击右上角主题切换按钮切到 light",
+      "观察整体配色"
+    ],
+    "acceptance": [
+      "light 模式背景：象牙白 oklch(0.96 0.01 80)，不是纯白",
+      "signature-teal 在 light 下用更深版本 oklch(0.45 0.10 165) 保证对比度",
+      "signature-amber 在 light 下用 oklch(0.50 0.12 50)",
+      "玻璃态背景在 light 下改为白色半透 oklch(0.98 0.01 80 / 0.7)",
+      "WCAG AA 对比度通过（文字 vs 背景 ≥ 4.5:1）"
+    ],
+    "passes": false,
+    "evidence": [],
+    "notes": "Phase 4 扩展（用户明确要 '主题切换深色和浅色的都需要'）。设计哲学：light 不是 dark 反色，是独立的'日间矿物'主题"
+  },
+  {
+    "id": "L012",
+    "phase": "4",
+    "feature": "Light 模式所有组件实测 + 修复",
+    "files": ["components/NeuralCanvas.tsx", "components/NodeCluster.tsx", "components/GlassCard.tsx", "components/AIGuideBubble.tsx", "components/AIConversationPanel.tsx", "components/MobileTimeline.tsx"],
+    "user_steps": [
+      "切到 light 模式",
+      "逐一测试：节点图 / HoverCard / DetailPanel / AIGuideBubble / AIConversationPanel / MobileTimeline"
+    ],
+    "acceptance": [
+      "所有组件在 light 模式下视觉协调（无对比度不足、无颜色突兀）",
+      "粒子背景在 light 下亮度合理（不过曝）",
+      "玻璃态卡片在 light 下底色和文字对比清晰",
+      "AIConversationPanel 滚动条 / 输入框 / 按钮在 light 下视觉正常"
+    ],
+    "passes": false,
+    "evidence": [],
+    "notes": "Phase 4 扩展（用户明确要）。预期：发现 5-15 个 light 模式 bug，逐一修复"
+  },
+  {
+    "id": "L013",
+    "phase": "4",
+    "feature": "主题切换全局过渡 300ms",
+    "files": ["src/index.css", "App.tsx"],
+    "user_steps": [
+      "点击主题切换按钮",
+      "观察切换过程"
+    ],
+    "acceptance": [
+      "切换时所有颜色属性 transition 300ms cubic-bezier(0.4, 0, 0.2, 1)",
+      "无闪烁、无白屏",
+      "切换后 sessionStorage 记住用户选择（刷新保留）"
+    ],
+    "passes": false,
+    "evidence": [],
+    "notes": "Phase 4 扩展。CSS: `* { transition: background-color, color, border-color 300ms neural-out; }`"
+  },
+  {
+    "id": "L014",
+    "phase": "5",
+    "feature": "ProjectCard 改为 GIF 缩略图",
+    "files": ["components/ProjectCard.tsx"（新建）, "data.ts", "components/Gallery.tsx"],
+    "user_steps": [
+      "（需用户提供 GIF 素材）",
+      "npm run dev:vite 启动",
+      "查看 Gallery"
+    ],
+    "acceptance": [
+      "每个项目卡片显示 5-10s 循环 GIF（不是静态截图）",
+      "GIF 加 lazy load（视口外不加载）",
+      "hover 时 GIF 暂停或加速",
+      "无 GIF 的项目 fallback 到静态截图",
+      "首屏 LCP 不退化（GIF 不阻塞）"
+    ],
+    "passes": false,
+    "evidence": [],
+    "notes": "Phase 5 扩展（用户明确要 'gif图点击可以扩大'）。阻塞依赖：用户提供每个项目的 GIF 文件"
+  },
+  {
+    "id": "L015",
+    "phase": "5",
+    "feature": "Theater 全屏剧场模式（点击 GIF 放大播放 + 项目背景 + 技术栈 + 角色 + 数据成果）",
+    "files": ["components/ProjectTheater.tsx"（新建）, "data.ts"],
+    "user_steps": [
+      "点击任意项目 GIF"
+    ],
+    "acceptance": [
+      "点击触发全屏模态（z-50），GIF 居中放大播放",
+      "右侧/下方显示：项目背景 / 技术栈 chips / 你的角色 / 数据成果（节省时间 / 用户数等）",
+      "支持键盘 ← → 切换上一个/下一个项目",
+      "ESC 关闭",
+      "点击外部关闭",
+      "prefers-reduced-motion 时 GIF 改为静态"
+    ],
+    "passes": false,
+    "evidence": [],
+    "notes": "Phase 5 扩展（用户明确要 '点击可以扩大的那种，更具备可视感'）。GraphNode 加 role / techStack / metrics 字段"
+  },
+  {
+    "id": "L016",
+    "phase": "5",
+    "feature": "滚动叙事（项目逐个展开，类似 Apple 产品页）",
+    "files": ["components/ProjectShowcase.tsx"（新建）, "App.tsx"],
+    "user_steps": [
+      "滚动到 Gallery 下方",
+      "观察项目展开过程"
+    ],
+    "acceptance": [
+      "Gallery 下方新增 Showcase 区段",
+      "滚动时每个项目卡片 sticky + 内容渐入（视口中央时完全展示）",
+      "项目 GIF 在 sticky 区域内放大播放",
+      "滚动到下个项目时上一个项目淡出",
+      "支持跳过（scroll-behavior: smooth）"
+    ],
+    "passes": false,
+    "evidence": [],
+    "notes": "Phase 5 扩展（方向 A 最后一块）。这是 'Apple 产品页' 风格的沉浸式滚动叙事"
+  }
+]

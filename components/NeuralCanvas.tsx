@@ -109,19 +109,46 @@ export const NeuralCanvas: React.FC<NeuralCanvasProps> = ({
             const t = positions.get(edge.target);
             if (!s || !t) return null;
             const strength = edge.strength ?? 0.5;
+            const lineColor = theme === 'dark' ? '#5eead4' : '#0d9488';
+            const dots = strength >= 0.7 ? 2 : 1;
+            const dotDuration = 5 - strength * 2;
+            const dotRadius = strength >= 0.9 ? 3 : 2;
             return (
-              <motion.line
-                key={i}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 0.15 + strength * 0.25 }}
-                transition={{ duration: 0.8, delay: i * 0.02 }}
-                x1={s.x}
-                y1={s.y}
-                x2={t.x}
-                y2={t.y}
-                stroke={theme === 'dark' ? '#5eead4' : '#0d9488'}
-                strokeWidth={0.5 + strength * 1.5}
-              />
+              <g key={`edge-${i}`}>
+                <motion.line
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 0.15 + strength * 0.25 }}
+                  transition={{ duration: 0.8, delay: i * 0.02 }}
+                  x1={s.x}
+                  y1={s.y}
+                  x2={t.x}
+                  y2={t.y}
+                  stroke={lineColor}
+                  strokeWidth={0.5 + strength * 1.5}
+                />
+                {!reducedMotion &&
+                  Array.from({ length: dots }).map((_, di) => (
+                    <motion.circle
+                      key={`dot-${i}-${di}`}
+                      r={dotRadius}
+                      fill={lineColor}
+                      initial={{ cx: s.x, cy: s.y, opacity: 0 }}
+                      animate={{
+                        cx: [s.x, t.x],
+                        cy: [s.y, t.y],
+                        opacity: [0, 1, 0],
+                      }}
+                      transition={{
+                        duration: dotDuration,
+                        repeat: Infinity,
+                        repeatType: 'loop',
+                        ease: 'linear',
+                        delay: (di / dots) * dotDuration + (i % 7) * 0.3,
+                      }}
+                      style={{ filter: `drop-shadow(0 0 4px ${lineColor})` }}
+                    />
+                  ))}
+              </g>
             );
           })}
         </svg>

@@ -30,7 +30,7 @@ export const EXPERIENCES: Experience[] = [
     id: 'w0',
     company: '深圳市知行求索科技有限公司',
     role: 'AI产品经理',
-    period: '2026.01 – 至今',
+    period: '2026.01 – 2026.03',
     description: '1．负责项目原型的快速落地；\n2．开发前端页面，并独立完成前后端联调，效率提升 50%；\n3．参与产品设计、UI 设计、测试工作。',
     tags: ['AI产品', '前端开发', '原型落地', '效率提升']
   },
@@ -395,7 +395,7 @@ export const GRAPH_NODES: GraphNode[] = [
     type: 'timeline',
     cluster: 'timeline',
     label: '知行求索科技',
-    summary: 'AI 产品经理 · 2026.01 至今',
+    summary: 'AI 产品经理 · 2026.01 - 2026.03',
     detail: 'AI 产品经理。负责项目原型快速落地、前端开发与前后端联调，效率提升 50%。参与产品设计、UI 设计、测试工作。',
     tags: ['AI 产品', '前端开发', '原型落地'],
     importance: 9,
