@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { FloatingNavigation } from './components/FloatingNavigation';
 import { AIChatDrawer } from './components/AIChatDrawer';
+import { NeuralCanvas } from './components/NeuralCanvas';
 import { Hero } from './components/Hero';
 import { IdentitySection } from './components/IdentitySection';
 import { Resume } from './components/Resume';
@@ -11,7 +12,7 @@ import { PERSONAL_INFO } from './data';
 import { Theme } from './types';
 
 const App: React.FC = () => {
-  const [theme, setTheme] = useState<Theme>('light');
+  const [theme, setTheme] = useState<Theme>('dark');
   const [emailCopied, setEmailCopied] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isAIChatOpen, setIsAIChatOpen] = useState(false);
@@ -46,6 +47,8 @@ const App: React.FC = () => {
 
   return (
     <div className={`relative min-h-screen transition-all duration-300 ${theme === 'dark' ? 'text-gray-100' : 'text-[#1D1D1F]'}`}>
+      <NeuralCanvas theme={theme} />
+
       <FloatingNavigation
         theme={theme}
         onToggleTheme={toggleTheme}

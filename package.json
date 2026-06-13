@@ -17,8 +17,12 @@
     "vercel-build": "vite build && npx esbuild api/chat.ts --bundle --platform=node --target=node20 --outfile=api/chat.js --external:axios --external:fs --external:path"
   },
   "dependencies": {
+    "@react-three/fiber": "^9.6.1",
+    "@types/d3-force": "^3.0.10",
+    "@types/three": "^0.184.1",
     "axios": "^1.13.2",
     "cors": "^2.8.5",
+    "d3-force": "^3.0.0",
     "dotenv": "^17.2.3",
     "express": "^5.2.1",
     "framer-motion": "^12.23.26",
@@ -26,7 +30,8 @@
     "jspdf": "^3.0.4",
     "lucide-react": "^0.562.0",
     "react": "^19.2.3",
-    "react-dom": "^19.2.3"
+    "react-dom": "^19.2.3",
+    "three": "^0.184.0"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^6.9.1",
