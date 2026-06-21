@@ -14,7 +14,7 @@
     "test:run": "vitest run",
     "build:kb": "tsx scripts/build-knowledge-base.ts",
     "export:pdf": "tsx scripts/export-pdf.ts",
-    "vercel-build": "npm run build:kb && vite build && npx esbuild api/chat.ts --bundle --platform=node --target=node20 --format=esm --outfile=api/chat.js --external:axios --external:fs --external:path"
+    "vercel-build": "npm run build:kb && vite build"
   },
   "dependencies": {
     "@react-three/fiber": "^9.6.1",
