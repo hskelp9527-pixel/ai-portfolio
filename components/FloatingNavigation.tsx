@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FileText, Image, Play, Sun, Moon, Menu, X, MessageSquare } from 'lucide-react';
+import { Compass, Image, Sun, Moon, Menu, X, MessageSquare } from 'lucide-react';
 import { NavigationItem } from './NavigationItem';
 import { NavigationItem as NavigationItemType, Theme } from '../types';
 
@@ -38,22 +38,16 @@ export const FloatingNavigation: React.FC<FloatingNavigationProps> = ({
   // 导航项配置
   const navigationItems: NavigationItemType[] = [
     {
-      id: 'resume',
-      icon: FileText,
-      label: '简历',
-      href: '#resume'
+      id: 'systems',
+      icon: Compass,
+      label: '代表系统',
+      href: '#systems'
     },
     {
       id: 'gallery',
       icon: Image,
       label: '作品集',
       href: '#gallery'
-    },
-    {
-      id: 'theater',
-      icon: Play,
-      label: '视频影院',
-      href: '#theater'
     },
     {
       id: 'ai-chat',
@@ -165,7 +159,7 @@ export const FloatingNavigation: React.FC<FloatingNavigationProps> = ({
     <motion.nav
       initial={{ opacity: 0, x: 50 }}
       animate={{ opacity: 1, x: 0 }}
-      className={`fixed right-6 top-1/2 -translate-y-1/2 z-50 flex flex-col gap-3 no-print`}
+      className={`fixed right-6 top-1/2 -translate-y-1/2 z-30 flex flex-col gap-3 no-print`}
     >
       {navigationItems.map((item) => {
         const isAIChatActive = item.id === 'ai-chat' && isAIChatOpen;

@@ -1,38 +1,29 @@
 import fs from 'fs';
 import path from 'path';
 import axios from 'axios';
-import type { KnowledgeChunk, VectorIndex, RAGSearchResult } from '../types';
+import type { KnowledgeChunk, RAGSearchResult, VectorIndex } from '../types';
+import {
+  EMBEDDING_MODEL,
+  RAG_CONTEXT_MAX_CHARS,
+  RAG_MIN_SCORE,
+  RAG_ROUTE_RULES,
+  RAG_SOURCE_PRIORITY,
+  RAG_TOP_K,
+} from './aiConfig';
 
-// 智谱 API 配置
 const GLM_API_BASE = 'https://open.bigmodel.cn/api/paas/v4';
-const EMBEDDING_MODEL = 'embedding-3';
+const ENABLE_RUNTIME_EMBEDDING = process.env.RAG_RUNTIME_EMBEDDING === 'true';
+const EMBEDDING_TIMEOUT_MS = 10000;
 
-/**
- * RAG 服务类：处理知识库检索
- */
 export class RAGService {
   private static instance: RAGService;
   private vectorIndex: VectorIndex | null = null;
   private knowledgeBasePath: string;
   private indexPath: string;
-  private apiKey: string;
 
   private constructor() {
-    // 知识库路径（项目根目录下的 Rag 文件夹）
     this.knowledgeBasePath = path.join(process.cwd(), 'Rag');
-    // 向量索引存储路径
     this.indexPath = path.join(process.cwd(), 'public', 'vector-index.json');
-    // API key 在运行时动态获取（每次调用时重新读取）
-    this.apiKey = '';
-  }
-
-  /**
-   * 获取 API Key（运行时动态读取，不缓存）
-   */
-  private getApiKey(): string {
-    // 每次都从环境变量中读取最新的值
-    const key = process.env.GLM_API_KEY || process.env.ZHIPU_API_KEY || '';
-    return key;
   }
 
   public static getInstance(): RAGService {
@@ -42,104 +33,133 @@ export class RAGService {
     return RAGService.instance;
   }
 
-  /**
-   * 读取知识库文件
-   */
-  private async loadKnowledgeBase(): Promise<KnowledgeChunk[]> {
-    const chunks: KnowledgeChunk[] = [];
+  private getApiKey(): string {
+    return process.env.GLM_API_KEY || process.env.ZHIPU_API_KEY || '';
+  }
 
-    try {
-      // 检查知识库目录是否存在
-      if (!fs.existsSync(this.knowledgeBasePath)) {
-        console.warn(`知识库目录不存在: ${this.knowledgeBasePath}`);
-        return chunks;
+  private normalizeText(value: string): string {
+    return value.toLowerCase().replace(/[\s\u3000]/g, '');
+  }
+
+  private sortFilesByPriority(files: string[]): string[] {
+    return [...files].sort((a, b) => {
+      const aIndex = RAG_SOURCE_PRIORITY.indexOf(a as (typeof RAG_SOURCE_PRIORITY)[number]);
+      const bIndex = RAG_SOURCE_PRIORITY.indexOf(b as (typeof RAG_SOURCE_PRIORITY)[number]);
+      if (aIndex === bIndex) {
+        return a.localeCompare(b, 'zh-Hans-CN');
       }
+      if (aIndex === -1) return 1;
+      if (bIndex === -1) return -1;
+      return aIndex - bIndex;
+    });
+  }
 
-      // 读取所有 markdown 文件
-      const files = fs.readdirSync(this.knowledgeBasePath)
-        .filter(file => file.endsWith('.md'));
+  private cleanHeading(line: string): string {
+    return line.replace(/^#+\s*/, '').trim();
+  }
 
-      for (const file of files) {
-        const filePath = path.join(this.knowledgeBasePath, file);
-        const content = fs.readFileSync(filePath, 'utf-8');
-
-        // 按段落分割内容（以 ## 开头的是段落标题）
-        const sections = this.splitIntoSections(content, file);
-
-        chunks.push(...sections);
-      }
-
-      console.log(`已加载 ${chunks.length} 个知识片段，来自 ${files.length} 个文件`);
-    } catch (error) {
-      console.error('加载知识库失败:', error);
+  private shouldKeepSection(title: string, bodyLines: string[]): boolean {
+    const bodyText = bodyLines.join('\n').trim();
+    if (!bodyText) {
+      return false;
     }
 
+    const meaningfulText = bodyText.replace(/[\s\u3000]/g, '');
+    if (meaningfulText.length < 18) {
+      return false;
+    }
+
+    return title.length > 0 || meaningfulText.length > 0;
+  }
+
+  private extractKeywords(text: string): string[] {
+    const normalizedText = this.normalizeText(text);
+    const keywords = new Set<string>();
+
+    for (const rule of RAG_ROUTE_RULES) {
+      for (const keyword of rule.keywords) {
+        const normalizedKeyword = this.normalizeText(keyword);
+        if (normalizedKeyword && normalizedText.includes(normalizedKeyword)) {
+          keywords.add(keyword);
+        }
+      }
+    }
+
+    return [...keywords];
+  }
+
+  private loadKnowledgeBase(): KnowledgeChunk[] {
+    const chunks: KnowledgeChunk[] = [];
+
+    if (!fs.existsSync(this.knowledgeBasePath)) {
+      console.warn(`Knowledge base directory not found: ${this.knowledgeBasePath}`);
+      return chunks;
+    }
+
+    const files = this.sortFilesByPriority(
+      fs.readdirSync(this.knowledgeBasePath).filter(file => file.endsWith('.md'))
+    );
+
+    for (const file of files) {
+      const filePath = path.join(this.knowledgeBasePath, file);
+      const content = fs.readFileSync(filePath, 'utf-8');
+      chunks.push(...this.splitIntoSections(content, file));
+    }
+
+    console.log(`Loaded ${chunks.length} knowledge chunks from ${files.length} markdown files.`);
     return chunks;
   }
 
-  /**
-   * 将文档内容按段落分割
-   */
   private splitIntoSections(content: string, sourceFile: string): KnowledgeChunk[] {
     const chunks: KnowledgeChunk[] = [];
-    const lines = content.split('\n');
-    let currentSection = '';
+    const lines = content.split(/\r?\n/);
+
     let currentTitle = '';
+    let currentBody: string[] = [];
 
-    for (let i = 0; i < lines.length; i++) {
-      const line = lines[i];
-
-      // 检测是否是标题（以 # 开头）
-      if (line.trim().startsWith('#')) {
-        // 保存上一个段落
-        if (currentSection.trim()) {
-          chunks.push({
-            id: `${sourceFile}-${chunks.length}`,
-            content: currentSection.trim(),
-            source: sourceFile,
-            metadata: {
-              category: currentTitle || '未分类'
-            }
-          });
-        }
-
-        // 开始新段落
-        currentTitle = line.replace(/^#+\s*/, '').trim();
-        currentSection = line + '\n';
-      } else {
-        currentSection += line + '\n';
+    const flush = () => {
+      if (!this.shouldKeepSection(currentTitle, currentBody)) {
+        currentTitle = '';
+        currentBody = [];
+        return;
       }
-    }
 
-    // 保存最后一个段落
-    if (currentSection.trim()) {
+      const bodyText = currentBody.join('\n').trim();
+      const fullText = [currentTitle, bodyText].filter(Boolean).join('\n').trim();
+
       chunks.push({
         id: `${sourceFile}-${chunks.length}`,
-        content: currentSection.trim(),
+        content: fullText,
         source: sourceFile,
         metadata: {
-          category: currentTitle || '未分类'
-        }
+          category: currentTitle || sourceFile,
+          keywords: this.extractKeywords(fullText),
+        },
       });
+
+      currentTitle = '';
+      currentBody = [];
+    };
+
+    for (const line of lines) {
+      if (/^#{1,6}\s+/.test(line)) {
+        flush();
+        currentTitle = this.cleanHeading(line);
+        continue;
+      }
+
+      currentBody.push(line);
     }
 
+    flush();
     return chunks;
   }
 
-  /**
-   * 辅助函数：延迟执行
-   */
   private sleep(ms: number): Promise<void> {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
 
-  /**
-   * 智能重试包装器（指数退避 + Retry-After）
-   */
-  private async withRetry<T>(
-    fn: () => Promise<T>,
-    maxRetries: number = 8
-  ): Promise<T> {
+  private async withRetry<T>(fn: () => Promise<T>, maxRetries = 8): Promise<T> {
     let attempt = 0;
 
     while (true) {
@@ -148,106 +168,75 @@ export class RAGService {
       } catch (error: any) {
         const status = error?.response?.status;
 
-        // 非 429 错误或超过最大重试次数，直接抛出
         if (status !== 429 || attempt >= maxRetries) {
           throw error;
         }
 
-        // 读取 Retry-After 头（优先级最高）
         const retryAfter = Number(error?.response?.headers?.['retry-after'] ?? 0);
-
-        // 指数退避计算（1s, 2s, 4s, 8s, 16s, 32s, 60s, 60s）
         const backoff = Math.min(60000, (2 ** attempt) * 1000);
-
-        // 添加随机抖动（±300ms）避免多个客户端同步重试
         const jitter = Math.floor(Math.random() * 300);
+        const waitMs = retryAfter > 0 ? retryAfter * 1000 : backoff + jitter;
 
-        // 计算最终等待时间
-        const waitMs = retryAfter > 0
-          ? retryAfter * 1000
-          : backoff + jitter;
-
-        console.log(`⚠️  429 限流，等待 ${waitMs}ms 后重试 (${attempt + 1}/${maxRetries})...`);
+        console.log(`429 throttled, retrying in ${waitMs}ms (${attempt + 1}/${maxRetries})...`);
         await this.sleep(waitMs);
         attempt++;
       }
     }
   }
 
-  /**
-   * 批量调用智谱 Embedding API（方案1：批量处理）
-   * 智谱支持最多 64 个文本同时请求
-   */
   private async getBatchEmbeddingsFromAPI(texts: string[]): Promise<number[][]> {
     const apiKey = this.getApiKey();
     if (!apiKey) {
-      throw new Error('API Key 未设置');
+      throw new Error('API key is not configured');
     }
 
-    // 使用智能重试
     return this.withRetry(async () => {
       const response = await axios.post(
         `${GLM_API_BASE}/embeddings`,
         {
           model: EMBEDDING_MODEL,
-          input: texts  // ← 直接传入数组，智谱 API 支持批量
+          input: texts,
         },
         {
           headers: {
-            'Authorization': `Bearer ${apiKey}`,
-            'Content-Type': 'application/json'
-          }
+            Authorization: `Bearer ${apiKey}`,
+            'Content-Type': 'application/json',
+          },
+          timeout: EMBEDDING_TIMEOUT_MS,
         }
       );
 
       if (response.data?.data) {
-        // 智谱返回的是数组，按原顺序排序
         return response.data.data.map((item: any) => item.embedding);
       }
 
-      throw new Error('Embedding API 返回数据格式错误');
+      throw new Error('Embedding API returned an invalid payload');
     });
   }
 
-  /**
-   * 批量获取 embeddings（企业级方案）
-   * - 使用批量 API（最多 64 条/请求）
-   * - 智能重试（指数退避 + Retry-After）
-   * - 串行处理（避免并发）
-   */
   private async getBatchEmbeddings(texts: string[]): Promise<number[][]> {
     const embeddings: number[][] = [];
-    const BATCH_SIZE = 32; // 每批 32 个（智谱上限 64，保守一点）
+    const batchSize = 32;
 
-    console.log(`📦 批量处理模式：${texts.length} 个文本 → ${Math.ceil(texts.length / BATCH_SIZE)} 个请求`);
+    console.log(`Generating embeddings for ${texts.length} chunks in batches of ${batchSize}.`);
 
-    for (let i = 0; i < texts.length; i += BATCH_SIZE) {
-      const batch = texts.slice(i, i + BATCH_SIZE);
-      const batchNum = Math.floor(i / BATCH_SIZE) + 1;
-      const totalBatches = Math.ceil(texts.length / BATCH_SIZE);
-
-      console.log(`  [${batchNum}/${totalBatches}] 处理 ${batch.length} 个文本...`);
-
-      // 批量调用 API（单次请求处理多个文本）
+    for (let i = 0; i < texts.length; i += batchSize) {
+      const batch = texts.slice(i, i + batchSize);
       const batchEmbeddings = await this.getBatchEmbeddingsFromAPI(batch);
       embeddings.push(...batchEmbeddings);
 
-      // 批次之间短暂等待（避免连续请求）
-      if (i + BATCH_SIZE < texts.length) {
-        await this.sleep(1000); // 仅等待 1 秒
+      if (i + batchSize < texts.length) {
+        await this.sleep(1000);
       }
     }
 
-    console.log(`✅ 批量处理完成，共生成 ${embeddings.length} 个向量`);
+    console.log(`Generated ${embeddings.length} embeddings.`);
     return embeddings;
   }
 
-  /**
-   * 计算余弦相似度
-   */
   private cosineSimilarity(vec1: number[], vec2: number[]): number {
     if (vec1.length !== vec2.length) {
-      throw new Error('向量维度不匹配');
+      throw new Error('Vector dimensions do not match');
     }
 
     let dotProduct = 0;
@@ -263,121 +252,243 @@ export class RAGService {
     return dotProduct / (Math.sqrt(norm1) * Math.sqrt(norm2));
   }
 
-  /**
-   * 构建向量索引
-   */
-  async buildIndex(): Promise<void> {
-    console.log('开始构建向量索引...');
+  private getPreferredSources(query: string): string[] {
+    const normalizedQuery = this.normalizeText(query);
+    const sources = new Set<string>();
 
-    // 1. 加载知识库
-    const chunks = await this.loadKnowledgeBase();
-    if (chunks.length === 0) {
-      throw new Error('知识库为空，无法构建索引');
+    for (const rule of RAG_ROUTE_RULES) {
+      const hit = rule.keywords.some(keyword => normalizedQuery.includes(this.normalizeText(keyword)));
+      if (!hit) {
+        continue;
+      }
+
+      for (const source of rule.sources) {
+        sources.add(source);
+      }
     }
 
-    // 2. 获取所有文本的 embeddings
-    console.log(`正在为 ${chunks.length} 个片段生成 embeddings...`);
+    return this.sortFilesByPriority([...sources]);
+  }
+
+  private getKeywordScore(query: string, chunk: KnowledgeChunk): number {
+    const normalizedQuery = this.normalizeText(query);
+    const normalizedChunk = this.normalizeText(
+      `${chunk.source} ${chunk.metadata?.category ?? ''} ${chunk.content}`
+    );
+
+    const matchedKeywords = new Set<string>();
+    for (const rule of RAG_ROUTE_RULES) {
+      for (const keyword of rule.keywords) {
+        const normalizedKeyword = this.normalizeText(keyword);
+        if (normalizedKeyword && normalizedQuery.includes(normalizedKeyword)) {
+          matchedKeywords.add(normalizedKeyword);
+        }
+      }
+    }
+
+    if (matchedKeywords.size === 0) {
+      return 0;
+    }
+
+    let hitCount = 0;
+    for (const keyword of matchedKeywords) {
+      if (normalizedChunk.includes(keyword)) {
+        hitCount++;
+      }
+    }
+
+    return hitCount / matchedKeywords.size;
+  }
+
+  private getSourceBoost(chunk: KnowledgeChunk, preferredSources: string[]): number {
+    const preferredIndex = preferredSources.indexOf(chunk.source);
+    if (preferredIndex >= 0) {
+      return Math.max(0.12 - preferredIndex * 0.03, 0.03);
+    }
+
+    return 0;
+  }
+
+  private getRouteBoost(query: string, chunk: KnowledgeChunk, preferredSources: string[]): number {
+    const normalizedQuery = this.normalizeText(query);
+    const normalizedChunk = this.normalizeText(
+      `${chunk.source} ${chunk.metadata?.category ?? ''} ${chunk.content}`
+    );
+
+    for (const rule of RAG_ROUTE_RULES) {
+      const hit = rule.keywords.some(keyword => normalizedQuery.includes(this.normalizeText(keyword)));
+      if (!hit) {
+        continue;
+      }
+
+      if ((rule.sources as readonly string[]).includes(chunk.source)) {
+        return Math.max(0.1, this.getSourceBoost(chunk, preferredSources));
+      }
+
+      if (rule.keywords.some(keyword => normalizedChunk.includes(this.normalizeText(keyword)))) {
+        return 0.05;
+      }
+    }
+
+    return 0;
+  }
+
+  public shouldUseKnowledgeBase(query: string): boolean {
+    return this.getPreferredSources(query).length > 0;
+  }
+
+  public async buildIndex(): Promise<void> {
+    console.log('Building vector index...');
+
+    const chunks = this.loadKnowledgeBase();
+    if (chunks.length === 0) {
+      throw new Error('Knowledge base is empty');
+    }
+
+    console.log(`Generating embeddings for ${chunks.length} chunks...`);
     const texts = chunks.map(chunk => chunk.content);
     const embeddings = await this.getBatchEmbeddings(texts);
 
-    // 3. 保存索引
     this.vectorIndex = {
       chunks,
       embeddings,
-      updatedAt: new Date().toISOString()
+      updatedAt: new Date().toISOString(),
     };
 
-    // 4. 将索引保存到文件
     const indexDir = path.dirname(this.indexPath);
     if (!fs.existsSync(indexDir)) {
       fs.mkdirSync(indexDir, { recursive: true });
     }
 
     fs.writeFileSync(this.indexPath, JSON.stringify(this.vectorIndex, null, 2));
-    console.log(`向量索引已保存到: ${this.indexPath}`);
+    console.log(`Vector index saved to ${this.indexPath}`);
   }
 
-  /**
-   * 加载已保存的向量索引
-   */
   private loadIndex(): void {
     try {
-      if (fs.existsSync(this.indexPath)) {
-        const indexData = fs.readFileSync(this.indexPath, 'utf-8');
-        this.vectorIndex = JSON.parse(indexData);
-        console.log(`已加载向量索引，包含 ${this.vectorIndex.chunks.length} 个片段`);
+      if (!fs.existsSync(this.indexPath)) {
+        this.vectorIndex = null;
         return;
       }
-    } catch (error) {
-      console.error('加载向量索引失败:', error);
-    }
 
-    console.warn('向量索引不存在，请先运行 buildIndex()');
-    this.vectorIndex = null;
+      const indexData = JSON.parse(fs.readFileSync(this.indexPath, 'utf-8')) as VectorIndex;
+      if (
+        !indexData?.chunks ||
+        !indexData?.embeddings ||
+        indexData.chunks.length === 0 ||
+        indexData.chunks.length !== indexData.embeddings.length
+      ) {
+        console.warn('Vector index is invalid or out of sync.');
+        this.vectorIndex = null;
+        return;
+      }
+
+      this.vectorIndex = indexData;
+      console.log(`Loaded vector index with ${this.vectorIndex.chunks.length} chunks.`);
+    } catch (error) {
+      console.error('Failed to load vector index:', error);
+      this.vectorIndex = null;
+    }
   }
 
-  /**
-   * 检索最相关的知识片段
-   */
-  async search(query: string, topK: number = 5): Promise<RAGSearchResult[]> {
-    // 如果没有加载索引，尝试加载
-    if (!this.vectorIndex) {
-      this.loadIndex();
-    }
-
-    // 如果还是没有索引，返回空结果
-    if (!this.vectorIndex || this.vectorIndex.chunks.length === 0) {
-      console.warn('向量索引为空，无法进行检索');
+  public async search(query: string, topK: number = RAG_TOP_K): Promise<RAGSearchResult[]> {
+    const liveChunks = this.loadKnowledgeBase();
+    if (liveChunks.length === 0) {
       return [];
     }
 
     try {
-      // 1. 获取查询的 embedding（使用批量 API 的单元素版本）
-      const [queryEmbedding] = await this.getBatchEmbeddingsFromAPI([query]);
+      let queryEmbedding: number[] | null = null;
+      let indexedEmbeddings: Map<string, number[]> | null = null;
 
-      // 2. 计算与所有片段的相似度
-      const scores = this.vectorIndex.embeddings.map((embedding, index) => ({
-        chunk: this.vectorIndex!.chunks[index],
-        score: this.cosineSimilarity(queryEmbedding, embedding)
-      }));
+      if (ENABLE_RUNTIME_EMBEDDING) {
+        if (!this.vectorIndex) {
+          this.loadIndex();
+        }
+        if (this.vectorIndex) {
+          indexedEmbeddings = new Map(
+            this.vectorIndex.chunks.map((chunk, index) => [chunk.id, this.vectorIndex!.embeddings[index]])
+          );
+        }
 
-      // 3. 按相似度排序，取 top-k
-      const results = scores
-        .sort((a, b) => b.score - a.score)
-        .slice(0, topK)
-        .filter(result => result.score > 0.15); // 降低阈值以获取更多相关结果
+        try {
+          [queryEmbedding] = await this.getBatchEmbeddingsFromAPI([query]);
+        } catch (embeddingError) {
+          console.warn('Embedding lookup failed, falling back to lexical ranking only.');
+        }
+      } else {
+        console.log('Runtime embedding disabled; using lexical ranking only.');
+      }
 
-      console.log(`检索到 ${results.length} 个相关片段（阈值: 0.15）`);
-      console.log(`相似度分数: ${results.map(r => r.score.toFixed(3)).join(', ')}`);
+      const preferredSources = this.getPreferredSources(query);
+
+      const ranked = liveChunks.map((chunk) => {
+        const embedding = indexedEmbeddings?.get(chunk.id);
+        const vectorScore = queryEmbedding && embedding ? this.cosineSimilarity(queryEmbedding, embedding) : 0;
+        const keywordScore = this.getKeywordScore(query, chunk);
+        const routeBoost = this.getRouteBoost(query, chunk, preferredSources);
+        const sourceBoost = this.getSourceBoost(chunk, preferredSources);
+        const lengthBoost = chunk.content.length >= 120 ? 0.03 : 0;
+
+        const score = queryEmbedding
+          ? vectorScore * 0.8 + keywordScore * 0.12 + routeBoost + sourceBoost + lengthBoost
+          : keywordScore * 0.45 + routeBoost + sourceBoost + lengthBoost;
+
+        return { chunk, score };
+      });
+
+      ranked.sort((a, b) => b.score - a.score);
+
+      let results = ranked.slice(0, topK).filter(result => result.score >= RAG_MIN_SCORE);
+
+      if (results.length === 0 && preferredSources.length > 0) {
+        results = ranked
+          .filter(result => preferredSources.includes(result.chunk.source))
+          .slice(0, topK)
+          .filter(result => result.score >= 0.12);
+      }
+
+      console.log(
+        `RAG search returned ${results.length} chunks. Scores: ${results
+          .map(result => result.score.toFixed(3))
+          .join(', ')}`
+      );
+
       return results;
     } catch (error) {
-      console.error('检索失败:', error);
+      console.error('RAG search failed:', error);
       return [];
     }
   }
 
-  /**
-   * 将检索结果格式化为上下文
-   */
-  formatContext(results: RAGSearchResult[]): string {
+  public formatContext(results: RAGSearchResult[]): string {
     if (results.length === 0) {
       return '';
     }
 
-    let context = '\n【参考资料】\n\n';
+    let context = '【参考资料】\n';
 
-    results.forEach((result, index) => {
-      context += `--- 资料 ${index + 1} ---\n`;
-      context += `${result.chunk.content}\n\n`;
-    });
+    for (const [index, result] of results.entries()) {
+      const title = result.chunk.metadata?.category || result.chunk.source;
+      const block = [
+        `--- 资料 ${index + 1} ---`,
+        `来源: ${result.chunk.source}`,
+        `章节: ${title}`,
+        `评分: ${result.score.toFixed(3)}`,
+        result.chunk.content.trim(),
+        '',
+      ].join('\n');
 
-    context += '--- 参考资料结束 ---\n\n';
+      if (context.length + block.length > RAG_CONTEXT_MAX_CHARS) {
+        break;
+      }
 
-    console.log(`RAG 上下文已格式化，包含 ${results.length} 个片段`);
+      context += `${block}\n`;
+    }
 
+    context += '请只基于以上资料回答；资料未包含的内容，请明确说明未知，不要编造。\n';
     return context;
   }
 }
 
-// 导出单例
 export const ragService = RAGService.getInstance();

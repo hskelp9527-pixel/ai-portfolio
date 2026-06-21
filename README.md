@@ -42,6 +42,14 @@ npm run dev:vite              # 终端 2：Vite 前端（3001）
 
 注意：`npm run dev` 当前只启动 API，前端需单独 `npm run dev:vite`。
 
+## 环境变量
+
+| 变量名 | 用途 |
+|---|---|
+| `GLM_API_KEY` | 智谱 API Key，对话和 Embedding 共用 |
+| `ZHIPU_API_KEY` | `GLM_API_KEY` 的 fallback 名 |
+| `GLM_CHAT_API_BASE` | GLM Coding Plan 聊天端点，建议设为 `https://open.bigmodel.cn/api/coding/paas/v4` |
+
 ## 媒体存储
 
 腾讯云 COS（公有读私有写），桶名 `aicunchu-1394039784`，区域 `ap-guangzhou`。

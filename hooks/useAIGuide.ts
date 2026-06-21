@@ -22,7 +22,7 @@ interface UseAIGuideReturn {
   visible: boolean;
   message: AIGuideMessage | null;
   dismiss: () => void;
-  triggerFirstVisit: () => void;
+  triggerFirstVisit: (force?: boolean) => void;
   acceptCta: () => void;
 }
 
@@ -52,10 +52,21 @@ export function useAIGuide({
     return true;
   }, []);
 
-  const triggerFirstVisit = useCallback(() => {
-    if (!canShow()) return;
+  const triggerFirstVisit = useCallback((force = false) => {
+    if (force) {
+      dismissedRef.current = false;
+      try {
+        sessionStorage.removeItem(DISMISS_KEY);
+      } catch {
+        // ignore
+      }
+    } else if (!canShow()) {
+      return;
+    }
     const profile = visitorType === 'unknown' ? null : VISITOR_PROFILES[visitorType];
-    proactiveCountRef.current += 1;
+    if (!force) {
+      proactiveCountRef.current += 1;
+    }
     setVisible(true);
     setMessage({
       text: profile

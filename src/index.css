@@ -2,42 +2,24 @@
 @tailwind components;
 @tailwind utilities;
 
-@font-face {
-  font-family: 'AlibabaPuHuiTi';
-  src: url('https://puhuiti.oss-cn-hangzhou.aliyuncs.com/AlibabaPuHuiTi-3/AlibabaPuHuiTi-3-55-Regular/AlibabaPuHuiTi-3-55-Regular.woff2') format('woff2');
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'AlibabaPuHuiTi';
-  src: url('https://puhuiti.oss-cn-hangzhou.aliyuncs.com/AlibabaPuHuiTi-3/AlibabaPuHuiTi-3-65-Medium/AlibabaPuHuiTi-3-65-Medium.woff2') format('woff2');
-  font-weight: 500;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'AlibabaPuHuiTi';
-  src: url('https://puhuiti.oss-cn-hangzhou.aliyuncs.com/AlibabaPuHuiTi-3/AlibabaPuHuiTi-3-85-Bold/AlibabaPuHuiTi-3-85-Bold.woff2') format('woff2');
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-}
-
 :root {
-  --color-ink-base: oklch(0.12 0.02 250);
-  --color-ink-mid: oklch(0.16 0.025 250);
-  --color-ink-deep: oklch(0.08 0.015 250);
-  --color-ink-black: oklch(0.04 0.01 250);
-  --color-glass-light: oklch(0.20 0.02 250 / 0.6);
-  --color-glass-border: oklch(0.30 0.02 250 / 0.3);
-  --color-fg-primary: oklch(0.95 0.01 250);
-  --color-fg-secondary: oklch(0.70 0.02 250);
-  --color-fg-tertiary: oklch(0.55 0.02 250);
-  --color-signature-teal: oklch(0.78 0.18 165);
-  --color-signature-amber: oklch(0.75 0.20 50);
+  --color-ink-base: 12% 0.02 250;
+  --color-ink-mid: 16% 0.025 250;
+  --color-ink-deep: 8% 0.015 250;
+  --color-ink-black: 4% 0.01 250;
+  --color-glass-light: 20% 0.02 250;
+  --color-glass-mid: 25% 0.025 250;
+  --color-glass-dark: 10% 0.015 250;
+  --color-glass-border: 30% 0.02 250;
+  --color-glass-border-bright: 40% 0.025 250;
+  --color-fg-primary: 95% 0.01 250;
+  --color-fg-secondary: 70% 0.02 250;
+  --color-fg-tertiary: 55% 0.02 250;
+  --color-fg-faint: 40% 0.02 250;
+  --color-signature-teal: 78% 0.18 165;
+  --color-signature-teal-dim: 65% 0.15 165;
+  --color-signature-amber: 75% 0.20 50;
+  --color-signature-amber-dim: 65% 0.17 50;
 
   --ease-neural: cubic-bezier(0.4, 0, 0.2, 1);
   --ease-neural-out: cubic-bezier(0.16, 1, 0.3, 1);
@@ -46,20 +28,47 @@
   --duration-zoom: 600ms;
 }
 
+html.light,
+body.light-theme {
+  --color-ink-base: 96% 0.01 80;
+  --color-ink-mid: 94% 0.012 80;
+  --color-ink-deep: 92% 0.015 80;
+  --color-ink-black: 90% 0.02 80;
+  --color-glass-light: 98% 0.01 80;
+  --color-glass-mid: 92% 0.015 80;
+  --color-glass-dark: 88% 0.02 80;
+  --color-glass-border: 50% 0.02 80;
+  --color-glass-border-bright: 60% 0.025 80;
+  --color-fg-primary: 22% 0.02 250;
+  --color-fg-secondary: 38% 0.02 250;
+  --color-fg-tertiary: 52% 0.02 250;
+  --color-fg-faint: 65% 0.02 250;
+  --color-signature-teal: 45% 0.10 165;
+  --color-signature-teal-dim: 55% 0.10 165;
+  --color-signature-amber: 50% 0.12 50;
+  --color-signature-amber-dim: 60% 0.12 50;
+}
+
 html, body {
   margin: 0;
   padding: 0;
-  background-color: var(--color-ink-base);
-  color: var(--color-fg-primary);
-  font-family: 'AlibabaPuHuiTi', 'Geist', -apple-system, BlinkMacSystemFont, sans-serif;
+  background-color: oklch(var(--color-ink-base));
+  color: oklch(var(--color-fg-primary));
+  font-family: 'Geist', 'PingFang SC', 'Microsoft YaHei', -apple-system, BlinkMacSystemFont, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
   min-height: 100vh;
 }
 
+html.dark body,
 body.dark-theme {
-  background-color: var(--color-ink-black);
+  background-color: oklch(var(--color-ink-black));
+}
+
+html.light body,
+body.light-theme {
+  background-color: oklch(var(--color-ink-base));
 }
 
 #root {
@@ -69,25 +78,37 @@ body.dark-theme {
 }
 
 .glass {
-  background: var(--color-glass-light);
+  background: oklch(var(--color-glass-light) / 0.6);
   backdrop-filter: blur(30px) saturate(180%);
   -webkit-backdrop-filter: blur(30px) saturate(180%);
-  border: 1px solid var(--color-glass-border);
+  border: 1px solid oklch(var(--color-glass-border) / 0.3);
+}
+
+html.light .glass,
+body.light-theme .glass {
+  background: oklch(var(--color-glass-light) / 0.7);
+  border: 1px solid oklch(var(--color-glass-border) / 0.3);
 }
 
 .glass-strong {
-  background: oklch(0.20 0.02 250 / 0.8);
+  background: oklch(20% 0.02 250 / 0.8);
   backdrop-filter: blur(40px) saturate(200%);
   -webkit-backdrop-filter: blur(40px) saturate(200%);
-  border: 1px solid oklch(0.40 0.025 250 / 0.5);
+  border: 1px solid oklch(40% 0.025 250 / 0.5);
+}
+
+html.light .glass-strong,
+body.light-theme .glass-strong {
+  background: oklch(98% 0.01 80 / 0.85);
+  border: 1px solid oklch(60% 0.025 80 / 0.5);
 }
 
 .text-glow-teal {
-  text-shadow: 0 0 20px oklch(0.78 0.18 165 / 0.6);
+  text-shadow: 0 0 20px oklch(var(--color-signature-teal) / 0.6);
 }
 
 .text-glow-amber {
-  text-shadow: 0 0 20px oklch(0.75 0.20 50 / 0.6);
+  text-shadow: 0 0 20px oklch(var(--color-signature-amber) / 0.6);
 }
 
 .neural-scrollbar::-webkit-scrollbar {
@@ -98,11 +119,11 @@ body.dark-theme {
   background: transparent;
 }
 .neural-scrollbar::-webkit-scrollbar-thumb {
-  background: oklch(0.30 0.02 250 / 0.5);
+  background: oklch(30% 0.02 250 / 0.5);
   border-radius: 3px;
 }
 .neural-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: var(--color-signature-teal);
+  background: oklch(var(--color-signature-teal));
 }
 
 * {

@@ -23,6 +23,9 @@ server/.env
 
 # Generated files
 public/vector-index.json
+api/chat.js
+.tmp/
+.deploy-staging/
 
 # Problematic Windows files
 nul

@@ -84,6 +84,8 @@ export interface GraphNode {
   importance: number;
   url?: string;
   accent?: NodeAccent;
+  subtitle?: string;
+  tagline?: string;
 }
 
 export interface GraphEdge {
@@ -116,7 +118,7 @@ export interface ChatMessage {
 }
 
 export interface GLMChatRequest {
-  model: 'glm-4.5-air';
+  model: string;
   messages: Array<{
     role: 'user' | 'assistant' | 'system';
     content: string;

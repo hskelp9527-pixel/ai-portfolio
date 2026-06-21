@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+﻿import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, cleanup } from '@testing-library/react';
 import * as fc from 'fast-check';
 import { FloatingNavigation } from './FloatingNavigation';
@@ -25,7 +25,7 @@ vi.mock('framer-motion', () => ({
 
 describe('FloatingNavigation', () => {
   const mockOnToggleTheme = vi.fn();
-  const mockOnExportPDF = vi.fn();
+  const mockOnAIChatToggle = vi.fn();
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -56,7 +56,7 @@ describe('FloatingNavigation', () => {
             <FloatingNavigation
               theme={theme}
               onToggleTheme={mockOnToggleTheme}
-              onExportPDF={mockOnExportPDF}
+              onAIChatToggle={mockOnAIChatToggle}
             />
           );
 
@@ -104,7 +104,7 @@ describe('FloatingNavigation', () => {
             <FloatingNavigation
               theme={theme}
               onToggleTheme={mockOnToggleTheme}
-              onExportPDF={mockOnExportPDF}
+              onAIChatToggle={mockOnAIChatToggle}
             />
           );
 
@@ -137,23 +137,27 @@ describe('FloatingNavigation', () => {
             <FloatingNavigation
               theme={theme}
               onToggleTheme={mockOnToggleTheme}
-              onExportPDF={mockOnExportPDF}
+              onAIChatToggle={mockOnAIChatToggle}
             />
           );
 
           const navigation = container.querySelector('nav');
           expect(navigation).toBeTruthy();
           
-          // Should have glass effect class
-          expect(navigation).toHaveClass('glass');
+          const buttons = container.querySelectorAll('button');
+          buttons.forEach((button) => expect(button).toHaveClass('glass'));
           
-          // Should have theme-appropriate background
+          // Buttons should have theme-appropriate background
           if (theme === 'dark') {
-            expect(navigation).toHaveClass('bg-[#0d1117]/95');
-            expect(navigation).toHaveClass('border-white/10');
+            buttons.forEach((button) => {
+              expect(button).toHaveClass('bg-[#0d1117]/95');
+              expect(button).toHaveClass('border-white/10');
+            });
           } else {
-            expect(navigation).toHaveClass('bg-white/30');
-            expect(navigation).toHaveClass('border-black/5');
+            buttons.forEach((button) => {
+              expect(button).toHaveClass('bg-white/30');
+              expect(button).toHaveClass('border-black/5');
+            });
           }
         }
       ),
@@ -172,19 +176,19 @@ describe('FloatingNavigation', () => {
             <FloatingNavigation
               theme={theme}
               onToggleTheme={mockOnToggleTheme}
-              onExportPDF={mockOnExportPDF}
+              onAIChatToggle={mockOnAIChatToggle}
             />
           );
 
           // All navigation buttons should be present
           const buttons = container.querySelectorAll('button');
-          expect(buttons).toHaveLength(5); // resume, gallery, theater, theme, export
+          expect(buttons).toHaveLength(4); // systems, gallery, ai chat, theme
 
-          // Text labels should exist but be hidden initially
-          const labels = ['简历', '作品集', '视频影院', '主题切换', '导出PDF'];
+          // Text labels are exposed as button titles while visual labels stay collapsed.
+          const labels = ['代表系统', '作品集', 'AI 问答', '主题切换'];
+          const titles = Array.from(buttons).map((button) => button.getAttribute('title'));
           labels.forEach(label => {
-            // The label spans should exist in the DOM
-            expect(container.textContent).toContain(label);
+            expect(titles).toContain(label);
           });
         }
       ),
@@ -213,36 +217,47 @@ describe('FloatingNavigation', () => {
               <FloatingNavigation
                 theme={theme}
                 onToggleTheme={mockOnToggleTheme}
-                onExportPDF={mockOnExportPDF}
+                onAIChatToggle={mockOnAIChatToggle}
               />
             );
 
             const navigation = container.querySelector('nav');
             expect(navigation).toBeTruthy();
             
-            // Verify theme-specific styling is applied correctly
+            const buttons = container.querySelectorAll('button');
+
+            // Verify theme-specific styling is applied correctly on the visible controls
             if (theme === 'dark') {
               // Dark theme should have dark background and light border
-              expect(navigation).toHaveClass('bg-[#0d1117]/95');
-              expect(navigation).toHaveClass('border-white/10');
+              buttons.forEach((button) => {
+                expect(button).toHaveClass('bg-[#0d1117]/95');
+                expect(button).toHaveClass('border-white/10');
+              });
               // Should NOT have light theme classes
-              expect(navigation).not.toHaveClass('bg-white/30');
-              expect(navigation).not.toHaveClass('border-black/5');
+              buttons.forEach((button) => {
+                expect(button).not.toHaveClass('bg-white/30');
+                expect(button).not.toHaveClass('border-black/5');
+              });
             } else {
               // Light theme should have light background and dark border
-              expect(navigation).toHaveClass('bg-white/30');
-              expect(navigation).toHaveClass('border-black/5');
+              buttons.forEach((button) => {
+                expect(button).toHaveClass('bg-white/30');
+                expect(button).toHaveClass('border-black/5');
+              });
               // Should NOT have dark theme classes
-              expect(navigation).not.toHaveClass('bg-[#0d1117]/95');
-              expect(navigation).not.toHaveClass('border-white/10');
+              buttons.forEach((button) => {
+                expect(button).not.toHaveClass('bg-[#0d1117]/95');
+                expect(button).not.toHaveClass('border-white/10');
+              });
             }
-            
-            // Common styling should always be present regardless of theme
-            expect(navigation).toHaveClass('glass');
-            expect(navigation).toHaveClass('rounded-2xl');
-            expect(navigation).toHaveClass('shadow-2xl');
-            expect(navigation).toHaveClass('transition-all');
-            expect(navigation).toHaveClass('duration-300');
+
+            buttons.forEach((button) => {
+              expect(button).toHaveClass('glass');
+              expect(button).toHaveClass('rounded-full');
+              expect(button).toHaveClass('shadow-2xl');
+              expect(button).toHaveClass('transition-all');
+              expect(button).toHaveClass('duration-300');
+            });
           });
         }
       ),
@@ -266,12 +281,12 @@ describe('FloatingNavigation', () => {
             <FloatingNavigation
               theme={theme}
               onToggleTheme={mockOnToggleTheme}
-              onExportPDF={mockOnExportPDF}
+              onAIChatToggle={mockOnAIChatToggle}
             />
           );
 
-          // The theme toggle label should always be present
-          expect(container.textContent).toContain('主题切换');
+          const themeButton = container.querySelector('button[title="主题切换"]');
+          expect(themeButton).toBeTruthy();
           
           // Navigation should have theme-appropriate styling
           const navigation = container.querySelector('nav');
@@ -279,9 +294,9 @@ describe('FloatingNavigation', () => {
           
           // Verify the navigation has the correct theme class
           if (theme === 'dark') {
-            expect(navigation).toHaveClass('bg-[#0d1117]/95');
+            expect(themeButton).toHaveClass('bg-[#0d1117]/95');
           } else {
-            expect(navigation).toHaveClass('bg-white/30');
+            expect(themeButton).toHaveClass('bg-white/30');
           }
         }
       ),
@@ -317,7 +332,7 @@ describe('FloatingNavigation', () => {
             <FloatingNavigation
               theme={theme}
               onToggleTheme={mockOnToggleTheme}
-              onExportPDF={mockOnExportPDF}
+              onAIChatToggle={mockOnAIChatToggle}
             />
           );
 

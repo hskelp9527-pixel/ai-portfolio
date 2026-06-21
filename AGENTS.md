@@ -5,8 +5,13 @@
 任泓雨的个人作品集 + AI 简历。**Neural Canvas** 形态：节点图谱首屏 + AI 主动导览 + 传统简历详情。
 
 - **仓库**：https://github.com/hskelp9527-pixel/ai-portfolio
-- **分支**：main（本地，不自动 push）
+- **分支**：main / 开发分支 `codex/*`
 - **线上**：Vercel 部署
+
+## 项目级协作规则
+
+- 每次对话必须运行 `$ponytail`，优先采用能工作的最小方案，避免不必要抽象和依赖。
+- 用户允许在完成验证后 push；commit 信息使用中文，方便回滚。
 
 ## 技术栈
 
@@ -85,6 +90,7 @@ URL 不带签名参数。
 |---|---|---|
 | `GLM_API_KEY` | 智谱 API Key（对话 + Embedding） | server.ts / Vercel |
 | `ZHIPU_API_KEY` | 同上（fallback 名） | vite.config.ts |
+| `GLM_CHAT_API_BASE` | GLM Coding Plan 聊天端点，建议 `https://open.bigmodel.cn/api/coding/paas/v4` | api/chat.ts / Vercel |
 
 ## 主题策略
 

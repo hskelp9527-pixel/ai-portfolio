@@ -46,6 +46,7 @@ export const AIConversationPanel: React.FC<AIConversationPanelProps> = ({
   const [error, setError] = useState<string | null>(null);
   const [canSend, setCanSend] = useState(true);
   const [hasInteracted, setHasInteracted] = useState(false);
+  const [responseMeta, setResponseMeta] = useState<{ model?: string; rag?: { enabled: boolean; matches: number; fallback?: boolean } }>({});
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -136,7 +137,8 @@ export const AIConversationPanel: React.FC<AIConversationPanelProps> = ({
           .map((m) => ({ role: m.role, content: m.content }));
 
         const response = await chatService.sendMessage(apiMessages);
-        streamText(response, assistantId);
+        setResponseMeta({ model: response.model, rag: response.rag });
+        streamText(response.content, assistantId);
       } catch (err) {
         let errorMsg = '发送失败，请重试';
         if (err instanceof Error) {
@@ -194,7 +196,7 @@ export const AIConversationPanel: React.FC<AIConversationPanelProps> = ({
           transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
           className="fixed top-0 right-0 h-full w-[360px] max-w-[90vw] z-40 flex flex-col border-l border-glass-border no-print"
           style={{
-            background: 'oklch(0.12 0.02 250 / 0.78)',
+            background: 'oklch(var(--color-ink-mid) / 0.78)',
             backdropFilter: 'blur(28px) saturate(150%)',
             WebkitBackdropFilter: 'blur(28px) saturate(150%)',
           }}
@@ -317,7 +319,7 @@ export const AIConversationPanel: React.FC<AIConversationPanelProps> = ({
               <p className="text-[10px] text-amber mt-2 px-1">{error}</p>
             )}
             <p className="text-[9px] text-fg-faint mt-2 px-1 font-mono">
-              GLM-4.5-AIR · 回复可能存在误差
+              {responseMeta.model || 'GLM-5.2'} · RAG {responseMeta.rag?.enabled ? `${responseMeta.rag.matches} 条证据` : '按需检索'} · 回复可能存在误差
             </p>
           </div>
         </motion.aside>

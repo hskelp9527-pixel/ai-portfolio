@@ -17,8 +17,8 @@ export const PERSONAL_INFO = {
   avatar: '/images/avatar/admin.jpg',
   phone: '19068046220',
   email: 'rhydewy@163.com',
-  summary: '具备 3–4 年信息化项目交付与协同经验，曾在 10 亿级信息化平台项目中承担关键子项目的执行与协调工作，负责数千万级模块的进度控制、文档规范与缺陷闭环管理，保障项目在合规约束下稳定推进，并按既定里程碑完成交付。使用 Claude Code、Codex 深度参与企业级项目开发，将项目完成效率提升了 50%，积极探索前沿 AI 技术落地生产力。',
-  aiDescription: '为提升效率，我在工作中广泛使用 AI 工具：ChatGPT/Gemini/豆包/千问/Grok等AI应用软件生成会议纪要与文档内容提升工作效率；业余时间使用Midjourney 、Nano Bnana、即梦、豆包、千问等AI应用图像创作、hailuo、Runway、Pika 、Veo3.1、Vidu、千问等工具的视频制作，以及搭建AI资讯日报跟踪收集 Bot、个人知识库（AI类）。熟练掌握 Claude Code、Codex 等使用方式，有熟练搭建 OpenClaw 经历，能够完成智能体和 Skill 的设计与落地使用，并通过 AI 编程方式快速验证想法，形成可实际使用的应用原型。积极关注AI前沿发展，热情探索AI相关应用，对AI行业发展具有热情。',
+  summary: 'AI 应用工程师，正在推进 ChinaB2C 跨境电商 AI 效能平台。擅长把运营、设计、电商内容生产、竞品分析和复杂交付流程拆成可输入、可生成、可预览、可追踪的 AI 工作流。',
+  aiDescription: '熟练使用 Claude Code、Codex、GLM、ChatGPT、Gemini、Coze、Dify、LangGraph 等工具与框架，把需求拆解、PRD、任务包、Agent 开发、测试、部署和文档沉淀串成可复用流程。既能做跨境电商 AI 平台模块，也能独立完成 AI 产品原型、RAG 问答和 AIGC 内容生产。',
   education: [
     { school: '深圳大学', major: '计算机科学与技术 | 本科 (在读)', period: '2024.01 – 2027.07 (预计)' },
     { school: '湖南交通职业技术学院', major: '物联网应用技术 | 大专', period: '2018.09 – 2021.07' }
@@ -26,6 +26,14 @@ export const PERSONAL_INFO = {
 };
 
 export const EXPERIENCES: Experience[] = [
+  {
+    id: 'w3',
+    company: '深圳市艾谷瑞网络科技有限公司',
+    role: 'AI 应用工程师',
+    period: '2026.03 – 至今',
+    description: '负责 ChinaB2C 跨境电商 AI 效能平台的产品设计与功能落地，覆盖 AI 问答、模型切换、资料上传、历史记录、使用日志、积分统计、反馈中心、系统通知、应用配置、AI 生图体验优化等平台能力，并围绕 Listing 诊断、Amazon ASIN/链接调研、A+ 页面策划与生成、卖点图生成、品牌视觉页面、图片转详情页、eBay 数据接入等业务流程建设 AI 工作流。',
+    tags: ['ChinaB2C', '跨境电商 AI', 'Listing 诊断', 'A+ 页面', 'eBay 数据接入']
+  },
   {
     id: 'w0',
     company: '深圳市知行求索科技有限公司',
@@ -65,6 +73,13 @@ export const MAIN_PROJECTS = [
 ];
 
 export const PERSONAL_PROJECTS = [
+  {
+    id: 'pp9',
+    title: 'ChinaB2C 跨境电商 AI 效能平台',
+    description: '是什么：面向跨境电商运营、设计和内容团队的内部 AI 工作台，把资料整理、内容生成、视觉策划、竞品分析和平台治理拆成可运行工作流。\n\n核心功能：\n• 平台本体：AI 问答、模型切换、资料上传、历史记录、使用日志、积分统计、反馈中心、系统通知、应用配置\n• 内容生产：Listing 诊断、A+ 页面策划/生成、卖点图、品牌背景图、品牌故事页、图片转详情页\n• 数据接入：Amazon ASIN/完整链接调研、eBay 数据接入、字段一致性诊断、同步任务追踪、可追溯日志、空值覆盖防护\n\n职责：产品设计、需求拆解、功能落地、Agent/Codex 任务包、测试与内部推广。',
+    tags: ['ChinaB2C', '跨境电商', 'AI 工作流', 'A+ 页面', 'ASIN 调研', 'eBay'],
+    importance: 11
+  },
   {
     id: 'pp8',
     title: 'Query Auto - 智能情报简报 Agent',
@@ -141,6 +156,207 @@ export const SKILLS: Skill[] = [
     items: ['大语言模型（ChatGPT / Claude / Gemini / 千问 / 豆包）', '图像生成（Nano Banana / 即梦 / Midjourney）', '视频生成（Runway / Vidu / Veo3.1 / hailuo / Sora2）', 'AI 编程工具（Claude Code / Codex / OpenClaw）', '多智能体框架（LangGraph / Coze / Dify）'],
     summary: '熟悉多类 AI 工具的特性与适用场景，能根据任务需求选择合适的模型与工具组合。持续关注 AI 前沿技术，积极探索新的生产力工具在实际工作流中的应用。'
   }
+];
+
+export const SELECTED_SYSTEMS = [
+  {
+    id: 'chinab2c',
+    index: 'SYSTEM / 001',
+    title: 'ChinaB2C 跨境电商 AI 效能平台',
+    status: 'INTERNAL PLATFORM',
+    problem: '运营、设计和电商内容生产分散在资料整理、Listing 优化、A+ 页面策划、生图、竞品调研和数据接入中，重复劳动多且难追踪。',
+    previous: '原来更像多个孤立工具：资料上传、问答、生图、Listing、ASIN 调研和数据同步各自运转，用户很难知道下一步做什么、结果是否可复用。',
+    action: '把工作拆成平台层、内容生产层、数据接入层和治理层，先确定输入、预览、历史、反馈和权限，再把 AI 能力放进对应流程。',
+    system: [
+      {
+        title: 'AI 问答与模型切换',
+        detail: '作为统一入口承接资料整理、内容构思和运营分析；保留模型选择与历史记录，让同事能回到上下文继续工作。',
+      },
+      {
+        title: '资料上传与历史记录',
+        detail: '把商品资料、图片、文本和历史任务集中保存，避免每次从零开始复制粘贴，也为后续追踪结果提供依据。',
+      },
+      {
+        title: 'Listing 诊断',
+        detail: '检查标题、五点描述、卖点表达和关键词覆盖，把“文案好不好”拆成可复查的诊断项。',
+      },
+      {
+        title: 'A+ 页面策划/生成',
+        detail: '先规划页面模块、素材需求和文案结构，再进入生图或设计阶段，减少直接生成导致的返工。',
+      },
+      {
+        title: 'ASIN/链接调研',
+        detail: '从只支持 ASIN 扩展到完整 Amazon 链接或 ASIN，第一版先支持用户上传、粘贴或填写资料，后续再接 SP-API 或第三方数据源。',
+      },
+      {
+        title: 'eBay 数据接入',
+        detail: '处理字段一致性、空值覆盖防护、同步诊断和可追溯日志，让数据接入不是一次性 API 调用，而是可排查的系统能力。',
+      },
+    ],
+    role: '产品设计 · 需求拆解 · 功能落地 · Agent/Codex 任务包 · 内部推广',
+    result: '把内容生产和竞品分析从单点工具推进为可输入、可生成、可预览、可追踪的内部 AI 工作台。',
+    tags: ['跨境电商', 'AI 工作流', '平台治理'],
+  },
+  {
+    id: 'query-auto',
+    index: 'SYSTEM / 002',
+    title: 'Query Auto 多智能体情报工作流',
+    status: 'PRODUCTION',
+    problem: '行业情报需要反复搜索、去重、筛选、分析、生成报告和邮件分发，人工链路长且容易漏。',
+    previous: '原流程依赖人工打开多个信息源、复制链接、筛选重复内容、写摘要、排版并发送邮件；每一步都能做，但整体不可追踪。',
+    action: '把情报生产拆成固定节点：主题输入、搜索、去重排序、分析、报告和邮件投递，让人工只保留选题与审核。',
+    system: [
+      {
+        title: 'Topic',
+        detail: '用户只输入主题和关注范围，系统把它作为整条情报链路的任务起点。',
+      },
+      {
+        title: 'Search Agents',
+        detail: '多个搜索节点抓取新闻与资料来源，避免单一来源造成信息偏差。',
+      },
+      {
+        title: 'Dedupe + Rank',
+        detail: '先去重再排序，把重复新闻、低相关内容和噪音过滤掉，减少后续分析负担。',
+      },
+      {
+        title: 'Analyst',
+        detail: '把候选资料转成结构化判断，提炼趋势、风险、机会和可引用证据。',
+      },
+      {
+        title: 'Report',
+        detail: '生成可阅读的情报简报，而不是一堆链接；保留来源链方便人工复核。',
+      },
+      {
+        title: 'Email',
+        detail: '通过邮件分发结果，让情报从“生成出来”进入真实交付和复用场景。',
+      },
+    ],
+    role: '产品设计 · Agent 编排 · 前端实现 · 部署',
+    result: '将人工整理压缩为主题输入、结果审核和定时交付，保留来源链和运行状态。',
+    tags: ['LangGraph', 'Agent', 'Evidence'],
+    url: 'https://query.airainyu.xyz/',
+  },
+  {
+    id: 'petcare',
+    index: 'SYSTEM / 003',
+    title: '宠物健康 AI 服务平台',
+    status: 'RUNNABLE PROTOTYPE',
+    problem: '宠物健康场景需要把 AI 问答、识别能力、权益系统和真实用户路径放在一个可用产品里。',
+    previous: '如果只做一个聊天框，用户无法完成问诊、识别、权益和结果查看的完整路径，也难以判断产品是否具备上线前基础。',
+    action: '用 Claude Code 辅助搭建多页面 SPA，把问诊、识别、权益、状态和接口联调放进同一个产品路径。',
+    system: [
+      {
+        title: '智能问诊',
+        detail: '承接用户症状描述，形成宠物健康咨询入口，而不是孤立的 AI 对话 Demo。',
+      },
+      {
+        title: '品种识别',
+        detail: '把图片识别能力做成独立页面和结果流程，验证多模态能力在产品中的位置。',
+      },
+      {
+        title: '情绪识别',
+        detail: '围绕宠物状态判断设计交互，把识别结果接到用户能理解的解释页面。',
+      },
+      {
+        title: '排泄物识别',
+        detail: '覆盖更垂直的健康判断场景，验证 AI 能力是否能服务真实宠物健康问题。',
+      },
+      {
+        title: '权益系统',
+        detail: '加入权益、次数和入口控制，让 AI 功能进入可运营的产品结构。',
+      },
+      {
+        title: '20+ API 联调',
+        detail: '独立联调 20+ 接口，处理页面状态、参数传递和错误路径，形成上线前联调基础。',
+      },
+    ],
+    role: 'AI 辅助前端开发 · 多页面交互 · API 联调 · 状态设计',
+    result: '交付 14 个页面和完整 AI 功能入口，具备上线前联调基础。',
+    tags: ['Claude Code', 'SPA', 'API 联调'],
+  },
+];
+
+export const CAPABILITY_EVIDENCE = [
+  {
+    title: 'Agent Orchestration',
+    count: '3 PROJECTS',
+    summary: '任务分解、状态路由、工具调用、确定性节点与失败回退。',
+    evidence: ['ChinaB2C 功能任务包', 'Query Auto 多阶段 Agent', 'Coze 客服 Workflow'],
+  },
+  {
+    title: 'AI Product Design',
+    count: 'END TO END',
+    summary: '从用户问题、输入输出、页面流程和验收方式出发决定模型出现在哪里。',
+    evidence: ['A+ 页面策划器', '宠物健康 AI', 'Personal AI OS'],
+  },
+  {
+    title: 'Workflow Automation',
+    count: 'REPEATABLE',
+    summary: '把检索、分析、生成、预览、导出和分发组合成可复用流程。',
+    evidence: ['Listing 诊断', 'AI 书评工具', 'Query Auto 邮件交付'],
+  },
+  {
+    title: 'Data Integration',
+    count: 'REAL DATA',
+    summary: '处理字段不一致、空值覆盖防护、同步诊断、可追溯日志和后续 API 接入边界。',
+    evidence: ['eBay 数据接入', 'ASIN/链接调研', 'ProductDataAdapter 思路'],
+  },
+  {
+    title: 'Visual Content Production',
+    count: 'AIGC MEDIA',
+    summary: '把品牌图、卖点图、详情页和长图作为电商内容生产链路的一部分。',
+    evidence: ['A+ 页面生成', '卖点图生成', 'Gallery'],
+  },
+  {
+    title: 'Complex Delivery',
+    count: '10亿级背景',
+    summary: '多方协同、节点控制、会议纪要、文档审计和缺陷闭环支撑 AI 系统落地。',
+    evidence: ['交通信息化项目', '50+ 会议', '200-300+ 文档审计'],
+  },
+];
+
+export const CAREER_TRAJECTORY = [
+  {
+    label: 'FOUNDATION / COMPLEX DELIVERY',
+    title: '大型信息化项目交付',
+    body: '在 10 亿级信息化平台项目中参与数千万级子项，处理依赖、节点、文档、验收和多方协同。',
+    tags: ['依赖管理', '文档审计', '缺陷闭环'],
+  },
+  {
+    label: 'SHIFT / AI PRODUCT',
+    title: 'AI 产品原型与应用落地',
+    body: '用 Claude Code、Codex 和多模型协作快速落地前端、联调、测试和产品原型，把想法变成可运行系统。',
+    tags: ['原型落地', 'AI 编程', '测试联调'],
+  },
+  {
+    label: 'NOW / PERSONAL AI OS',
+    title: '跨境电商 AI 工作流',
+    body: '在 ChinaB2C 平台把运营、设计、内容生产、竞品分析和数据接入拆成可追踪 AI 工作流。',
+    tags: ['ChinaB2C', 'Listing', 'A+ 页面', 'eBay'],
+  },
+];
+
+export const PRINCIPLES_IN_PRACTICE = [
+  {
+    title: '重复 3 遍，即进入自动化评估',
+    body: '先判断频率、稳定性、错误代价和人工审核点，再决定用脚本、工作流还是 Agent。',
+    case: 'Query Auto / AI 书评工具',
+  },
+  {
+    title: '先解决用户路径，再选择技术',
+    body: '页面、输入、预览、导出、反馈和权限先成立，再决定模型、Prompt 和工具链。',
+    case: 'ChinaB2C / PetCare AI',
+  },
+  {
+    title: 'Agent 必须可观察、可回退、可验证',
+    body: '概率型智能需要确定性轨道，引用、日志、状态、失败原因和人工接管都是产品的一部分。',
+    case: 'Query Auto / eBay 数据接入',
+  },
+  {
+    title: '证据优先于形容词',
+    body: '项目不只写技术名词，而要回到问题、职责、系统边界、结果和失败修正。',
+    case: 'Personal AI OS',
+  },
 ];
 
 export const IMAGES: ProjectImage[] = [
@@ -236,13 +452,26 @@ export const GRAPH_NODES: GraphNode[] = [
     type: 'center',
     cluster: 'center',
     label: '任泓雨',
-    summary: 'AI 应用工程师 · 用 AI 重塑生产力',
-    detail: '不是程序员，是用 AI 做产品的人。把任何重复 3 遍的事 AI 化或自动化。3-4 年信息化项目交付经验，深度使用 Claude Code / Codex 做企业级项目开发，效率提升 50%。',
+    subtitle: 'AI 应用工程师',
+    tagline: '把业务流程拆成 AI 工作流',
+    summary: 'AI 应用工程师 · Personal AI OS',
+    detail: '负责 ChinaB2C 跨境电商 AI 效能平台，把 Listing、A+ 页面、ASIN/链接调研、eBay 数据接入和内容生产拆成可输入、可生成、可预览、可追踪的 AI 工作流。',
     importance: 10,
     accent: 'teal',
   },
 
   // Projects cluster
+  {
+    id: 'pp9',
+    type: 'project',
+    cluster: 'projects',
+    label: 'ChinaB2C',
+    summary: '跨境电商 AI 效能平台 · 内部 SaaS 工作台',
+    detail: '面向跨境电商运营、设计和内容团队的 AI 工作台。覆盖 AI 问答、模型切换、资料上传、使用日志、积分统计、反馈中心、系统通知、Listing 诊断、A+ 页面策划/生成、卖点图生成、ASIN/链接调研和 eBay 数据接入。',
+    tags: ['跨境电商', 'AI 工作流', 'A+ 页面', 'ASIN', 'eBay'],
+    importance: 11,
+    accent: 'amber',
+  },
   {
     id: 'pp8',
     type: 'project',
@@ -391,6 +620,17 @@ export const GRAPH_NODES: GraphNode[] = [
 
   // Timeline cluster
   {
+    id: 'w3',
+    type: 'timeline',
+    cluster: 'timeline',
+    label: '艾谷瑞网络科技',
+    summary: 'AI 应用工程师 · 2026.03 - 至今',
+    detail: '负责 ChinaB2C 跨境电商 AI 效能平台的产品设计与功能落地，将运营、设计、电商内容生产、竞品分析、数据接入和平台治理流程拆成 AI 工作流，并沉淀 Agent/Codex 协作开发方法。',
+    tags: ['ChinaB2C', '跨境电商 AI', '平台治理'],
+    importance: 10,
+    accent: 'amber',
+  },
+  {
     id: 'w0',
     type: 'timeline',
     cluster: 'timeline',
@@ -427,12 +667,16 @@ export const GRAPH_NODES: GraphNode[] = [
 
 export const GRAPH_EDGES: GraphEdge[] = [
   // Center hub
+  { source: 'center', target: 'pp9', strength: 1 },
   { source: 'center', target: 'pp8', strength: 1 },
   { source: 'center', target: 'skill-ai', strength: 1 },
   { source: 'center', target: 'philo-ai', strength: 1 },
+  { source: 'center', target: 'w3', strength: 1 },
   { source: 'center', target: 'w0', strength: 1 },
 
   // Project to skill cross-links
+  { source: 'pp9', target: 'skill-ai', strength: 0.7 },
+  { source: 'pp9', target: 'skill-product', strength: 0.7 },
   { source: 'pp8', target: 'skill-ai', strength: 0.6 },
   { source: 'pp7', target: 'skill-ai', strength: 0.5 },
   { source: 'pp3', target: 'skill-ai', strength: 0.5 },
@@ -448,11 +692,15 @@ export const GRAPH_EDGES: GraphEdge[] = [
   { source: 'philo-ai', target: 'philo-user', strength: 0.6 },
 
   // Work → philosophy
+  { source: 'w3', target: 'pp9', strength: 0.8 },
+  { source: 'w3', target: 'philo-ai', strength: 0.6 },
+  { source: 'w3', target: 'skill-product', strength: 0.6 },
   { source: 'w0', target: 'philo-ai', strength: 0.5 },
   { source: 'w0', target: 'skill-product', strength: 0.4 },
   { source: 'w1', target: 'skill-product', strength: 0.4 },
 
   // Timeline chain
+  { source: 'w3', target: 'w0', strength: 0.3 },
   { source: 'w0', target: 'w1', strength: 0.3 },
   { source: 'w1', target: 'w2', strength: 0.3 },
 ];

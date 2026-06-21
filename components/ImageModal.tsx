@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence, PanInfo } from 'framer-motion';
 import { X, ZoomIn, ZoomOut, RotateCcw, ChevronLeft, ChevronRight, Info } from 'lucide-react';
 import { ProjectImage, Theme } from '../types';
+import { resolveImageUrl } from '../utils/mediaUrl';
 
 interface ImageModalProps {
   image: ProjectImage | null;
@@ -196,6 +197,7 @@ export const ImageModal: React.FC<ImageModalProps> = ({
 
   const currentIndex = images.findIndex(img => img.id === image.id);
   const hasNavigation = images.length > 1;
+  const imageSrc = resolveImageUrl(image.url, 'compressed');
 
   return (
     <AnimatePresence>
@@ -253,7 +255,7 @@ export const ImageModal: React.FC<ImageModalProps> = ({
           {/* 图片容器 */}
           <div className="relative w-full h-full flex items-center justify-center p-4 sm:p-8 md:p-12 lg:p-20">
             <motion.img
-              src={image.url}
+              src={imageSrc}
               alt={image.title}
               className="max-w-full max-h-full object-contain select-none cursor-pointer"
               initial={{ opacity: 0, scale: 0.9 }}

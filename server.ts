@@ -1,5 +1,11 @@
 /**
  * 本地开发服务器 - 提供前端 + API
+ *
+ * 集成 vite dev middleware，4001 端口同时提供：
+ *   - /api/* 路由（聊天 + 健康检查）
+ *   - 其他所有路由走 vite dev（HMR + TSX 编译）
+ *
+ * 这样访问 http://localhost:4001 既能用前端 dev，又能调 /api/chat。
  */
 
 import dotenv from 'dotenv';
@@ -12,6 +18,7 @@ import cors from 'cors';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import fs from 'fs';
+import { createServer as createViteServer } from 'vite';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -23,8 +30,11 @@ const PORT = process.env.PORT || 4001; // API 服务器端口（改到 4001 避�
 app.use(cors());
 app.use(express.json());
 
-// 日志中间件
+// 日志中间件（跳过 vite 自己的 HMR 资源，避免日志噪音）
 app.use((req, res, next) => {
+  if (req.url.startsWith('/@') || req.url.includes('?hmr=') || req.url.includes('.hot-update.')) {
+    return next();
+  }
   console.log(`${new Date().toLocaleTimeString()} ${req.method} ${req.url}`);
   next();
 });
@@ -44,7 +54,7 @@ app.get('/api/health', (req, res) => {
 app.post('/api/chat', async (req, res) => {
   try {
     // 直接调用 API 逻辑
-    const chatModule = await import('./api/chat');
+    const chatModule = await import('./api/chat.ts');
     const handler = chatModule.default;
 
     // 模拟 Vercel 的 req/res 对象
@@ -56,6 +66,10 @@ app.post('/api/chat', async (req, res) => {
     const vercelRes = {
       status: (code: number) => {
         res.status(code);
+        return vercelRes;
+      },
+      setHeader: (name: string, value: string | number | readonly string[]) => {
+        res.setHeader(name, value);
         return vercelRes;
       },
       json: (data: any) => {
@@ -70,18 +84,15 @@ app.post('/api/chat', async (req, res) => {
   }
 });
 
-// 前端静态文件（必须在 SPA 兜底之前，否则静态请求会被当成 SPA 路由返回 index.html）
+// 静态资源（images / videos / vector-index.json）从 public/ 服务
 app.use(express.static(path.join(__dirname, 'public')));
 
-// 所有其他路由返回 index.html（SPA）
-app.use((req, res, next) => {
-  // 如果是 API 请求，继续传递
-  if (req.path.startsWith('/api')) {
-    return next();
-  }
-  // 否则返回 index.html
-  res.sendFile(path.join(__dirname, 'index.html'));
+// Vite dev middleware（HMR + TSX 编译 + SPA HTML 入口兜底）
+const vite = await createViteServer({
+  server: { middlewareMode: true },
+  root: __dirname,
 });
+app.use(vite.middlewares);
 
 // 启动服务器
 app.listen(PORT, () => {
@@ -92,5 +103,5 @@ app.listen(PORT, () => {
   console.log(`  🔧 API 端点: http://localhost:${PORT}/api`);
   console.log(`  ❤️  健康检查: http://localhost:${PORT}/api/health`);
   console.log('========================================\n');
-  console.log('✅ 服务器就绪，可以开始测试了！\n');
+  console.log('✅ 服务器就绪（vite middleware 已集成），可以开始测试了！\n');
 });

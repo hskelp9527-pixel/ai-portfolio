@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ImageIcon, AlertCircle, RotateCcw } from 'lucide-react';
 import { useLazyLoad, preloadImage } from '../hooks/useLazyLoad';
+import { resolveImageUrl } from '../utils/mediaUrl';
 import { Theme } from '../types';
 
 interface LazyImageProps {
@@ -16,6 +17,7 @@ interface LazyImageProps {
   threshold?: number; // 懒加载阈值
   theme?: Theme;
   showRetry?: boolean; // 是否显示重试按钮
+  resolveSource?: boolean; // 是否把 COS 图片映射到本地图库缓存
 }
 
 export const LazyImage: React.FC<LazyImageProps> = ({
@@ -29,10 +31,15 @@ export const LazyImage: React.FC<LazyImageProps> = ({
   onError,
   threshold = 200,
   theme = 'light',
-  showRetry = true
+  showRetry = true,
+  resolveSource = true
 }) => {
   const [imageState, setImageState] = useState<'loading' | 'loaded' | 'error'>('loading');
   const [currentSrc, setCurrentSrc] = useState<string | null>(null);
+  const resolvedSrc = resolveSource ? resolveImageUrl(src) : src;
+  const resolvedThumbnail = thumbnail
+    ? (resolveSource ? resolveImageUrl(thumbnail, 'thumbnail') : thumbnail)
+    : undefined;
   
   const { 
     ref, 
@@ -55,14 +62,14 @@ export const LazyImage: React.FC<LazyImageProps> = ({
         setImageState('loading');
         
         // 如果有缩略图，先显示缩略图
-        if (thumbnail && !currentSrc) {
-          await preloadImage(thumbnail);
-          setCurrentSrc(thumbnail);
+        if (resolvedThumbnail && !currentSrc) {
+          await preloadImage(resolvedThumbnail);
+          setCurrentSrc(resolvedThumbnail);
         }
         
         // 然后加载高清图片
-        await preloadImage(src);
-        setCurrentSrc(src);
+        await preloadImage(resolvedSrc);
+        setCurrentSrc(resolvedSrc);
         setImageState('loaded');
         markAsLoaded();
         onLoad?.();
@@ -75,7 +82,7 @@ export const LazyImage: React.FC<LazyImageProps> = ({
     };
 
     loadImage();
-  }, [isInView, src, thumbnail, currentSrc, markAsLoaded, markAsError, onLoad, onError]);
+  }, [isInView, resolvedSrc, resolvedThumbnail, currentSrc, markAsLoaded, markAsError, onLoad, onError]);
 
   // 重试加载
   const handleRetry = () => {

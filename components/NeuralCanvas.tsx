@@ -1,5 +1,5 @@
 import { Suspense, lazy, useEffect, useState, useCallback, useRef } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { GRAPH_NODES, GRAPH_EDGES } from '../data';
 import { Theme, GraphNode } from '../types';
 import { useNodeGraph } from '../hooks/useNodeGraph';
@@ -12,18 +12,21 @@ interface NeuralCanvasProps {
   theme: Theme;
   reducedMotion?: boolean;
   onHoverNode?: (node: GraphNode | null) => void;
+  onSpaceTour?: () => void;
 }
 
 export const NeuralCanvas: React.FC<NeuralCanvasProps> = ({
   theme,
   reducedMotion = false,
   onHoverNode,
+  onSpaceTour,
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
   const [hoveredNode, setHoveredNode] = useState<GraphNode | null>(null);
   const [activeNode, setActiveNode] = useState<GraphNode | null>(null);
   const [isMobile, setIsMobile] = useState(false);
+  const [showHelp, setShowHelp] = useState(false);
 
   useEffect(() => {
     const update = () => {
@@ -61,11 +64,29 @@ export const NeuralCanvas: React.FC<NeuralCanvasProps> = ({
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setActiveNode(null);
+      if (e.key === 'Escape') {
+        setActiveNode(null);
+        setShowHelp(false);
+        return;
+      }
+      const target = e.target as HTMLElement | null;
+      const inEditable =
+        !!target &&
+        (target.tagName === 'INPUT' ||
+          target.tagName === 'TEXTAREA' ||
+          target.isContentEditable);
+      if (inEditable) return;
+      if (e.code === 'Space') {
+        e.preventDefault();
+        onSpaceTour?.();
+      } else if (e.key === '?') {
+        e.preventDefault();
+        setShowHelp(true);
+      }
     };
     window.addEventListener('keydown', handler);
     return () => window.removeEventListener('keydown', handler);
-  }, []);
+  }, [onSpaceTour]);
 
   const showParticles = !isMobile && !reducedMotion;
   const particleColor = theme === 'dark' ? '#5eead4' : '#0d9488';
@@ -82,7 +103,7 @@ export const NeuralCanvas: React.FC<NeuralCanvasProps> = ({
       {showParticles && (
         <div className="absolute inset-0 pointer-events-none" style={{ zIndex: 1 }}>
           <Suspense fallback={null}>
-            <ParticleField count={theme === 'dark' ? 200 : 160} color={particleColor} />
+            <ParticleField color={particleColor} />
           </Suspense>
           <div
             className="absolute inset-0"
@@ -175,12 +196,102 @@ export const NeuralCanvas: React.FC<NeuralCanvasProps> = ({
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1.5, duration: 1 }}
-        className="absolute bottom-6 right-6 font-mono text-[10px] text-fg-tertiary pointer-events-none flex items-center gap-2"
+        className="absolute bottom-6 right-6 font-mono text-[10px] text-fg-tertiary pointer-events-none flex flex-col items-end gap-1.5"
         style={{ zIndex: 8 }}
       >
-        <span className="text-signature-teal animate-pulse">●</span>
-        <span>HOVER · CLICK · ESC</span>
+        <div className="flex items-center gap-2">
+          <span className="text-signature-teal animate-pulse">●</span>
+          <span>HOVER · CLICK · ESC</span>
+        </div>
+        <div className="flex items-center gap-1.5">
+          <kbd className="px-1.5 py-0.5 rounded bg-glass-mid border border-glass-border text-fg-secondary">Space</kbd>
+          <span className="opacity-70">自动导览</span>
+          <span className="opacity-40 mx-0.5">·</span>
+          <kbd className="px-1.5 py-0.5 rounded bg-glass-mid border border-glass-border text-fg-secondary">?</kbd>
+          <span className="opacity-70">帮助</span>
+        </div>
       </motion.div>
+
+      <AnimatePresence>
+        {showHelp && (
+          <motion.div
+            className="absolute inset-0 flex items-center justify-center cursor-pointer"
+            style={{
+              zIndex: 50,
+              background: theme === 'dark' ? 'oklch(0.04 0.01 250 / 0.7)' : 'oklch(0.96 0.01 80 / 0.7)',
+              backdropFilter: 'blur(12px)',
+            }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            onClick={() => setShowHelp(false)}
+          >
+            <motion.div
+              className="glass rounded-2xl p-8 max-w-md border border-glass-borderBright shadow-glass cursor-auto"
+              initial={{ scale: 0.92, opacity: 0, y: 8 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.92, opacity: 0, y: 8 }}
+              transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex items-center justify-between mb-5">
+                <h3 className="text-xl font-bold text-fg-primary">节点图操作说明</h3>
+                <button
+                  className="text-fg-tertiary hover:text-fg-primary text-lg leading-none"
+                  onClick={() => setShowHelp(false)}
+                  aria-label="关闭"
+                >
+                  ✕
+                </button>
+              </div>
+
+              <div className="space-y-5 text-sm">
+                <div>
+                  <div className="text-signature-teal font-semibold mb-2 uppercase tracking-[0.2em] text-[10px]">
+                    节点交互
+                  </div>
+                  <ul className="space-y-1.5 text-fg-secondary">
+                    <li>· 悬停节点：预览信息卡片</li>
+                    <li>· 点击节点：查看完整详情</li>
+                    <li>· 同节点悬停 3 秒：AI 主动建议</li>
+                  </ul>
+                </div>
+
+                <div>
+                  <div className="text-signature-teal font-semibold mb-2 uppercase tracking-[0.2em] text-[10px]">
+                    快捷键
+                  </div>
+                  <ul className="space-y-1.5 text-fg-secondary">
+                    <li className="flex items-center gap-2">
+                      <kbd className="px-1.5 py-0.5 rounded bg-glass-mid border border-glass-border font-mono text-[10px]">Space</kbd>
+                      <span>触发 AI 自动导览</span>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <kbd className="px-1.5 py-0.5 rounded bg-glass-mid border border-glass-border font-mono text-[10px]">?</kbd>
+                      <span>打开本面板</span>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <kbd className="px-1.5 py-0.5 rounded bg-glass-mid border border-glass-border font-mono text-[10px]">ESC</kbd>
+                      <span>关闭面板 / 详情</span>
+                    </li>
+                  </ul>
+                </div>
+
+                <div>
+                  <div className="text-signature-teal font-semibold mb-2 uppercase tracking-[0.2em] text-[10px]">
+                    AI 对话
+                  </div>
+                  <ul className="space-y-1.5 text-fg-secondary">
+                    <li>· 右侧 dock：输入问题 + 回车</li>
+                    <li>· 首访 5 秒：AI 主动问候</li>
+                  </ul>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <motion.div
         initial={{ opacity: 0, y: 10 }}

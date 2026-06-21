@@ -68,7 +68,7 @@ export const DetailPanel: React.FC<DetailPanelProps> = ({ node, onClose }) => {
           exit={{ opacity: 0 }}
           transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
           className="fixed inset-0 z-40 flex items-center justify-center p-4"
-          style={{ background: 'oklch(0.04 0.01 250 / 0.7)', backdropFilter: 'blur(8px)' }}
+          style={{ background: 'oklch(var(--color-ink-black) / 0.7)', backdropFilter: 'blur(8px)' }}
           onClick={onClose}
         >
           <motion.div

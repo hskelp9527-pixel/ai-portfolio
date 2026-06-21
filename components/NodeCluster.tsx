@@ -1,5 +1,6 @@
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
-import { GraphNode, NodeAccent } from '../types';
+import { Folder, Zap, Lightbulb, Calendar, type LucideIcon } from 'lucide-react';
+import { GraphNode, NodeAccent, NodeCluster as ClusterType } from '../types';
 import { NodePosition } from '../hooks/useNodeGraph';
 
 interface NodeClusterProps {
@@ -13,19 +14,19 @@ interface NodeClusterProps {
 
 const accentConfig: Record<NodeAccent, { bg: string; ring: string; text: string }> = {
   teal: {
-    bg: 'oklch(0.20 0.05 165 / 0.4)',
-    ring: 'oklch(0.78 0.18 165 / 0.7)',
-    text: 'oklch(0.95 0.05 165)',
+    bg: 'oklch(var(--color-signature-teal) / 0.18)',
+    ring: 'oklch(var(--color-signature-teal) / 0.7)',
+    text: 'oklch(var(--color-fg-primary))',
   },
   amber: {
-    bg: 'oklch(0.22 0.06 50 / 0.4)',
-    ring: 'oklch(0.75 0.20 50 / 0.7)',
-    text: 'oklch(0.95 0.05 50)',
+    bg: 'oklch(var(--color-signature-amber) / 0.18)',
+    ring: 'oklch(var(--color-signature-amber) / 0.7)',
+    text: 'oklch(var(--color-fg-primary))',
   },
   default: {
-    bg: 'oklch(0.20 0.02 250 / 0.35)',
-    ring: 'oklch(0.45 0.02 250 / 0.5)',
-    text: 'oklch(0.88 0.01 250)',
+    bg: 'oklch(var(--color-glass-mid) / 0.5)',
+    ring: 'oklch(var(--color-glass-border-bright) / 0.6)',
+    text: 'oklch(var(--color-fg-primary))',
   },
 };
 
@@ -45,6 +46,14 @@ function hashSeed(id: string): number {
 const SATELLITE_ANGLES = [0, 120, 240];
 const SATELLITE_RADIUS = 80;
 const SATELLITE_DURATIONS = [8, 10, 12];
+
+const CLUSTER_ICON: Record<ClusterType, LucideIcon | null> = {
+  center: null,
+  projects: Folder,
+  skills: Zap,
+  philosophy: Lightbulb,
+  timeline: Calendar,
+};
 
 export const NodeCluster: React.FC<NodeClusterProps> = ({
   nodes,
@@ -131,19 +140,78 @@ export const NodeCluster: React.FC<NodeClusterProps> = ({
                 boxShadow: isHovered
                   ? `0 0 30px ${accent.ring}`
                   : isCenter
-                  ? '0 0 60px oklch(0.78 0.18 165 / 0.5)'
+                  ? '0 0 60px oklch(var(--color-signature-teal) / 0.5)'
                   : 'none',
               }}
             >
               <div
-                className={isCenter ? 'font-bold leading-tight px-3' : 'font-medium leading-tight px-2'}
+                className={isCenter ? 'font-bold leading-tight px-2 flex flex-col items-center gap-0.5' : 'font-medium leading-tight px-2'}
                 style={{
                   fontSize: isCenter ? 16 : Math.max(10, size / 7),
                   color: accent.text,
                 }}
               >
-                {node.label}
+                {isCenter ? (
+                  <>
+                    <span style={{ fontSize: 16, lineHeight: 1.1 }}>{node.label}</span>
+                    {node.subtitle && (
+                      <span style={{ fontSize: 10, fontWeight: 500, opacity: 0.72, marginTop: 2 }}>
+                        {node.subtitle}
+                      </span>
+                    )}
+                    {node.tagline && (
+                      <span
+                        style={{
+                          fontSize: 8,
+                          fontWeight: 400,
+                          opacity: 0.55,
+                          letterSpacing: '0.08em',
+                          marginTop: 1,
+                        }}
+                      >
+                        {node.tagline}
+                      </span>
+                    )}
+                  </>
+                ) : (
+                  node.label
+                )}
               </div>
+
+              {!isCenter && (
+                <>
+                  <div
+                    className="absolute font-mono pointer-events-none transition-opacity duration-200"
+                    style={{
+                      top: Math.max(2, size * 0.06),
+                      right: Math.max(4, size * 0.1),
+                      fontSize: 9,
+                      fontWeight: 600,
+                      opacity: isHovered ? 0 : 0.55,
+                      color: accent.text,
+                    }}
+                  >
+                    L{node.importance}
+                  </div>
+                  {(() => {
+                    const Icon = CLUSTER_ICON[node.cluster];
+                    if (!Icon) return null;
+                    return (
+                      <div
+                        className="absolute pointer-events-none transition-opacity duration-200"
+                        style={{
+                          bottom: Math.max(2, size * 0.06),
+                          left: Math.max(4, size * 0.1),
+                          opacity: isHovered ? 0 : 0.5,
+                          color: accent.text,
+                        }}
+                      >
+                        <Icon size={10} />
+                      </div>
+                    );
+                  })()}
+                </>
+              )}
 
               {!isCenter && (
                 <AnimatePresence>
@@ -170,7 +238,7 @@ export const NodeCluster: React.FC<NodeClusterProps> = ({
                       className="absolute rounded-full pointer-events-none"
                       style={{
                         inset: -30,
-                        border: '1px dashed oklch(0.78 0.18 165 / 0.25)',
+                        border: '1px dashed oklch(var(--color-signature-teal) / 0.25)',
                       }}
                       animate={{ rotate: 360 }}
                       transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
@@ -190,7 +258,7 @@ export const NodeCluster: React.FC<NodeClusterProps> = ({
                         : { duration: 3, repeat: Infinity, ease: 'easeInOut' }
                     }
                     style={{
-                      boxShadow: '0 0 0 2px oklch(0.78 0.18 165 / 0.4)',
+                      boxShadow: '0 0 0 2px oklch(var(--color-signature-teal) / 0.4)',
                     }}
                   />
 
@@ -213,8 +281,8 @@ export const NodeCluster: React.FC<NodeClusterProps> = ({
                             width: 6,
                             height: 6,
                             borderRadius: '50%',
-                            background: 'oklch(0.78 0.18 165)',
-                            boxShadow: '0 0 8px oklch(0.78 0.18 165 / 0.8)',
+                            background: 'oklch(var(--color-signature-teal))',
+                            boxShadow: '0 0 8px oklch(var(--color-signature-teal) / 0.8)',
                             transform: `translateX(${SATELLITE_RADIUS}px) translateY(-3px)`,
                           }}
                         />

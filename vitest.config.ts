@@ -7,6 +7,14 @@ export default defineConfig({
     environment: 'jsdom',
     setupFiles: ['./vitest.setup.ts'],
     globals: true,
+    exclude: [
+      '**/node_modules/**',
+      '**/dist/**',
+      '**/.deploy-staging/**',
+      '**/.tmp/**',
+      '**/_trash/**',
+      '**/重构前端ai/**',
+    ],
   },
   resolve: {
     alias: {

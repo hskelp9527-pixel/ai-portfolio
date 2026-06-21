@@ -77,7 +77,7 @@ export const AIChatDrawer: React.FC<AIChatDrawerProps> = ({
       const assistantMessage: ChatMessage = {
         id: (Date.now() + 1).toString(),
         role: 'assistant',
-        content: response,
+        content: response.content,
         timestamp: Date.now()
       };
 
@@ -163,7 +163,7 @@ export const AIChatDrawer: React.FC<AIChatDrawerProps> = ({
                 <div>
                   <h2 className="font-semibold text-lg">AI 问答助手</h2>
                   <p className={`text-xs ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>
-                    基于 GLM-4.5
+                    基于 GLM-5.2 / GLM-5.1
                   </p>
                 </div>
               </div>
